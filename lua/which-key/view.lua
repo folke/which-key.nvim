@@ -67,8 +67,9 @@ function M.hide()
 end
 
 ---@param text Text
-function M.render_mapping(text, mapping)
-  text:render(mapping.lhs, "")
+function M.render_mapping(text, mapping, key_count)
+  local key = mapping.keys.nvim[key_count + 1]
+  text:render(key or "", "")
   text:render("->", "Seperator")
   if mapping.group == true then
     text:render(mapping.label or mapping.rhs or "", "Group")
@@ -83,24 +84,27 @@ function M.on_keys(keys)
   -- eat queued characters
   M.eat(false)
 
+  local key_count = #Keys.parse_keys(M.keys).nvim
+
   local mappings = Keys.get_keymap(vim.api.nvim_get_mode().mode, M.keys,
                                    vim.api.nvim_get_current_buf())
 
   local text = Text:new()
+  local count = 0
   for _, mapping in pairs(mappings) do
     -- Exact match found, trigger keymapping
-    if mapping.id == Keys.t(M.keys) then
-      if mapping.group ~= true then
-        M.hide()
-        vim.api.nvim_feedkeys(M.keys, "m", true)
-        return
-      else -- skip this exact prefix group
-      end
+    if mapping.id == Keys.t(M.keys) and mapping.group ~= true then
+      M.hide()
+      vim.api.nvim_feedkeys(M.keys, "m", true)
+      return
     end
-    M.render_mapping(text, mapping)
+    if #mapping.keys.nvim == key_count + 1 then
+      count = count + 1
+      M.render_mapping(text, mapping, key_count)
+    end
   end
 
-  if #text.lines == 0 then
+  if count == 0 then
     -- no mappings found. Feed back the keys
     M.hide()
     vim.api.nvim_feedkeys(M.keys, "n", true)

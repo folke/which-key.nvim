@@ -31,6 +31,8 @@ end
 function M.get_keymap(mode, prefix, buf)
   local mappings = {}
 
+  local key_count = #M.parse_keys(prefix).nvim
+
   local map = function(keymap)
     prefix = M.t(prefix)
     for _, mapping in pairs(keymap) do
@@ -52,7 +54,18 @@ function M.get_keymap(mode, prefix, buf)
   -- buffer local mappings
   if buf then map(vim.api.nvim_buf_get_keymap(buf, mode)) end
 
-  return mappings
+  local ret = {}
+  for _, value in pairs(mappings) do table.insert(ret, value) end
+
+  table.sort(ret, function(a, b)
+    if a.group == b.group then
+      return (a.keys.nvim[key_count + 1] or "") < (b.keys.nvim[key_count + 1] or "")
+    else
+      return (a.group and 1 or 0) < (b.group and 1 or 0)
+    end
+  end)
+
+  return ret
 end
 
 function M.parse_mappings(ret, value, prefix)
