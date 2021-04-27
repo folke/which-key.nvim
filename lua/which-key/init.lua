@@ -5,7 +5,10 @@ require("which-key.colors").setup()
 
 local M = {}
 
-function M.setup(options) config.setup(options) end
+function M.setup(options)
+  config.setup(options)
+  if config.options.builtin then M.register(require("which-key.builtin")) end
+end
 
 function M.show(keys, mode)
   keys = keys or ""
