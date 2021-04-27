@@ -6,6 +6,7 @@ M.namespace = vim.api.nvim_create_namespace("WhichKey")
 local defaults = {
   builtin = true, -- register a list of builtin key mappings
   seperator = "->",
+  plugins = { marks = true, registers = true },
   window = {
     border = "none", -- none, single, double, shadow
     position = "bottom", -- bottom, top

@@ -6,6 +6,7 @@ local links = {
   Group = "Keyword",
   Desc = "Identifier",
   WhichKeyFloating = "NormalFloat",
+  Value = "Comment",
 }
 
 function M.setup()

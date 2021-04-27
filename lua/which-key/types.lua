@@ -32,6 +32,7 @@ local MappingOptions
 ---@field cmd string
 ---@field opts MappingOptions
 ---@field keys KeyCodes
+---@field plugin string
 local Mapping
 
 ---@class MappingTree
@@ -42,5 +43,20 @@ local MappingTree
 
 ---@class VisualMapping : Mapping
 ---@field key string
+---@field highlights table
+---@field value string
 local VisualMapping
 
+---@class PluginItem
+---@field key string
+---@field label string
+---@field value string
+---@field cmd string
+---@field highlights table
+local PluginItem
+
+---@class Plugin
+---@field name string
+---@field triggers string[] | string[][]
+---@field handler fun(trigger:string, mode:string, buf:number):PluginItem[]
+local Plugin

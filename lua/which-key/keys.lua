@@ -6,10 +6,13 @@ local M = {}
 ---@return MappingGroup
 function M.get_mappings(mode, prefix, buf)
   ---@class MappingGroup
+  ---@field mode string
+  ---@field prefix string
+  ---@field buf number
   ---@field mapping Mapping
   ---@field mappings VisualMapping[]
   local ret
-  ret = { mapping = nil, mappings = {} }
+  ret = { mapping = nil, mappings = {}, mode = mode, buf = buf, prefix = prefix }
 
   local prefix_len = #Util.parse_keys(prefix).nvim
 
@@ -30,6 +33,8 @@ function M.get_mappings(mode, prefix, buf)
   add(M.get_tree(mode).tree:get(prefix))
   add(M.get_tree(mode, buf).tree:get(prefix))
 
+  if ret.mapping and ret.mapping.plugin then require("which-key.plugins").invoke(ret) end
+
   local tmp = {}
   for _, value in pairs(ret.mappings) do
     value.key = value.keys.nvim[prefix_len + 1]
@@ -41,13 +46,15 @@ function M.get_mappings(mode, prefix, buf)
     table.insert(tmp, value)
   end
 
-  table.sort(tmp, function(a, b)
-    if a.group == b.group then
-      return a.key < b.key
-    else
-      return (a.group and 1 or 0) < (b.group and 1 or 0)
-    end
-  end)
+  if not ret.mapping or not ret.mapping.plugin then
+    table.sort(tmp, function(a, b)
+      if a.group == b.group then
+        return a.key < b.key
+      else
+        return (a.group and 1 or 0) < (b.group and 1 or 0)
+      end
+    end)
+  end
   ret.mappings = tmp
   return ret
 end
@@ -82,7 +89,10 @@ function M.parse_mappings(mappings, value, prefix)
           mapping.opts.noremap = v
         elseif k == "silent" then
           mapping.opts.silent = v
-        elseif k == "bufnr" then
+        elseif k == "plugin" then
+          mapping.group = true
+          mapping.plugin = v
+        elseif k == "bufnr" or k == "buf" then
           mapping.buf = v
         else
           error("Invalid key mapping: " .. vim.inspect(value))
@@ -112,6 +122,14 @@ function M.register(mappings, opts)
   M.get_tree(mode)
 
   for _, mapping in pairs(mappings) do
+    if opts.bufnr then
+      mapping.buf = opts.bufnr
+      opts.bufnr = nil
+    end
+    if opts.buf then
+      mapping.buf = opts.buf
+      opts.buf = nil
+    end
     mapping.keys = Util.parse_keys(mapping.prefix)
     if mapping.cmd then
       mapping.opts = vim.tbl_deep_extend("force", { silent = true, noremap = true }, opts,

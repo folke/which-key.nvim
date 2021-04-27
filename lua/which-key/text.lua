@@ -51,6 +51,7 @@ function Text:set(row, col, str, group)
 
   self.lines[row] = self.lines[row]:sub(0, col) .. str .. self.lines[row]:sub(col + Text.len(str))
 
+  if not group then return end
   -- set highlights
   table.insert(self.hl, {
     line = row - 1,
@@ -58,6 +59,11 @@ function Text:set(row, col, str, group)
     to = col + string.len(str),
     group = "WhichKey" .. group,
   })
+  self:highlight(row - 1, col, col + string.len(str), "WhichKey" .. group)
+end
+
+function Text:highlight(line, from, to, group)
+  table.insert(self.hl, { line = line, from = from, to = to, group = group })
 end
 
 return Text
