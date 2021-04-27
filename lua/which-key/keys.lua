@@ -1,87 +1,77 @@
+local Tree = require("which-key.tree")
+local Util = require("which-key.util")
+
 local M = {}
 
-function M.t(str) return vim.api.nvim_replace_termcodes(str, true, true, true) end
+---@return MappingGroup
+function M.get_mappings(mode, prefix, buf)
+  ---@class MappingGroup
+  ---@field mapping Mapping
+  ---@field mappings VisualMapping[]
+  local ret
+  ret = { mapping = nil, mappings = {} }
 
-function M.parse_keys(keystr)
-  local keys = {}
-  local special = nil
-  for i = 1, #keystr, 1 do
-    local c = keystr:sub(i, i)
-    if c == "<" then
-      special = "<"
-    elseif c == ">" and special then
-      table.insert(keys, special .. ">")
-      special = nil
-    elseif special then
-      special = special .. c
-    else
-      table.insert(keys, c)
-    end
-  end
-  local ret = { keys = M.t(keystr), term = {}, nvim = {} }
-  for i, key in pairs(keys) do
-    if key == " " then key = "<space>" end
-    if i == 1 and vim.g.mapleader and M.t(key) == M.t(vim.g.mapleader) then key = "<leader>" end
-    table.insert(ret.term, M.t(key))
-    table.insert(ret.nvim, key)
-  end
-  return ret
-end
+  local prefix_len = #Util.parse_keys(prefix).nvim
 
-function M.get_keymap(mode, prefix, buf)
-  local mappings = {}
-
-  local key_count = #M.parse_keys(prefix).nvim
-
-  local map = function(keymap)
-    prefix = M.t(prefix)
-    for _, mapping in pairs(keymap) do
-      local id = M.t(mapping.lhs)
-      if id:sub(1, #prefix) == prefix then
-        mapping.id = id
-        local idx = M.get_idx(mode, mapping.id)
-        local buf_idx = M.get_idx(mode, mapping.id, buf)
-        mapping.keys = M.parse_keys(mapping.lhs)
-        mapping = vim.tbl_deep_extend("force", {}, mapping, M.mappings[idx] or {},
-                                      M.mappings[buf_idx] or {}, mapping)
-        mappings[id] = mapping
+  ---@param node Node
+  local function add(node)
+    if node then
+      if node.mapping then
+        ret.mapping = vim.tbl_deep_extend("force", {}, ret.mapping or {}, node.mapping)
+      end
+      for k, child in pairs(node.children) do
+        if child.mapping and child.mapping.label ~= "which_key_ignore" then
+          ret.mappings[k] = vim.tbl_deep_extend("force", {}, ret.mappings[k] or {}, child.mapping)
+        end
       end
     end
   end
 
-  -- global mappings
-  map(vim.api.nvim_get_keymap(mode))
-  -- buffer local mappings
-  if buf then map(vim.api.nvim_buf_get_keymap(buf, mode)) end
+  add(M.get_tree(mode).tree:get(prefix))
+  add(M.get_tree(mode, buf).tree:get(prefix))
 
-  local ret = {}
-  for _, value in pairs(mappings) do table.insert(ret, value) end
+  local tmp = {}
+  for _, value in pairs(ret.mappings) do
+    value.key = value.keys.nvim[prefix_len + 1]
+    if value.group then
+      value.label = value.label or "+prefix"
+    else
+      value.label = value.label or value.cmd
+    end
+    table.insert(tmp, value)
+  end
 
-  table.sort(ret, function(a, b)
+  table.sort(tmp, function(a, b)
     if a.group == b.group then
-      return (a.keys.nvim[key_count + 1] or "") < (b.keys.nvim[key_count + 1] or "")
+      return a.key < b.key
     else
       return (a.group and 1 or 0) < (b.group and 1 or 0)
     end
   end)
-
+  ret.mappings = tmp
   return ret
 end
 
-function M.parse_mappings(ret, value, prefix)
+---@param mappings Mapping[]
+---@return Mapping[]
+function M.parse_mappings(mappings, value, prefix)
   prefix = prefix or ""
   if type(value) == "string" then
-    table.insert(ret, { prefix = prefix, label = value })
+    table.insert(mappings, { prefix = prefix, label = value })
   elseif type(value) == "table" then
     if #value == 0 then
       -- key group
-      for k, v in pairs(value) do if k ~= "name" then M.parse_mappings(ret, v, prefix .. k) end end
+      for k, v in pairs(value) do
+        if k ~= "name" then M.parse_mappings(mappings, v, prefix .. k) end
+      end
       if prefix ~= "" then
-        table.insert(ret, { prefix = prefix, label = value.name or "+prefix", group = true })
+        table.insert(mappings, { prefix = prefix, label = value.name or "+prefix", group = true })
       end
     else
       -- key mapping
-      local mapping = { prefix = prefix, opts = {} }
+      ---@type Mapping
+      local mapping
+      mapping = { prefix = prefix, opts = {} }
       for k, v in pairs(value) do
         if k == 1 then
           mapping.label = v
@@ -93,19 +83,20 @@ function M.parse_mappings(ret, value, prefix)
         elseif k == "silent" then
           mapping.opts.silent = v
         elseif k == "bufnr" then
-          mapping.opts.bufnr = v
+          mapping.buf = v
         else
           error("Invalid key mapping: " .. vim.inspect(value))
         end
       end
-      table.insert(ret, mapping)
+      table.insert(mappings, mapping)
     end
   else
     error("Invalid mapping " .. vim.inspect(value))
   end
-  return ret
+  return mappings
 end
 
+---@type table<string, MappingTree>
 M.mappings = {}
 
 function M.register(mappings, opts)
@@ -118,36 +109,86 @@ function M.register(mappings, opts)
   opts.mode = nil
 
   mappings = M.parse_mappings({}, mappings, prefix)
+  M.get_tree(mode)
 
   for _, mapping in pairs(mappings) do
-    mapping.id = M.t(mapping.prefix)
-    mapping.opts = vim.tbl_deep_extend("force", { silent = true, noremap = true }, opts,
-                                       mapping.opts or {})
-    local cmd = mapping.cmd
-    if mapping.group then
-      mapping.opts.noremap = false
-      cmd = string.format([[<cmd>lua require("which-key.view").on_keys(%q)<cr>]], mapping.prefix)
-    end
-
-    if cmd then
-      if mapping.opts.bufnr ~= nil then
-        local buf = mapping.opts.bufnr
-        mapping.opts.bufnr = nil
-        vim.api.nvim_buf_set_keymap(buf, mode, mapping.prefix, cmd, mapping.opts)
-        mapping.opts.bufnr = buf
+    mapping.keys = Util.parse_keys(mapping.prefix)
+    if mapping.cmd then
+      mapping.opts = vim.tbl_deep_extend("force", { silent = true, noremap = true }, opts,
+                                         mapping.opts or {})
+      if mapping.buf ~= nil then
+        vim.api.nvim_buf_set_keymap(mapping.buf, mode, mapping.prefix, mapping.cmd, mapping.opts)
       else
-        vim.api.nvim_set_keymap(mode, mapping.prefix, cmd, mapping.opts)
+        vim.api.nvim_set_keymap(mode, mapping.prefix, mapping.cmd, mapping.opts)
       end
     end
-    local idx = M.get_idx(mode, mapping.id, mapping.opts.bufnr)
-    M.mappings[idx] = vim.tbl_deep_extend("force", M.mappings[idx] or {}, mapping)
+    M.get_tree(mode, mapping.buf).tree:add(mapping)
+  end
+  M.update()
+end
+
+M.hooked = {}
+
+function M.update(buf)
+  local opts = { noremap = true, silent = true }
+  for k, tree in pairs(M.mappings) do
+    if tree.buf and not vim.api.nvim_buf_is_valid(tree.buf) then
+      -- remove group for invalid buffers
+      M.mappings[k] = nil
+    elseif (not tree.buf) or buf == tree.buf then
+      M.update_keymaps(tree.mode, tree.buf)
+      tree.tree:walk( ---@param node Node
+      function(node)
+        -- create group mapping if needed
+        if not node.mapping then
+          node.mapping = {
+            prefix = node.prefix,
+            label = "+prefix",
+            group = true,
+            keys = Util.parse_keys(node.prefix),
+          }
+        end
+        if node.prefix ~= "" and node.mapping.group == true then
+          local id = tree.mode .. (tree.buf or "") .. node.prefix
+          -- hook up if needed
+          if not M.hooked[id] then
+            local cmd = [[<cmd>lua require("which-key").show(%q, %q)<cr>]]
+            cmd = string.format(cmd, node.prefix, tree.mode)
+            if tree.buf then
+              vim.api.nvim_buf_set_keymap(tree.buf, tree.mode, node.prefix, cmd, opts)
+            else
+              vim.api.nvim_set_keymap(tree.mode, node.prefix, cmd, opts)
+            end
+            M.hooked[id] = true
+          end
+        end
+      end)
+    end
   end
 end
 
-function M.get_idx(mode, keyid, buf)
-  local ret = mode .. ":" .. keyid
-  if buf then ret = ":" .. buf end
-  return ret
+function M.get_tree(mode, buf)
+  local idx = mode .. (buf or "")
+  if not M.mappings[idx] then M.mappings[idx] = { mode = mode, buf = buf, tree = Tree:new() } end
+  return M.mappings[idx]
+end
+
+---@param mode string
+---@param buf number
+function M.update_keymaps(mode, buf)
+  ---@type Keymap
+  local keymaps = buf and vim.api.nvim_buf_get_keymap(buf, mode) or vim.api.nvim_get_keymap(mode)
+  local tree = M.get_tree(mode, buf).tree
+  for _, keymap in pairs(keymaps) do
+    local mapping = {
+      id = Util.t(keymap.lhs),
+      prefix = keymap.lhs,
+      cmd = keymap.rhs,
+      keys = Util.parse_keys(keymap.lhs),
+    }
+    -- don't include Plug keymaps
+    if mapping.keys.nvim[1]:lower() ~= "<plug>" then tree:add(mapping) end
+  end
 end
 
 return M

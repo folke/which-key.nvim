@@ -6,6 +6,8 @@
 local Text = {}
 Text.__index = Text
 
+function Text.len(str) return vim.fn.strdisplaywidth(str) end
+
 function Text:new()
   local this = { lines = {}, hl = {}, lineNr = 0, current = "" }
   setmetatable(this, self)
@@ -13,7 +15,8 @@ function Text:new()
 end
 
 function Text:nl()
-  table.insert(self.lines, self.current)
+  local line = self.current:gsub("[\n]", " ")
+  table.insert(self.lines, line)
   self.current = ""
   self.lineNr = self.lineNr + 1
 end
@@ -33,6 +36,28 @@ function Text:render(str, group, opts)
   self.current = self.current .. str
   if opts.append then self.current = self.current .. opts.append end
   if opts.nl then self:nl() end
+end
+
+function Text:set(row, col, str, group)
+  str = str:gsub("[\n]", " ")
+
+  -- extend lines if needed
+  for i = 1, row, 1 do if not self.lines[i] then self.lines[i] = "" end end
+
+  -- extend columns when needed
+  if #self.lines[row] < col then
+    self.lines[row] = self.lines[row] .. string.rep(" ", col - #self.lines[row])
+  end
+
+  self.lines[row] = self.lines[row]:sub(0, col) .. str .. self.lines[row]:sub(col + Text.len(str))
+
+  -- set highlights
+  table.insert(self.hl, {
+    line = row - 1,
+    from = col,
+    to = col + string.len(str),
+    group = "WhichKey" .. group,
+  })
 end
 
 return Text

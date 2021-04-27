@@ -1,0 +1,40 @@
+local M = {}
+
+function M.count(tab)
+  local ret = 0
+  for _, _ in pairs(tab) do ret = ret + 1 end
+  return ret
+end
+
+function M.is_empty(tab) return M.count(tab) == 0 end
+
+function M.t(str) return vim.api.nvim_replace_termcodes(str, true, true, true) end
+
+---@return KeyCodes
+function M.parse_keys(keystr)
+  local keys = {}
+  local special = nil
+  for i = 1, #keystr, 1 do
+    local c = keystr:sub(i, i)
+    if c == "<" then
+      special = "<"
+    elseif c == ">" and special then
+      table.insert(keys, special .. ">")
+      special = nil
+    elseif special then
+      special = special .. c
+    else
+      table.insert(keys, c)
+    end
+  end
+  local ret = { keys = M.t(keystr), term = {}, nvim = {} }
+  for i, key in pairs(keys) do
+    if key == " " then key = "<space>" end
+    if i == 1 and vim.g.mapleader and M.t(key) == M.t(vim.g.mapleader) then key = "<leader>" end
+    table.insert(ret.term, M.t(key))
+    table.insert(ret.nvim, key)
+  end
+  return ret
+end
+
+return M

@@ -1,6 +1,7 @@
 local Keys = require("which-key.keys")
 local config = require("which-key.config")
-local Text = require("which-key.text")
+local Layout = require("which-key.layout")
+local Util = require("which-key.util")
 
 local highlight = vim.api.nvim_buf_add_highlight
 
@@ -8,46 +9,74 @@ local highlight = vim.api.nvim_buf_add_highlight
 local M = {}
 
 M.keys = ""
+M.mode = "n"
+M.back = false
 M.buf = nil
 M.win = nil
 
 function M.is_valid()
   return M.buf and vim.api.nvim_buf_is_valid(M.buf) and vim.api.nvim_buf_is_loaded(M.buf) and
            vim.api.nvim_win_is_valid(M.win)
-
 end
 
 function M.show()
   if M.is_valid() then return end
-  M.buf = vim.api.nvim_create_buf(false, true)
-  M.win = vim.api.nvim_open_win(M.buf, false, {
+  local opts = {
     relative = "editor",
-    width = vim.o.columns,
-    height = 10,
+    width = vim.o.columns - config.options.window.margin[2] - config.options.window.margin[4],
+    height = config.options.layout.height.min,
     focusable = false,
     anchor = "SW",
-    row = vim.o.lines - 2,
-    col = 0,
+    border = config.options.window.border,
+    row = vim.o.lines - 1 - config.options.window.margin[3],
+    col = config.options.window.margin[2],
     style = "minimal",
-  })
+  }
+  if config.options.window.position == "top" then
+    opts.anchor = "NW"
+    opts.row = config.options.window.margin[1]
+  end
+  M.buf = vim.api.nvim_create_buf(false, true)
+  M.win = vim.api.nvim_open_win(M.buf, false, opts)
   vim.api.nvim_win_set_option(M.win, "winhighlight", "NormalFloat:WhichKeyFloating")
   vim.cmd [[autocmd! WinClosed <buffer> lua require("which-key.view").on_close()]]
 end
 
-function M.eat(wait)
+function M.get_input(wait)
   while true do
     local n = wait and vim.fn.getchar() or vim.fn.getchar(0)
     if n == 0 then return end
-    if n == 27 then -- <esc> key
+    local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
+
+    if c == Util.t("<esc>") then
       M.on_close()
       return
+    elseif c == Util.t("<c-d>") then
+      M.scroll(false)
+    elseif c == Util.t("<c-u>") then
+      M.scroll(true)
+    elseif c == Util.t("<bs>") then
+      M.back()
+    else
+      M.keys = M.keys .. c
     end
-    M.keys = M.keys .. (type(n) == "number" and vim.fn.nr2char(n) or n)
+
     if wait then
       vim.defer_fn(function() M.on_keys(M.keys) end, 0)
       return
     end
   end
+end
+
+function M.scroll(up)
+  local height = vim.api.nvim_win_get_height(M.win)
+  local cursor = vim.api.nvim_win_get_cursor(M.win)
+  if up then
+    cursor[1] = math.max(cursor[1] - height, 1)
+  else
+    cursor[1] = math.min(cursor[1] + height, vim.api.nvim_buf_line_count(M.buf))
+  end
+  vim.api.nvim_win_set_cursor(M.win, cursor)
 end
 
 function M.on_close()
@@ -66,62 +95,55 @@ function M.hide()
   end
 end
 
----@param text Text
-function M.render_mapping(text, mapping, key_count)
-  local key = mapping.keys.nvim[key_count + 1]
-  text:render(key or "", "")
-  text:render("->", "Seperator")
-  if mapping.group == true then
-    text:render(mapping.label or mapping.rhs or "", "Group")
-  else
-    text:render(mapping.label or mapping.rhs or "", "Desc")
-  end
-  text:nl()
+function M.back()
+  local buf = vim.api.nvim_get_current_buf()
+  local node = Keys.get_tree(M.mode, buf).tree:get(M.keys, 1) or
+                 Keys.get_tree(M.mode).tree:get(M.keys, 1)
+  if node then M.keys = node.prefix end
 end
 
-function M.on_keys(keys)
+function M.on_keys(keys, mode)
   M.keys = keys or ""
+  M.mode = mode or vim.api.nvim_get_mode().mode
   -- eat queued characters
-  M.eat(false)
+  M.get_input(false)
 
-  local key_count = #Keys.parse_keys(M.keys).nvim
+  local mappings = Keys.get_mappings(M.mode, M.keys, vim.api.nvim_get_current_buf())
 
-  local mappings = Keys.get_keymap(vim.api.nvim_get_mode().mode, M.keys,
-                                   vim.api.nvim_get_current_buf())
-
-  local text = Text:new()
-  local count = 0
-  for _, mapping in pairs(mappings) do
-    -- Exact match found, trigger keymapping
-    if mapping.id == Keys.t(M.keys) and mapping.group ~= true then
-      M.hide()
+  --- Check for an exact match. Feedkeys with remap
+  if mappings.mapping and not mappings.mapping.group then
+    M.hide()
+    if mappings.mapping.cmd then
       vim.api.nvim_feedkeys(M.keys, "m", true)
-      return
+    else
+      vim.api.nvim_feedkeys(M.keys, "n", true)
     end
-    if #mapping.keys.nvim == key_count + 1 then
-      count = count + 1
-      M.render_mapping(text, mapping, key_count)
-    end
+    return
   end
 
-  if count == 0 then
-    -- no mappings found. Feed back the keys
+  -- Check for no mappings found. Feedkeys without remap
+  if #mappings.mappings == 0 then
     M.hide()
     vim.api.nvim_feedkeys(M.keys, "n", true)
     return
   end
 
+  local layout = Layout:new(mappings)
+
   if not M.is_valid() then M.show() end
 
-  M.render(text)
+  M.render(layout:layout(M.win))
 
   -- defer further eating on the main loop
-  vim.defer_fn(function() M.eat(true) end, 0)
+  vim.defer_fn(function() M.get_input(true) end, 0)
 end
 
 ---@param text Text
 function M.render(text)
   vim.api.nvim_buf_set_lines(M.buf, 0, -1, false, text.lines)
+  local height = #text.lines
+  if height > config.options.layout.height.max then height = config.options.layout.height.max end
+  vim.api.nvim_win_set_height(M.win, height)
   if vim.api.nvim_buf_is_valid(M.buf) then
     vim.api.nvim_buf_clear_namespace(M.buf, config.namespace, 0, -1)
   end
