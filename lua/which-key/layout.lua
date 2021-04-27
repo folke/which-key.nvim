@@ -31,6 +31,8 @@ end
 
 function Layout:layout(win)
   local window_width = vim.api.nvim_win_get_width(win)
+  local width = window_width
+  width = width - self.options.window.padding[2] - self.options.window.padding[4]
 
   local max_key_width = self:max_width("key")
   local max_label_width = self:max_width("label")
@@ -38,6 +40,7 @@ function Layout:layout(win)
 
   local intro_width = max_key_width + 2 + #self.options.seperator + self.options.layout.spacing
   local max_width = max_label_width + intro_width + max_value_width
+  if max_width > width then max_width = width end
 
   local column_width = max_width
 
@@ -53,9 +56,6 @@ function Layout:layout(win)
   end
 
   max_label_width = column_width - (intro_width + max_value_width)
-
-  local width = window_width
-  width = width - self.options.window.padding[2] - self.options.window.padding[4]
 
   local columns = math.floor(width / column_width)
 

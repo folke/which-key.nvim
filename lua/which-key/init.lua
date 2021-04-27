@@ -11,6 +11,7 @@ function M.setup(options)
   config.setup(options)
   if config.options.builtin then M.register(require("which-key.builtin")) end
   if config.options.plugins.marks then M.plugin(require("which-key.plugins.marks")) end
+  if config.options.plugins.registers then M.plugin(require("which-key.plugins.registers")) end
 end
 
 function M.plugin(plugin) Plugin.setup(plugin) end
