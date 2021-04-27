@@ -48,6 +48,9 @@ function M.get_input(wait)
     if n == 0 then return end
     local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
 
+    -- Fix < characters
+    if c == "<" then c = "<lt>" end
+
     if c == Util.t("<esc>") then
       M.on_close()
       return
