@@ -2,7 +2,7 @@ local M = {}
 
 M.name = "marks"
 
-M.triggers = { { "`", "n" }, { "'", "n" } }
+M.triggers = { { trigger = "`", mode = "n" }, { trigger = "'", mode = "n" } }
 
 local labels = {
   ["^"] = "Last position of cursor in insert mode",
@@ -29,7 +29,7 @@ function M.handler(_trigger, _mode, buf)
   -- table.sort(marks, function(a, b) return a.mark < b.mark end)
 
   for _, mark in pairs(marks) do
-    local name = mark.mark:sub(2, 2)
+    local key = mark.mark:sub(2, 2)
     local line = mark.pos[2]
 
     local value = ""
@@ -44,9 +44,9 @@ function M.handler(_trigger, _mode, buf)
     local line_str = string.format("%3d  ", line)
     value = line_str .. value
 
-    local label = labels[name] or ""
+    local label = labels[key] or ""
     table.insert(items, {
-      key = name,
+      key = key,
       label = label,
       value = value,
       highlights = { { 1, #line_str - 1, "Number" } },

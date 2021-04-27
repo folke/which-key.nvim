@@ -10,14 +10,11 @@ function M.setup(plugin)
   M.plugins[plugin.name] = plugin
 
   for _, trigger in pairs(plugin.triggers) do
-    local prefix = trigger
-    local mode = "n"
-    if type(trigger) == "table" then
-      prefix = trigger[1]
-      mode = trigger[2]
-    end
+    local prefix = trigger.trigger
+    local mode = trigger.mode or "n"
+    local label = trigger.label or plugin.name
 
-    Keys.register({ [prefix] = { plugin.name, plugin = plugin.name } }, { mode = mode })
+    Keys.register({ [prefix] = { label, plugin = plugin.name } }, { mode = mode })
   end
 end
 
