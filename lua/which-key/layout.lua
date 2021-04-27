@@ -83,7 +83,7 @@ function Layout:layout(win)
     end
   end
 
-  for i = 1, self.options.window.padding[3], 1 do self.text:nl() end
+  for _ = 1, self.options.window.padding[3], 1 do self.text:nl() end
   return self.text
 end
 
