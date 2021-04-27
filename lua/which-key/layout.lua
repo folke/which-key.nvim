@@ -71,8 +71,8 @@ function Layout:layout(win)
   for _, item in pairs(self.items) do
     local start = (col - 1) * column_width + self.options.layout.spacing
     if col == 1 then start = start + pad_left end
-    local key = item.key
-    if #item.key < max_key_width then key = string.rep(" ", max_key_width - #key) .. key end
+    local key = item.key or ""
+    if #key < max_key_width then key = string.rep(" ", max_key_width - #key) .. key end
 
     self.text:set(row + pad_top, start, key, "")
     start = start + #key + 1

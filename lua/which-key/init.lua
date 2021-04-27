@@ -5,6 +5,7 @@ local Plugin = require("which-key.plugins")
 
 require("which-key.colors").setup()
 
+---@class WhichKey
 local M = {}
 
 function M.setup(options)

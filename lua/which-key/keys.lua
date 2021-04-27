@@ -1,5 +1,6 @@
 local Tree = require("which-key.tree")
 local Util = require("which-key.util")
+local Config = require("which-key.config")
 
 local M = {}
 
@@ -40,6 +41,8 @@ function M.get_mappings(mode, prefix, buf)
     value.key = value.keys.nvim[prefix_len + 1]
     if value.group then
       value.label = value.label or "+prefix"
+      value.label = value.label:gsub("^%+", "")
+      value.label = Config.options.group .. value.label
     else
       value.label = value.label or value.cmd
     end
@@ -72,7 +75,7 @@ function M.parse_mappings(mappings, value, prefix)
         if k ~= "name" then M.parse_mappings(mappings, v, prefix .. k) end
       end
       if prefix ~= "" then
-        table.insert(mappings, { prefix = prefix, label = value.name or "+prefix", group = true })
+        table.insert(mappings, { prefix = prefix, label = value.name, group = true })
       end
     else
       -- key mapping
@@ -159,12 +162,7 @@ function M.update(buf)
       function(node)
         -- create group mapping if needed
         if not node.mapping then
-          node.mapping = {
-            prefix = node.prefix,
-            label = "+prefix",
-            group = true,
-            keys = Util.parse_keys(node.prefix),
-          }
+          node.mapping = { prefix = node.prefix, group = true, keys = Util.parse_keys(node.prefix) }
         end
         if node.prefix ~= "" and node.mapping.group == true then
           local id = tree.mode .. (tree.buf or "") .. node.prefix
