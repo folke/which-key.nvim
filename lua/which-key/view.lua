@@ -88,6 +88,7 @@ function M.on_close()
 end
 
 function M.hide()
+  M.hide_cursor()
   if M.buf and vim.api.nvim_buf_is_valid(M.buf) then
     vim.api.nvim_buf_delete(M.buf, { force = true })
     M.buf = nil
@@ -96,6 +97,18 @@ function M.hide()
     vim.api.nvim_win_close(M.win, { force = true })
     M.win = nil
   end
+end
+
+function M.show_cursor()
+  local buf = vim.api.nvim_get_current_buf()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  vim.api.nvim_buf_add_highlight(buf, config.namespace, "Cursor", cursor[1] - 1, cursor[2],
+                                 cursor[2] + 1)
+end
+
+function M.hide_cursor()
+  local buf = vim.api.nvim_get_current_buf()
+  vim.api.nvim_buf_clear_namespace(buf, config.namespace, 0, -1)
 end
 
 function M.back()
@@ -108,6 +121,7 @@ end
 function M.on_keys(keys, mode)
   M.keys = keys or ""
   M.mode = mode or vim.api.nvim_get_mode().mode
+  M.show_cursor()
   -- eat queued characters
   M.get_input(false)
 
