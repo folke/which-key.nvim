@@ -59,4 +59,5 @@ local PluginItem
 ---@field name string
 ---@field triggers string[] | string[][]
 ---@field handler fun(trigger:string, mode:string, buf:number):PluginItem[]
+---@field setup fun()
 local Plugin

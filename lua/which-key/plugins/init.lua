@@ -16,6 +16,8 @@ function M.setup(plugin)
 
     Keys.register({ [prefix] = { label, plugin = plugin.name } }, { mode = mode })
   end
+
+  if plugin.setup then plugin.setup() end
 end
 
 ---@param results MappingGroup

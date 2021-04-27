@@ -7,7 +7,7 @@ local defaults = {
   builtin = true, -- register a list of builtin key mappings
   seperator = "->",
   group = "+",
-  plugins = { marks = true, registers = true },
+  plugins = { marks = true, registers = true, text_objects = true },
   window = {
     border = "none", -- none, single, double, shadow
     position = "bottom", -- bottom, top
