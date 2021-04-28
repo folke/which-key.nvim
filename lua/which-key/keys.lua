@@ -42,7 +42,7 @@ function M.get_mappings(mode, prefix, buf)
     if value.group then
       value.label = value.label or "+prefix"
       value.label = value.label:gsub("^%+", "")
-      value.label = Config.options.group .. value.label
+      value.label = Config.options.icons.group .. value.label
     else
       value.label = value.label or value.cmd
     end
@@ -75,6 +75,7 @@ function M.parse_mappings(mappings, value, prefix)
         if k ~= "name" then M.parse_mappings(mappings, v, prefix .. k) end
       end
       if prefix ~= "" then
+        if value.name then value.name = value.name:gsub("^%+", "") end
         table.insert(mappings, { prefix = prefix, label = value.name, group = true })
       end
     else

@@ -1,11 +1,13 @@
 local Config = require("which-key.config")
 local Text = require("which-key.text")
+local Keys = require("which-key.keys")
 
 ---@class Layout
 ---@field mapping Mapping
 ---@field items VisualMapping[]
 ---@field options Options
 ---@field text Text
+---@field results MappingGroup
 local Layout = {}
 Layout.__index = Layout
 
@@ -14,6 +16,7 @@ Layout.__index = Layout
 function Layout:new(mappings, options)
   options = options or Config.options
   local this = {
+    results = mappings,
     mapping = mappings.mapping,
     items = mappings.mappings,
     options = options,
@@ -29,6 +32,44 @@ function Layout:max_width(key)
   return max
 end
 
+function Layout:trail()
+  local prefix = self.results.prefix
+  local cmd_line = { { " " } }
+  for i = 1, #self.mapping.keys.nvim, 1 do
+    local offset = #self.mapping.keys.nvim - i
+    local node = Keys.get_tree(self.results.mode, self.results.buf).tree:get(prefix, offset)
+    if not (node and node.mapping and node.mapping.label) then
+      node = Keys.get_tree(self.results.mode).tree:get(prefix, offset)
+    end
+    local step = self.mapping.keys.nvim[i]
+    if node and node.mapping and node.mapping.label then
+      step = self.options.icons.group .. node.mapping.label
+    end
+    table.insert(cmd_line, { step, "WhichKeyGroup" })
+    if i ~= #self.mapping.keys.nvim then
+      table.insert(cmd_line, { " " .. self.options.icons.breadcrumb .. " ", "WhichKeySeparator" })
+    end
+  end
+  local width = 0
+  for _, line in pairs(cmd_line) do width = width + Text.len(line[1]) end
+  local help = { --
+    ["<bs>"] = "go up one level",
+    ["<c-d>"] = "scroll down",
+    ["<c-u>"] = "scroll up",
+    ["<esc>"] = "close",
+  }
+  local help_line = {}
+  local help_width = 0
+  for key, label in pairs(help) do
+    help_width = help_width + Text.len(key) + Text.len(label) + 2
+    table.insert(help_line, { key .. " ", "WhichKey" })
+    table.insert(help_line, { label .. " ", "WhichKeySeperator" })
+  end
+  table.insert(cmd_line, { string.rep(" ", math.floor(vim.o.columns / 2 - help_width / 2) - width) })
+  for _, l in pairs(help_line) do table.insert(cmd_line, l) end
+  vim.api.nvim_echo(cmd_line, false, {})
+end
+
 function Layout:layout(win)
   local window_width = vim.api.nvim_win_get_width(win)
   local width = window_width
@@ -38,7 +79,8 @@ function Layout:layout(win)
   local max_label_width = self:max_width("label")
   local max_value_width = self:max_width("value")
 
-  local intro_width = max_key_width + 2 + #self.options.seperator + self.options.layout.spacing
+  local intro_width = max_key_width + 2 + #self.options.icons.separator +
+                        self.options.layout.spacing
   local max_width = max_label_width + intro_width + max_value_width
   if max_width > width then max_width = width end
 
@@ -68,6 +110,8 @@ function Layout:layout(win)
   local pad_top = self.options.window.padding[3]
   local pad_left = self.options.window.padding[4]
 
+  self:trail()
+
   for _, item in pairs(self.items) do
     local start = (col - 1) * column_width + self.options.layout.spacing
     if col == 1 then start = start + pad_left end
@@ -77,8 +121,8 @@ function Layout:layout(win)
     self.text:set(row + pad_top, start, key, "")
     start = start + #key + 1
 
-    self.text:set(row + pad_top, start, self.options.seperator, "Seperator")
-    start = start + #self.options.seperator + 1
+    self.text:set(row + pad_top, start, self.options.icons.separator, "Separator")
+    start = start + #self.options.icons.separator + 1
 
     if item.value then
       local value = item.value

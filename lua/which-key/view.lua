@@ -38,6 +38,7 @@ function M.show()
   end
   M.buf = vim.api.nvim_create_buf(false, true)
   M.win = vim.api.nvim_open_win(M.buf, false, opts)
+  -- vim.api.nvim_win_hide(M.win)
   vim.api.nvim_win_set_option(M.win, "winhighlight", "NormalFloat:WhichKeyFloating")
   vim.cmd [[autocmd! WinClosed <buffer> lua require("which-key.view").on_close()]]
 end
@@ -82,12 +83,10 @@ function M.scroll(up)
   vim.api.nvim_win_set_cursor(M.win, cursor)
 end
 
-function M.on_close()
-  print(M.keys)
-  M.hide()
-end
+function M.on_close() M.hide() end
 
 function M.hide()
+  vim.api.nvim_echo({ { "" } }, false, {})
   M.hide_cursor()
   if M.buf and vim.api.nvim_buf_is_valid(M.buf) then
     vim.api.nvim_buf_delete(M.buf, { force = true })

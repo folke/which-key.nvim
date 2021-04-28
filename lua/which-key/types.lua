@@ -57,7 +57,7 @@ local PluginItem
 
 ---@class Plugin
 ---@field name string
----@field triggers string[] | string[][]
----@field handler fun(trigger:string, mode:string, buf:number):PluginItem[]
+---@field actions string[] | string[][]
+---@field run fun(trigger:string, mode:string, buf:number):PluginItem[]
 ---@field setup fun()
 local Plugin
