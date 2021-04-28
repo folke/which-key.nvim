@@ -1,3 +1,5 @@
+local config = require("which-key.config")
+
 ---@class Text
 ---@field lines string[]
 ---@field hl Highlight[]

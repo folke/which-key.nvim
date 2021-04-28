@@ -35,6 +35,7 @@ local defaults = {
     width = { min = 20, max = 50 }, -- min and max width of the columns
     spacing = 3, -- spacing between columns
   },
+  hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "^:", "^ ", "^call ", "^lua "}, -- hide mapping boilerplate
   show_help = true, -- show a help message in the command line for using WhichKey
 }
 
