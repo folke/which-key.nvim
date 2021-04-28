@@ -1,6 +1,6 @@
 local M = {}
 
-M.name = "preset"
+M.name = "presets"
 
 local operators = {
   d = "Delete",
@@ -82,7 +82,7 @@ local objects = {
 }
 
 function M.setup(wk, config)
-  require("which-key.plugins.preset.misc").setup(wk, config)
+  require("which-key.plugins.presets.misc").setup(wk, config)
 
   -- Operators
   if config.operators then wk.register(operators, { mode = "n", prefix = "" }) end
