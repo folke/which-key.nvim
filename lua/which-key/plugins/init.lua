@@ -9,9 +9,8 @@ M.plugins = {}
 function M.setup()
   for name, plugin in pairs(M.plugins) do
     local opts = Config.options.plugins[name]
-    if opts == nil then opts = {} end
+    if opts == nil then opts = { enabled = false } end
     if type(opts) == "boolean" then opts = { enabled = opts } end
-    opts.enabled = opts.enabled ~= false
     if opts.enabled then
       if type(plugin) == "string" then
         plugin = require(plugin)
