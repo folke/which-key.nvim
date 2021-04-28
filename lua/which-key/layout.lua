@@ -54,10 +54,12 @@ function Layout:trail()
   for _, line in pairs(cmd_line) do width = width + Text.len(line[1]) end
   local help = { --
     ["<bs>"] = "go up one level",
-    ["<c-d>"] = "scroll down",
-    ["<c-u>"] = "scroll up",
     ["<esc>"] = "close",
   }
+  if #self.text.lines > self.options.layout.height.max then
+    help["<c-d>"] = "scroll down"
+    help["<c-u>"] = "scroll up"
+  end
   local help_line = {}
   local help_width = 0
   for key, label in pairs(help) do
@@ -111,8 +113,6 @@ function Layout:layout(win)
   local pad_top = self.options.window.padding[3]
   local pad_left = self.options.window.padding[4]
 
-  self:trail()
-
   for _, item in pairs(self.items) do
     local start = (col - 1) * column_width + self.options.layout.spacing
     if col == 1 then start = start + pad_left end
@@ -154,6 +154,7 @@ function Layout:layout(win)
   end
 
   for _ = 1, self.options.window.padding[3], 1 do self.text:nl() end
+  self:trail()
   return self.text
 end
 
