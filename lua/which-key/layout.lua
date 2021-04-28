@@ -128,6 +128,7 @@ function Layout:layout(win)
 
     if item.value then
       local value = item.value
+      start = start + 1
       if Text.len(value) > max_value_width then
         value = value:sub(0, max_value_width - 4) .. " ..."
       end
