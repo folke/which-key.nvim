@@ -66,7 +66,7 @@ local misc = {
     ["L"] = "Last line of window",
   },
   g = {
-    ["gf"] = "Got to file under cursor",
+    ["gf"] = "Go to file under cursor",
     ["gx"] = "Open the file under cursor with system app",
     ["gi"] = "Move to the last insertion and INSERT",
     ["gv"] = "Switch to VISUAL using last selection",
