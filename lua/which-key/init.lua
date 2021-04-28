@@ -11,6 +11,8 @@ local M = {}
 function M.setup(options)
   config.setup(options)
   Plugin.setup()
+  M.register({}, { prefix = "<leader>", mode = "n" })
+  M.register({}, { prefix = "<leader>", mode = "v" })
 end
 
 function M.show(keys, opts)
