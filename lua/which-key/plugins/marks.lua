@@ -38,12 +38,12 @@ function M.run(trigger, mode, buf)
 
     local file = mark.file and vim.fn.fnamemodify(mark.file, ":p:.")
 
-    local value = string.format("%3d  ", lnum) .. (line or file)
+    local value = string.format("%4d  ", lnum)
 
     table.insert(items, {
       key = key,
       label = labels[key] or "",
-      value = value,
+      value = value .. (line or file),
       highlights = { { 1, #value - 1, "Number" } },
     })
   end

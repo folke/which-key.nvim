@@ -66,6 +66,7 @@ function Layout:trail()
     table.insert(help_line, { label .. " ", "WhichKeySeperator" })
   end
   table.insert(cmd_line, { string.rep(" ", math.floor(vim.o.columns / 2 - help_width / 2) - width) })
+
   for _, l in pairs(help_line) do table.insert(cmd_line, l) end
   vim.api.nvim_echo(cmd_line, false, {})
 end
