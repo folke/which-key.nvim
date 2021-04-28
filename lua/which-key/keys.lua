@@ -2,6 +2,8 @@ local Tree = require("which-key.tree")
 local Util = require("which-key.util")
 local Config = require("which-key.config")
 
+local secret = "Þ"
+
 local M = {}
 
 ---@return MappingGroup
@@ -181,10 +183,14 @@ function M.update(buf)
           if not M.hooked[id] then
             local cmd = [[<cmd>lua require("which-key").show(%q, {mode = %q, auto = true})<cr>]]
             cmd = string.format(cmd, node.prefix, tree.mode)
+            -- map group triggers and nops
+            -- nops are needed, so that WhichKey always respects timeoutlen
             if tree.buf then
               vim.api.nvim_buf_set_keymap(tree.buf, tree.mode, node.prefix, cmd, opts)
+              vim.api.nvim_buf_set_keymap(tree.buf, tree.mode, node.prefix .. secret, "<nop>", opts)
             else
               vim.api.nvim_set_keymap(tree.mode, node.prefix, cmd, opts)
+              vim.api.nvim_set_keymap(tree.mode, node.prefix .. secret, "<nop>", opts)
             end
             M.hooked[id] = true
           end
@@ -207,14 +213,16 @@ function M.update_keymaps(mode, buf)
   local keymaps = buf and vim.api.nvim_buf_get_keymap(buf, mode) or vim.api.nvim_get_keymap(mode)
   local tree = M.get_tree(mode, buf).tree
   for _, keymap in pairs(keymaps) do
-    local mapping = {
-      id = Util.t(keymap.lhs),
-      prefix = keymap.lhs,
-      cmd = keymap.rhs,
-      keys = Util.parse_keys(keymap.lhs),
-    }
-    -- don't include Plug keymaps
-    if mapping.keys.nvim[1]:lower() ~= "<plug>" then tree:add(mapping) end
+    if not keymap.lhs:find(secret) then
+      local mapping = {
+        id = Util.t(keymap.lhs),
+        prefix = keymap.lhs,
+        cmd = keymap.rhs,
+        keys = Util.parse_keys(keymap.lhs),
+      }
+      -- don't include Plug keymaps
+      if mapping.keys.nvim[1]:lower() ~= "<plug>" then tree:add(mapping) end
+    end
   end
 end
 

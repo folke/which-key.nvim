@@ -4,7 +4,6 @@ M.namespace = vim.api.nvim_create_namespace("WhichKey")
 
 ---@class Options
 local defaults = {
-  builtin = true, -- register a list of builtin key mappings
   icons = { breadcrumb = "»", separator = "➜", group = "+" },
   plugins = {
     marks = true,
