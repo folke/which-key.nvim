@@ -212,7 +212,7 @@ end
 ---@param mode string
 ---@param buf number
 function M.update_keymaps(mode, buf)
-  if mode == "n" then M.update_keymaps("o", buf) end
+  -- if mode == "n" then M.update_keymaps("o", buf) end
 
   ---@type Keymap
   local keymaps = buf and vim.api.nvim_buf_get_keymap(buf, mode) or vim.api.nvim_get_keymap(mode)
