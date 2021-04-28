@@ -43,10 +43,6 @@ end
 function Text:set(row, col, str, group)
   str = str:gsub("[\n]", " ")
 
-  for i,v in ipairs(config.options.hidden) do 
-    str = str:gsub(v, "")
-  end
-
   -- extend lines if needed
   for i = 1, row, 1 do if not self.lines[i] then self.lines[i] = "" end end
 
