@@ -61,7 +61,7 @@ function M.invoke(results)
 end
 
 -- Register builtin plugins
-local builtin = { "marks", "registers", "text-objects", "operators" }
+local builtin = { "marks", "registers", "text-objects", "operators", "motions" }
 for _, name in pairs(builtin) do M.register("which-key.plugins." .. name, name) end
 
 return M
