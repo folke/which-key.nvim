@@ -22,6 +22,7 @@ local KeyCodes
 ---@class MappingOptions
 ---@field noremap boolean
 ---@field silent boolean
+---@field nowait boolean
 local MappingOptions
 
 ---@class Mapping

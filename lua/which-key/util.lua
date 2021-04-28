@@ -37,4 +37,8 @@ function M.parse_keys(keystr)
   return ret
 end
 
+function M.log(msg, hl) vim.api.nvim_echo({ { "WhichKey: " .. msg, hl } }, true, {}) end
+
+function M.warn(msg) M.log(msg, "WarningMsg") end
+
 return M

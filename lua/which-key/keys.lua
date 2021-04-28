@@ -82,7 +82,7 @@ function M.parse_mappings(mappings, value, prefix)
       -- key mapping
       ---@type Mapping
       local mapping
-      mapping = { prefix = prefix, opts = {} }
+      mapping = { prefix = prefix, opts = {}, buf = M.get_buf_option(value) }
       for k, v in pairs(value) do
         if k == 1 then
           mapping.label = v
@@ -96,8 +96,6 @@ function M.parse_mappings(mappings, value, prefix)
         elseif k == "plugin" then
           mapping.group = true
           mapping.plugin = v
-        elseif k == "bufnr" or k == "buf" then
-          mapping.buf = v
         else
           error("Invalid key mapping: " .. vim.inspect(value))
         end
@@ -110,6 +108,21 @@ function M.parse_mappings(mappings, value, prefix)
   return mappings
 end
 
+function M.get_buf_option(opts)
+  for _, k in pairs({ "buffer", "bufnr", "buf" }) do
+    if opts[k] then
+      local v = opts[k]
+      opts[k] = nil
+      if k == "buffer" then
+        return v
+      elseif k == "bufnr" or k == "buf" then
+        Util.warn(string.format([[please use "buffer" instead of %q for buffer mappings]], k))
+        return v
+      end
+    end
+  end
+end
+
 ---@type table<string, MappingTree>
 M.mappings = {}
 
@@ -117,31 +130,28 @@ function M.register(mappings, opts)
   opts = opts or {}
 
   local prefix = opts.prefix or ""
-  opts.prefix = nil
-
   local mode = opts.mode or "n"
-  opts.mode = nil
+
+  opts.buffer = M.get_buf_option(opts)
 
   mappings = M.parse_mappings({}, mappings, prefix)
   M.get_tree(mode)
 
   for _, mapping in pairs(mappings) do
-    if opts.bufnr then
-      mapping.buf = opts.bufnr
-      opts.bufnr = nil
-    end
-    if opts.buf then
-      mapping.buf = opts.buf
-      opts.buf = nil
-    end
+    if opts.buffer and not mapping.buf then mapping.buf = opts.buffer end
     mapping.keys = Util.parse_keys(mapping.prefix)
     if mapping.cmd then
       mapping.opts = vim.tbl_deep_extend("force", { silent = true, noremap = true }, opts,
                                          mapping.opts or {})
+      local keymap_opts = {
+        silent = mapping.opts.silent,
+        noremap = mapping.opts.noremap,
+        nowait = mapping.opts.nowait or false,
+      }
       if mapping.buf ~= nil then
-        vim.api.nvim_buf_set_keymap(mapping.buf, mode, mapping.prefix, mapping.cmd, mapping.opts)
+        vim.api.nvim_buf_set_keymap(mapping.buf, mode, mapping.prefix, mapping.cmd, keymap_opts)
       else
-        vim.api.nvim_set_keymap(mode, mapping.prefix, mapping.cmd, mapping.opts)
+        vim.api.nvim_set_keymap(mode, mapping.prefix, mapping.cmd, keymap_opts)
       end
     end
     M.get_tree(mode, mapping.buf).tree:add(mapping)
