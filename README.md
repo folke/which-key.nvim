@@ -2,6 +2,8 @@
 
 **WhichKey** is a lua plugin for Neovim 0.5 that displays a popup with possible keybindings of the command you started typing. Heavily inspired by the original [emacs-which-key](https://github.com/justbur/emacs-which-key) and [vim-which-key](https://github.com/liuchengxu/vim-which-key).
 
+![image](https://user-images.githubusercontent.com/292349/116439438-669f8d00-a804-11eb-9b5b-c7122bd9acac.png)
+
 ## ✨ Features
 
 * opens a poup with suggestions to complete a key binding
@@ -243,13 +245,19 @@ Three builtin plugins are included with **WhichKey**.
 
 Shows a list of your buffer local and global marks when you hit \` or '
 
+![image](https://user-images.githubusercontent.com/292349/116439573-8f278700-a804-11eb-80ca-bb9263e6d937.png)
+
 ### Registers
 
 Shows a list of your buffer local and global registers when you hit " in *NORMAL* mode, or `<c-r>` in *INSERT* mode.
 
+![image](https://user-images.githubusercontent.com/292349/116439609-98b0ef00-a804-11eb-9385-97c7d5ff4113.png)
+
 ### Presets
 
 Builtin keybinding help for `motions`, `text-objects`, `operators`, `windows`, `nav`, `z` and `g`
+
+![image](https://user-images.githubusercontent.com/292349/116439871-df9ee480-a804-11eb-9529-800e167db65c.png)
 
 ## 🎨 Colors
 
