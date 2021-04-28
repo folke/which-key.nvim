@@ -179,7 +179,7 @@ function M.update(buf)
           local id = tree.mode .. (tree.buf or "") .. node.prefix
           -- hook up if needed
           if not M.hooked[id] then
-            local cmd = [[<cmd>lua require("which-key").show(%q, %q)<cr>]]
+            local cmd = [[<cmd>lua require("which-key").show(%q, {mode = %q, auto = true})<cr>]]
             cmd = string.format(cmd, node.prefix, tree.mode)
             if tree.buf then
               vim.api.nvim_buf_set_keymap(tree.buf, tree.mode, node.prefix, cmd, opts)

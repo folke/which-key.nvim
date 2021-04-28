@@ -15,17 +15,20 @@ end
 
 function M.register_plugin(plugin) Plugin.register(plugin) end
 
-function M.show(keys, mode)
+function M.show(keys, opts)
+  opts = opts or {}
+  if type(opts) == "string" then opts = { mode = opts } end
+
   keys = keys or ""
-  mode = mode or vim.api.nvim_get_mode().mode
+  opts.mode = opts.mode or vim.api.nvim_get_mode().mode
   local buf = vim.api.nvim_get_current_buf()
   -- make sure the trees exist for update
-  Keys.get_tree(mode)
-  Keys.get_tree(mode, buf)
+  Keys.get_tree(opts.mode)
+  Keys.get_tree(opts.mode, buf)
   -- update only trees related to buf
   Keys.update(buf)
   -- trigger which key
-  View.on_keys(keys, mode)
+  View.on_keys(keys, opts)
 end
 
 M.register = Keys.register

@@ -10,7 +10,7 @@ local M = {}
 
 M.keys = ""
 M.mode = "n"
-M.back = false
+M.auto = false
 M.buf = nil
 M.win = nil
 
@@ -66,7 +66,7 @@ function M.get_input(wait)
     end
 
     if wait then
-      vim.defer_fn(function() M.on_keys(M.keys) end, 0)
+      vim.defer_fn(function() M.on_keys(M.keys, { auto = true }) end, 0)
       return
     end
   end
@@ -117,9 +117,10 @@ function M.back()
   if node then M.keys = node.prefix end
 end
 
-function M.on_keys(keys, mode)
+function M.on_keys(keys, opts)
+  opts = opts or {}
   M.keys = keys or ""
-  M.mode = mode or vim.api.nvim_get_mode().mode
+  M.mode = opts.mode or vim.api.nvim_get_mode().mode
   M.show_cursor()
   -- eat queued characters
   M.get_input(false)
@@ -140,7 +141,7 @@ function M.on_keys(keys, mode)
   -- Check for no mappings found. Feedkeys without remap
   if #mappings.mappings == 0 then
     M.hide()
-    vim.api.nvim_feedkeys(M.keys, "n", true)
+    if opts.auto then vim.api.nvim_feedkeys(M.keys, "n", true) end
     return
   end
 
