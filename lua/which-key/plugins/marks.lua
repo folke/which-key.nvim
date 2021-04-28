@@ -2,7 +2,7 @@ local M = {}
 
 M.name = "marks"
 
-M.triggers = { { trigger = "`", mode = "n" }, { trigger = "'", mode = "n" } }
+M.actions = { { trigger = "`", mode = "n" }, { trigger = "'", mode = "n" } }
 
 local labels = {
   ["^"] = "Last position of cursor in insert mode",
@@ -19,37 +19,32 @@ local labels = {
 
 ---@type Plugin
 ---@return PluginItem[]
-function M.handler(_trigger, _mode, buf)
+function M.run(trigger, mode, buf)
   local items = {}
 
   local marks = {}
   for _, mark in pairs(vim.fn.getmarklist(buf)) do table.insert(marks, mark) end
   for _, mark in pairs(vim.fn.getmarklist()) do table.insert(marks, mark) end
 
-  -- table.sort(marks, function(a, b) return a.mark < b.mark end)
-
   for _, mark in pairs(marks) do
     local key = mark.mark:sub(2, 2)
-    local line = mark.pos[2]
+    local lnum = mark.pos[2]
 
-    local value = ""
-
-    local mbuf = mark.pos[1]
-    if mbuf and mbuf ~= 0 then
-      local lines = vim.fn.getbufline(mbuf, line)
-      if lines and lines[1] then value = lines[1] end
+    local line
+    if mark.pos[1] and mark.pos[1] ~= 0 then
+      local lines = vim.fn.getbufline(mark.pos[1], lnum)
+      if lines and lines[1] then line = lines[1] end
     end
-    if value == "" and mark.file then value = vim.fn.fnamemodify(mark.file, ":p:.") end
 
-    local line_str = string.format("%3d  ", line)
-    value = line_str .. value
+    local file = mark.file and vim.fn.fnamemodify(mark.file, ":p:.")
 
-    local label = labels[key] or ""
+    local value = string.format("%3d  ", lnum) .. (line or file)
+
     table.insert(items, {
       key = key,
-      label = label,
+      label = labels[key] or "",
       value = value,
-      highlights = { { 1, #line_str - 1, "Number" } },
+      highlights = { { 1, #value - 1, "Number" } },
     })
   end
   return items

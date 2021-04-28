@@ -2,7 +2,7 @@ local M = {}
 
 M.name = "registers"
 
-M.triggers = { { trigger = "\"", mode = "n" }, { trigger = "<c-r>", mode = "i" } }
+M.actions = { { trigger = "\"", mode = "n" }, { trigger = "<c-r>", mode = "i" } }
 
 local registers = "*+\"-:.%/#=_abcdefghijklmnopqrstuvwxyz0123456789"
 
@@ -23,7 +23,7 @@ local labels = {
 
 ---@type Plugin
 ---@return PluginItem[]
-function M.handler(_trigger, _mode, buf)
+function M.run(trigger, mode, buf)
   local items = {}
 
   for i = 1, #registers, 1 do

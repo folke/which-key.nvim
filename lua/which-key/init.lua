@@ -11,12 +11,17 @@ local M = {}
 function M.setup(options)
   config.setup(options)
   if config.options.builtin then M.register(require("which-key.builtin")) end
-  if config.options.plugins.marks then M.plugin(require("which-key.plugins.marks")) end
-  if config.options.plugins.registers then M.plugin(require("which-key.plugins.registers")) end
-  if config.options.plugins.text_objects then M.plugin(require("which-key.plugins.text-objects")) end
+  if config.options.plugins.marks then M.register_plugin(require("which-key.plugins.marks")) end
+  if config.options.plugins.registers then
+    M.register_plugin(require("which-key.plugins.registers"))
+  end
+  if config.options.plugins.text_objects then
+    M.register_plugin(require("which-key.plugins.text-objects"))
+  end
+  Plugin.setup()
 end
 
-function M.plugin(plugin) Plugin.setup(plugin) end
+function M.register_plugin(plugin) Plugin.register(plugin) end
 
 function M.show(keys, mode)
   keys = keys or ""

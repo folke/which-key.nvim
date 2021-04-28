@@ -2,8 +2,6 @@ local M = {}
 
 M.name = "text-objects"
 
-M.triggers = {}
-
 local objects = {
   a = { name = "around" },
   i = { name = "inside" },
