@@ -69,7 +69,7 @@ function Layout:trail()
   end
   table.insert(cmd_line, { string.rep(" ", math.floor(vim.o.columns / 2 - help_width / 2) - width) })
 
-  for _, l in pairs(help_line) do table.insert(cmd_line, l) end
+  if self.options.show_help then for _, l in pairs(help_line) do table.insert(cmd_line, l) end end
   vim.api.nvim_echo(cmd_line, false, {})
 end
 

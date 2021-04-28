@@ -94,6 +94,7 @@ WhichKey comes with the following defaults:
     width = { min = 20, max = 50 }, -- min and max width of the columns
     spacing = 3, -- spacing between columns
   },
+  show_help = true -- show help message on the command line when the popup is visible
 }
 ```
 
