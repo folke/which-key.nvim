@@ -63,7 +63,7 @@ function Layout:trail()
   for key, label in pairs(help) do
     help_width = help_width + Text.len(key) + Text.len(label) + 2
     table.insert(help_line, { key .. " ", "WhichKey" })
-    table.insert(help_line, { label .. " ", "WhichKeySeperator" })
+    table.insert(help_line, { label .. " ", "WhichKeySeparator" })
   end
   table.insert(cmd_line, { string.rep(" ", math.floor(vim.o.columns / 2 - help_width / 2) - width) })
 

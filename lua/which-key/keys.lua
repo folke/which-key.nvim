@@ -2,6 +2,7 @@ local Tree = require("which-key.tree")
 local Util = require("which-key.util")
 local Config = require("which-key.config")
 
+-- secret character that will be used to create <nop> mappings
 local secret = "Þ"
 
 local M = {}
