@@ -23,12 +23,15 @@ function M.show()
   if M.is_valid() then return end
   local opts = {
     relative = "editor",
-    width = vim.o.columns - config.options.window.margin[2] - config.options.window.margin[4],
+    width = vim.o.columns - config.options.window.margin[2] 
+            - config.options.window.margin[4] 
+            - (config.options.window.border ~= 'none' and 2 or 0),
     height = config.options.layout.height.min,
     focusable = false,
     anchor = "SW",
     border = config.options.window.border,
-    row = vim.o.lines - 1 - config.options.window.margin[3],
+    row = vim.o.lines - 1 - config.options.window.margin[3] 
+          - (config.options.window.border ~= 'none' and 2 or 0),
     col = config.options.window.margin[2],
     style = "minimal",
   }
