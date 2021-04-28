@@ -5,7 +5,7 @@ local links = {
   Separator = "DiffAdded",
   Group = "Keyword",
   Desc = "Identifier",
-  WhichKeyFloating = "NormalFloat",
+  Float = "NormalFloat",
   Value = "Comment",
 }
 

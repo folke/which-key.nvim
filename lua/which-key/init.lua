@@ -13,8 +13,6 @@ function M.setup(options)
   Plugin.setup()
 end
 
-function M.register_plugin(plugin) Plugin.register(plugin) end
-
 function M.show(keys, opts)
   opts = opts or {}
   if type(opts) == "string" then opts = { mode = opts } end

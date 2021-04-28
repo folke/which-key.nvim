@@ -39,7 +39,7 @@ function M.show()
   M.buf = vim.api.nvim_create_buf(false, true)
   M.win = vim.api.nvim_open_win(M.buf, false, opts)
   -- vim.api.nvim_win_hide(M.win)
-  vim.api.nvim_win_set_option(M.win, "winhighlight", "NormalFloat:WhichKeyFloating")
+  vim.api.nvim_win_set_option(M.win, "winhighlight", "NormalFloat:WhichKeyFloat")
   vim.cmd [[autocmd! WinClosed <buffer> lua require("which-key.view").on_close()]]
 end
 
