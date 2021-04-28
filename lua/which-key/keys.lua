@@ -49,11 +49,10 @@ function M.get_mappings(mode, prefix, buf)
       value.label = value.label:gsub("^%+", "")
       value.label = Config.options.icons.group .. value.label
     else
-      local clean_value_cmd = value.cmd
-      for i,v in ipairs(Config.options.hidden) do 
-        clean_value_cmd = clean_value_cmd:gsub(v, "")
+      if not value.label then
+        value.label = value.cmd or ""
+        for _, v in ipairs(Config.options.hidden) do value.label = value.label:gsub(v, "") end
       end
-      value.label = value.label or clean_value_cmd
     end
     table.insert(tmp, value)
   end
