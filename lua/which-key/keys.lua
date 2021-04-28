@@ -15,8 +15,9 @@ function M.get_mappings(mode, prefix, buf)
   ---@field buf number
   ---@field mapping Mapping
   ---@field mappings VisualMapping[]
+  ---@field count number
   local ret
-  ret = { mapping = nil, mappings = {}, mode = mode, buf = buf, prefix = prefix }
+  ret = { mapping = nil, mappings = {}, mode = mode, buf = buf, prefix = prefix, count = 0 }
 
   local prefix_len = #Util.parse_keys(prefix).nvim
 
@@ -29,6 +30,7 @@ function M.get_mappings(mode, prefix, buf)
       for k, child in pairs(node.children) do
         if child.mapping and child.mapping.label ~= "which_key_ignore" then
           ret.mappings[k] = vim.tbl_deep_extend("force", {}, ret.mappings[k] or {}, child.mapping)
+          ret.count = ret.count + 1
         end
       end
     end
@@ -210,8 +212,11 @@ end
 ---@param mode string
 ---@param buf number
 function M.update_keymaps(mode, buf)
+  if mode == "n" then M.update_keymaps("o", buf) end
+
   ---@type Keymap
   local keymaps = buf and vim.api.nvim_buf_get_keymap(buf, mode) or vim.api.nvim_get_keymap(mode)
+  if mode == "o" then mode = "n" end
   local tree = M.get_tree(mode, buf).tree
   for _, keymap in pairs(keymaps) do
     if not keymap.lhs:find(secret) then

@@ -23,15 +23,14 @@ function M.show()
   if M.is_valid() then return end
   local opts = {
     relative = "editor",
-    width = vim.o.columns - config.options.window.margin[2] 
-            - config.options.window.margin[4] 
-            - (config.options.window.border ~= 'none' and 2 or 0),
+    width = vim.o.columns - config.options.window.margin[2] - config.options.window.margin[4] -
+      (config.options.window.border ~= "none" and 2 or 0),
     height = config.options.layout.height.min,
     focusable = false,
     anchor = "SW",
     border = config.options.window.border,
-    row = vim.o.lines - 1 - config.options.window.margin[3] 
-          - (config.options.window.border ~= 'none' and 2 or 0),
+    row = vim.o.lines - 1 - config.options.window.margin[3] -
+      (config.options.window.border ~= "none" and 2 or 0),
     col = config.options.window.margin[2],
     style = "minimal",
   }
@@ -128,12 +127,12 @@ function M.on_keys(keys, opts)
   -- eat queued characters
   M.get_input(false)
 
-  local mappings = Keys.get_mappings(M.mode, M.keys, vim.api.nvim_get_current_buf())
+  local results = Keys.get_mappings(M.mode, M.keys, vim.api.nvim_get_current_buf())
 
   --- Check for an exact match. Feedkeys with remap
-  if mappings.mapping and not mappings.mapping.group then
+  if results.mapping and not results.mapping.group and results.count == 0 then
     M.hide()
-    if mappings.mapping.cmd then
+    if results.mapping.cmd then
       vim.api.nvim_feedkeys(M.keys, "m", true)
     else
       vim.api.nvim_feedkeys(M.keys, "n", true)
@@ -142,13 +141,13 @@ function M.on_keys(keys, opts)
   end
 
   -- Check for no mappings found. Feedkeys without remap
-  if #mappings.mappings == 0 then
+  if #results.mappings == 0 then
     M.hide()
     if opts.auto then vim.api.nvim_feedkeys(M.keys, "n", true) end
     return
   end
 
-  local layout = Layout:new(mappings)
+  local layout = Layout:new(results)
 
   if not M.is_valid() then M.show() end
 
