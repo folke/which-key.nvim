@@ -186,11 +186,12 @@ The table below shows all the highlight groups defined for LSP Trouble with thei
 * [x] text objects
 * [x] get label from global when not found for buffer
 * [x] operators & motions
-* [ ] show window after timeout?
+* [x] show window after timeout?
 * [x] make plugins a list of key value with config in value
 * [x] cleanup text objects text
 * [x] buf local mappings seems to interfere with global mappings (push K in help)
 * [x] fix help in visual mode
-* [ ] Plug>whichkey nop
+* [x] Plug>whichkey nop
 * [ ] preset plugin
-* [ ] command should auto stuff
+* [x] command should auto stuff
+* [x] timeoutlen is always respected and should still work when zero

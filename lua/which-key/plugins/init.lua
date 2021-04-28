@@ -7,22 +7,18 @@ local M = {}
 M.plugins = {}
 
 function M.setup()
-  for name, plugin in pairs(M.plugins) do
-    local opts = Config.options.plugins[name]
-    if opts == nil then opts = { enabled = false } end
-    if type(opts) == "boolean" then opts = { enabled = opts } end
-    opts.enabled = opts.enabled ~= false
-    if opts.enabled then
-      if type(plugin) == "string" then
-        plugin = require(plugin)
-        M.plugins[name] = plugin
+  for name, opts in pairs(Config.options.plugins) do
+    -- only setup plugin if we didnt load it before
+    if not M.plugins[name] then
+      if type(opts) == "boolean" then opts = { enabled = opts } end
+      opts.enabled = opts.enabled ~= false
+      if opts.enabled then
+        M.plugins[name] = require("which-key.plugins." .. name)
+        M._setup(M.plugins[name], opts)
       end
-      if not plugin.loaded then M._setup(plugin, opts) end
     end
   end
 end
-
-function M.register(plugin, name) M.plugins[name or plugin.name] = plugin end
 
 ---@param plugin Plugin
 function M._setup(plugin, opts)
@@ -59,9 +55,5 @@ function M.invoke(results)
     table.insert(results.mappings, mapping)
   end
 end
-
--- Register builtin plugins
-local builtin = { "marks", "registers", "text-objects", "operators", "motions", "misc" }
-for _, name in pairs(builtin) do M.register("which-key.plugins." .. name, name) end
 
 return M

@@ -8,10 +8,15 @@ local defaults = {
   plugins = {
     marks = true,
     registers = true,
-    ["text-objects"] = true,
-    operators = true,
-    motions = true,
-    misc = { windows = true, nav = true, z = true, g = true },
+    preset = {
+      operators = true,
+      motions = true,
+      text_objects = true,
+      windows = true,
+      nav = true,
+      z = true,
+      g = true,
+    },
   },
   window = {
     border = "none", -- none, single, double, shadow
