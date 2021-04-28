@@ -43,6 +43,7 @@ local misc = {
       b = "Bottom this line",
       g = "Add word to spell list",
       w = "Mark word as bad/misspelling",
+      ["="] = "Spelling suggestions",
     },
   },
   nav = {

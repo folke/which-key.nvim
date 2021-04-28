@@ -14,5 +14,5 @@
 * [ ] show window after timeout?
 * [x] make plugins a list of key value with config in value
 * [x] cleanup text objects text
-* [x] buf local mappings seems to interfer with global mappings (push K in help)
+* [x] buf local mappings seems to interfere with global mappings (push K in help)
 * [x] fix help in visual mode
