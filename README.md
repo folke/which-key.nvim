@@ -1,4 +1,4 @@
-# 🧐 Which Key
+# 💥 Which Key
 
 **WhichKey** is a lua plugin for Neovim 0.5 that displays a popup with possible keybindings of the command you started typing. Heavily inspired by the original [emacs-which-key](https://github.com/justbur/emacs-which-key) and [vim-which-key](https://github.com/liuchengxu/vim-which-key).
 
