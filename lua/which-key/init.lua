@@ -10,14 +10,6 @@ local M = {}
 
 function M.setup(options)
   config.setup(options)
-  if config.options.builtin then M.register(require("which-key.builtin")) end
-  if config.options.plugins.marks then M.register_plugin(require("which-key.plugins.marks")) end
-  if config.options.plugins.registers then
-    M.register_plugin(require("which-key.plugins.registers"))
-  end
-  if config.options.plugins.text_objects then
-    M.register_plugin(require("which-key.plugins.text-objects"))
-  end
   Plugin.setup()
 end
 

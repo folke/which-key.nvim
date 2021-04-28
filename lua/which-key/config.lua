@@ -12,6 +12,7 @@ local defaults = {
     ["text-objects"] = true,
     operators = true,
     motions = true,
+    misc = { windows = true, nav = true, z = true, g = true },
   },
   window = {
     border = "none", -- none, single, double, shadow

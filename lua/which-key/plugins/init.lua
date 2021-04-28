@@ -11,6 +11,7 @@ function M.setup()
     local opts = Config.options.plugins[name]
     if opts == nil then opts = { enabled = false } end
     if type(opts) == "boolean" then opts = { enabled = opts } end
+    opts.enabled = opts.enabled ~= false
     if opts.enabled then
       if type(plugin) == "string" then
         plugin = require(plugin)
@@ -60,7 +61,7 @@ function M.invoke(results)
 end
 
 -- Register builtin plugins
-local builtin = { "marks", "registers", "text-objects", "operators", "motions" }
+local builtin = { "marks", "registers", "text-objects", "operators", "motions", "misc" }
 for _, name in pairs(builtin) do M.register("which-key.plugins." .. name, name) end
 
 return M
