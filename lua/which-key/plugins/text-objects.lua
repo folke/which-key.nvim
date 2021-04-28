@@ -43,18 +43,10 @@ local objects = {
   ["i}"] = [["same as iB]],
 }
 
-function M.setup()
-  local wk = require("which-key")
-  wk.register(objects, { mode = "n", prefix = "d" })
-  wk.register(objects, { mode = "n", prefix = "c" })
-  wk.register(objects, { mode = "n", prefix = "y" })
-  wk.register(objects, { mode = "n", prefix = "g~" })
-  wk.register(objects, { mode = "n", prefix = "gu" })
-  wk.register(objects, { mode = "n", prefix = "gU" })
-  wk.register(objects, { mode = "n", prefix = ">" })
-  wk.register(objects, { mode = "n", prefix = "<lt>" })
-  wk.register(objects, { mode = "n", prefix = "zf" })
-  wk.register(objects, { mode = "n", prefix = "v" })
+function M.setup(wk)
+  local ops = require("which-key.plugins.operators")
+
+  for op, _ in pairs(ops.operators) do wk.register(objects, { mode = "n", prefix = op }) end
   wk.register(objects, { mode = "v", prefix = "" })
 end
 

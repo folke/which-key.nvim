@@ -36,7 +36,7 @@ function M._setup(plugin, opts)
     end
   end
 
-  if plugin.setup then plugin.setup(opts) end
+  if plugin.setup then plugin.setup(require("which-key"), opts) end
 end
 
 ---@param results MappingGroup
@@ -61,7 +61,7 @@ function M.invoke(results)
 end
 
 -- Register builtin plugins
-local builtin = { "marks", "registers", "text-objects" }
+local builtin = { "marks", "registers", "text-objects", "operators" }
 for _, name in pairs(builtin) do M.register("which-key.plugins." .. name, name) end
 
 return M
