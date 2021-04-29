@@ -142,6 +142,9 @@ function M.execute(prefix, mode, buf)
   unhook(Keys.get_tree(mode).tree:path(prefix))
   unhook(buf and Keys.get_tree(mode, buf).tree:path(prefix) or {})
 
+  -- fix <lt>
+  prefix = prefix:gsub("<lt>", "<")
+
   -- feed the keys with remap
   vim.api.nvim_feedkeys(prefix, "m", true)
 
