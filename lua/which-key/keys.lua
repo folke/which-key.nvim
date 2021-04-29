@@ -265,6 +265,26 @@ function M.update(buf)
   end
 end
 
+function M.dump()
+  local ok = {}
+  local todo = {}
+  for _, tree in pairs(M.mappings) do
+    M.update_keymaps(tree.mode, tree.buf)
+    tree.tree:walk( ---@param node Node
+    function(node)
+      if node.mapping then
+        if node.mapping.label then
+          ok[node.mapping.prefix] = true
+          todo[node.mapping.prefix] = nil
+        elseif not ok[node.mapping.prefix] then
+          todo[node.mapping.prefix] = { node.mapping.cmd or "" }
+        end
+      end
+    end)
+  end
+  dump(todo)
+end
+
 function M.get_tree(mode, buf)
   Util.check_mode(mode, buf)
   local idx = mode .. (buf or "")

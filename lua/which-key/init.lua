@@ -58,4 +58,6 @@ function M.reset()
   require("which-key").setup()
 end
 
+M.dump = Keys.dump
+
 return M
