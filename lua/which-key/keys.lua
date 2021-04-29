@@ -8,8 +8,11 @@ local secret = "Þ"
 local M = {}
 
 function M.setup()
+  local builtin_ops = require("which-key.plugins.presets").operators
   local mappings = {}
-  for op, label in pairs(Config.options.operators) do mappings[op] = { name = label } end
+  for op, label in pairs(Config.options.operators) do
+    if builtin_ops[op] then mappings[op] = { name = label } end
+  end
   M.register(mappings, { mode = "n" })
   M.register({ i = { name = "inside" }, a = { name = "around" } }, { mode = "v" })
 end

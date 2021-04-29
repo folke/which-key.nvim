@@ -2,7 +2,7 @@ local M = {}
 
 M.name = "presets"
 
-local operators = {
+M.operators = {
   d = "Delete",
   c = "Change",
   y = "Yank (copy)",
@@ -86,7 +86,7 @@ function M.setup(wk, opts, config)
   require("which-key.plugins.presets.misc").setup(wk, opts)
 
   -- Operators
-  if opts.operators then for op, label in pairs(operators) do config.operators[op] = label end end
+  if opts.operators then for op, label in pairs(M.operators) do config.operators[op] = label end end
 
   -- Motions
   if opts.motions then
