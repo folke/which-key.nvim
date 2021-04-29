@@ -317,14 +317,20 @@ function M.update_keymaps(mode, buf)
     -- skip auto which-key mappings
     local has_wk = keymap.rhs:find("which%-key") and keymap.rhs:find("auto")
 
+    local skip = has_secret or has_wk
+
     -- check if <leader> was remapped
-    if not has_wk and Util.t(keymap.lhs) == Util.t("<leader>") then
-      Util.warn(string.format(
-                  "Your <leader> key for %q mode in buf %d is currently mapped to %q. WhichKey automatically creates triggers, so please remove the mapping",
-                  mode, buf or 0, keymap.rhs))
+    if not skip and Util.t(keymap.lhs) == Util.t("<leader>") then
+      if Util.t(keymap.rhs) == "" then
+        skip = true
+      else
+        Util.warn(string.format(
+                    "Your <leader> key for %q mode in buf %d is currently mapped to %q. WhichKey automatically creates triggers, so please remove the mapping",
+                    mode, buf or 0, keymap.rhs))
+      end
     end
 
-    if not (has_secret or has_wk) then
+    if not skip then
       local mapping = {
         id = Util.t(keymap.lhs),
         prefix = keymap.lhs,
