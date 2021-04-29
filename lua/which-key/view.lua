@@ -11,6 +11,7 @@ local M = {}
 M.keys = ""
 M.mode = "n"
 M.auto = false
+M.count = 0
 M.buf = nil
 M.win = nil
 
@@ -68,7 +69,7 @@ function M.get_input(wait)
     end
 
     if wait then
-      vim.defer_fn(function() M.on_keys(M.keys, { auto = true }) end, 0)
+      vim.defer_fn(function() M.on_keys({ auto = true }) end, 0)
       return
     end
   end
@@ -126,6 +127,7 @@ function M.has_cmd(path)
 end
 
 function M.execute(prefix, mode, buf)
+
   local hooks = {}
 
   local function unhook(nodes, nodes_buf)
@@ -144,6 +146,7 @@ function M.execute(prefix, mode, buf)
 
   -- fix <lt>
   prefix = prefix:gsub("<lt>", "<")
+  if M.count then prefix = M.count .. prefix end
 
   -- feed the keys with remap
   vim.api.nvim_feedkeys(prefix, "m", true)
@@ -153,11 +156,16 @@ function M.execute(prefix, mode, buf)
     function() for _, hook in pairs(hooks) do Keys.hook_add(hook[1], mode, hook[2]) end end, 0)
 end
 
-function M.on_keys(keys, opts)
+function M.open(keys, opts)
   opts = opts or {}
   M.keys = keys or ""
   M.mode = opts.mode or Util.get_mode()
+  M.count = vim.api.nvim_get_vvar("count")
   M.show_cursor()
+  M.on_keys(opts)
+end
+
+function M.on_keys(opts)
   -- eat queued characters
   M.get_input(false)
   local buf = vim.api.nvim_get_current_buf()

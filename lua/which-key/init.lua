@@ -34,7 +34,7 @@ function M.show(keys, opts)
   -- update only trees related to buf
   Keys.update(buf)
   -- trigger which key
-  View.on_keys(keys, opts)
+  View.open(keys, opts)
 end
 
 function M.show_command(keys, mode)
