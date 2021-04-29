@@ -143,6 +143,9 @@ function M.register(mappings, opts)
   opts.buffer = M.get_buf_option(opts)
 
   mappings = M.parse_mappings({}, mappings, prefix)
+
+  -- always create the root node for the mode, even if there's no mappings,
+  -- to ensure we have at least a trigger hooked for non documented keymaps
   M.get_tree(mode)
 
   for _, mapping in pairs(mappings) do
@@ -175,7 +178,11 @@ function M.update(buf)
     if tree.buf and not vim.api.nvim_buf_is_valid(tree.buf) then
       -- remove group for invalid buffers
       M.mappings[k] = nil
-    elseif (not tree.buf) or buf == tree.buf then
+    elseif (not buf) or (not tree.buf) or buf == tree.buf then
+      -- only update buffer maps, if:
+      -- 1. we dont pass a buffer
+      -- 2. this is a global node
+      -- 3. this is a local buffer node for the passed buffer
       M.update_keymaps(tree.mode, tree.buf)
       tree.tree:walk( ---@param node Node
       function(node)
@@ -207,6 +214,7 @@ function M.update(buf)
 end
 
 function M.get_tree(mode, buf)
+  Util.check_mode(mode, buf)
   local idx = mode .. (buf or "")
   if not M.mappings[idx] then M.mappings[idx] = { mode = mode, buf = buf, tree = Tree:new() } end
   return M.mappings[idx]
