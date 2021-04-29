@@ -146,7 +146,7 @@ function M.execute(prefix, mode, buf)
 
   -- fix <lt>
   prefix = prefix:gsub("<lt>", "<")
-  if M.count then prefix = M.count .. prefix end
+  if M.count and M.count ~= 0 then prefix = M.count .. prefix end
 
   -- feed the keys with remap
   vim.api.nvim_feedkeys(prefix, "m", true)
