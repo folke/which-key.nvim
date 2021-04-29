@@ -72,6 +72,7 @@ WhichKey comes with the following defaults:
     -- the presets plugin, adds help for a bunch of default keybindings in Neovim
     -- No actual key bindings are created
     presets = {
+      custom_operators = { gc = "Comments" }, -- add custom operators to get motion completion, like gc for commentary or kommentary
       operators = true, -- adds help for operators like d, y, ...
       motions = true, -- adds help for motions
       text_objects = true, -- help for text objects triggered after entering an operator

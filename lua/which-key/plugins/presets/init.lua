@@ -14,7 +14,6 @@ local operators = {
   ["zf"] = "Create fold",
   ["!"] = "Filter though external program",
   ["v"] = "Start visual mode",
-
 }
 
 local motions = {
@@ -83,6 +82,8 @@ local objects = {
 
 function M.setup(wk, config)
   require("which-key.plugins.presets.misc").setup(wk, config)
+
+  for op, label in pairs(config.custom_operators or {}) do operators[op] = label end
 
   -- Operators
   if config.operators then wk.register(operators, { mode = "n", prefix = "" }) end
