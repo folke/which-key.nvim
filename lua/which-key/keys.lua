@@ -174,12 +174,11 @@ function M.hook_id(prefix, mode, buf) return mode .. (buf or "") .. prefix end
 
 function M.hook_del(prefix, mode, buf)
   local id = M.hook_id(prefix, mode, buf)
-  if not M.hooked[id] then return end
   M.hooked[id] = nil
   if buf then
-    vim.api.nvim_buf_del_keymap(buf, mode, prefix)
+    pcall(vim.api.nvim_buf_del_keymap, buf, mode, prefix)
   else
-    vim.api.nvim_del_keymap(mode, prefix)
+    pcall(vim.api.nvim_del_keymap, mode, prefix)
   end
 end
 
