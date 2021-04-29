@@ -103,7 +103,10 @@ function M.get_mappings(mode, prefix, buf)
   if not (ret.mapping and ret.mapping.plugin) then
     table.sort(tmp, function(a, b)
       if a.group == b.group then
-        return (a.key or ""):lower() < (b.key or ""):lower()
+        local aw = a.key:match("[a-zA-Z]") and 1 or 0
+        local bw = b.key:match("[a-zA-Z]") and 1 or 0
+        if aw == bw then return (a.key or ""):lower() < (b.key or ""):lower() end
+        return aw < bw
       else
         return (a.group and 1 or 0) < (b.group and 1 or 0)
       end
