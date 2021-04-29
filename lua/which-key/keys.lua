@@ -23,6 +23,27 @@ function M.get_operator(prefix)
   for op, _ in pairs(Config.options.operators) do if prefix:sub(1, #op) == op then return op end end
 end
 
+function M.process_motions(ret, mode, prefix, buf)
+  local operator = mode == "v" and "" or M.get_operator(prefix)
+  if (mode == "n" or mode == "v") and operator then
+    local op_prefix = prefix:sub(#operator + 1)
+    local op_count = op_prefix:match("^(%d+)")
+    if op_count then op_prefix = op_prefix:sub(#op_count + 1) end
+    local op_results = M.get_mappings("o", op_prefix, buf)
+
+    if not ret.mapping and op_results.mapping then
+      ret.mapping = op_results.mapping
+      ret.mapping.prefix = prefix
+    end
+
+    for _, mapping in pairs(op_results.mappings) do
+      mapping.prefix = operator .. (op_count or "") .. mapping.prefix
+      mapping.keys = Util.parse_keys(mapping.prefix)
+      table.insert(ret.mappings, mapping)
+    end
+  end
+end
+
 ---@return MappingGroup
 function M.get_mappings(mode, prefix, buf)
   ---@class MappingGroup
@@ -53,24 +74,13 @@ function M.get_mappings(mode, prefix, buf)
   add(M.get_tree(mode).tree:get(prefix))
   add(M.get_tree(mode, buf).tree:get(prefix))
 
+  -- Run a plugin if needed
   if ret.mapping and ret.mapping.plugin then require("which-key.plugins").invoke(ret) end
 
-  local operator = M.get_operator(prefix)
-  if mode == "v" then operator = "" end
-  if (mode == "n" or mode == "v") and operator then
-    local op_prefix = prefix:sub(#operator + 1)
-    local op_results = M.get_mappings("o", op_prefix, buf)
-    if not ret.mapping and op_results.mapping then
-      ret.mapping = op_results.mapping
-      ret.mapping.prefix = prefix
-    end
-    for _, mapping in pairs(op_results.mappings) do
-      mapping.prefix = operator .. mapping.prefix
-      mapping.keys = Util.parse_keys(mapping.prefix)
-      table.insert(ret.mappings, mapping)
-    end
-  end
+  -- Handle motions
+  M.process_motions(ret, mode, prefix, buf)
 
+  -- Fix labels
   local tmp = {}
   for _, value in pairs(ret.mappings) do
     value.key = value.keys.nvim[prefix_len + 1]
@@ -87,7 +97,8 @@ function M.get_mappings(mode, prefix, buf)
     table.insert(tmp, value)
   end
 
-  if not ret.mapping or not ret.mapping.plugin then
+  -- Sort items, but not for plugins
+  if not (ret.mapping and ret.mapping.plugin) then
     table.sort(tmp, function(a, b)
       if a.group == b.group then
         return (a.key or "") < (b.key or "")
@@ -97,6 +108,7 @@ function M.get_mappings(mode, prefix, buf)
     end)
   end
   ret.mappings = tmp
+
   return ret
 end
 
