@@ -59,6 +59,9 @@ use {
 
 > ❗️ IMPORTANT: the timeout when **WhichKey** opens is controlled by the vim setting [timeoutlen](https://neovim.io/doc/user/options.html#'timeoutlen'). Please refer to the documentation to properly set it up. Setting it to `0`, will effectively always show **WhichKey** immediately, but a setting of `500` (500ms) is probably more appropriate.
 
+> ⁉️ don't create any keymappings yourself to trigger WhichKey. Unlike with *vim-which-key*, we do this fully automatically.
+> Please remove any left-over triggers you might have from using *vim-which-key*.
+
 WhichKey comes with the following defaults:
 
 ```lua
@@ -233,7 +236,7 @@ When the **WhichKey** popup is open, you can use the following keybindings (they
 
 Apart from the automatic opening, you can also  manually open **WhichKey** for a certain `prefix`:
 
-> ⁉️ doon't create any keymappings yourself to trigger WhichKey. Unlike with *vim-which-key*, we do this fully automatically.
+> ⁉️ don't create any keymappings yourself to trigger WhichKey. Unlike with *vim-which-key*, we do this fully automatically.
 > Please remove any left-over triggers you might have from using *vim-which-key*.
 
 ```vim

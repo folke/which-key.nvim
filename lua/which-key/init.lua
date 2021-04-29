@@ -46,4 +46,11 @@ end
 
 M.register = Keys.register
 
+function M.reset()
+  local mappings = Keys.mappings
+  require("plenary.reload").reload_module("which-key")
+  -- require("which-key.Keys").mappings = mappings
+  require("which-key").setup()
+end
+
 return M
