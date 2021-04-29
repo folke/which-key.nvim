@@ -114,8 +114,8 @@ end
 
 function M.back()
   local buf = vim.api.nvim_get_current_buf()
-  local node = Keys.get_tree(M.mode, buf).tree:get(M.keys, 1) or
-                 Keys.get_tree(M.mode).tree:get(M.keys, 1)
+  local node = Keys.get_tree(M.mode, buf).tree:get(M.keys, -1) or
+                 Keys.get_tree(M.mode).tree:get(M.keys, -1)
   if node then M.keys = node.prefix end
 end
 
@@ -140,9 +140,14 @@ function M.on_keys(keys, opts)
     return
   end
 
+  -- TODO: check whether a parent is a non group. In that case, it's likely
+  -- a pending operator action, so load with remap
+  -- same above
+
   -- Check for no mappings found. Feedkeys without remap
   if #results.mappings == 0 then
     M.hide()
+    -- dump({ vim.api.nvim_get_mode(), vim.fn.mode() })
     if opts.auto then vim.api.nvim_feedkeys(M.keys, "n", true) end
     return
   end

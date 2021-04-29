@@ -34,13 +34,13 @@ end
 
 function Layout:trail()
   local prefix = self.results.prefix
+  local buf_path = Keys.get_tree(self.results.mode, self.results.buf).tree:path(prefix)
+  local path = Keys.get_tree(self.results.mode).tree:path(prefix)
+  local len = #self.results.mapping.keys.nvim
   local cmd_line = { { " " } }
-  for i = 1, #self.mapping.keys.nvim, 1 do
-    local offset = #self.mapping.keys.nvim - i
-    local node = Keys.get_tree(self.results.mode, self.results.buf).tree:get(prefix, offset)
-    if not (node and node.mapping and node.mapping.label) then
-      node = Keys.get_tree(self.results.mode).tree:get(prefix, offset)
-    end
+  for i = 1, len, 1 do
+    local node = buf_path[i]
+    if not (node and node.mapping and node.mapping.label) then node = path[i] end
     local step = self.mapping.keys.nvim[i]
     if node and node.mapping and node.mapping.label then
       step = self.options.icons.group .. node.mapping.label

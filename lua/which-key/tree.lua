@@ -19,16 +19,33 @@ function Tree:new()
 end
 
 ---@param prefix string
+---@param index number defaults to last. If < 0, then offset from last
 ---@return Node
-function Tree:get(prefix, offset)
-  offset = offset or 0
+function Tree:get(prefix, index)
   prefix = Util.parse_keys(prefix).term
   local node = self.root
-  for i = 1, #prefix - offset, 1 do
+  index = index or #prefix
+  if index < 0 then index = #prefix + index end
+  for i = 1, index, 1 do
     node = node.children[prefix[i]]
     if not node then return nil end
   end
   return node
+end
+
+-- Returns the path (possibly incomplete) for the prefix
+---@param prefix string
+---@return Node[]
+function Tree:path(prefix)
+  prefix = Util.parse_keys(prefix).term
+  local node = self.root
+  local path = {}
+  for i = 1, #prefix, 1 do
+    node = node.children[prefix[i]]
+    table.insert(path, node)
+    if not node then break end
+  end
+  return path
 end
 
 ---@param mapping Mapping
