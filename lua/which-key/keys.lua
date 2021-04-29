@@ -15,9 +15,8 @@ function M.get_mappings(mode, prefix, buf)
   ---@field buf number
   ---@field mapping Mapping
   ---@field mappings VisualMapping[]
-  ---@field count number
   local ret
-  ret = { mapping = nil, mappings = {}, mode = mode, buf = buf, prefix = prefix, count = 0 }
+  ret = { mapping = nil, mappings = {}, mode = mode, buf = buf, prefix = prefix }
 
   local prefix_len = #Util.parse_keys(prefix).nvim
 
@@ -30,7 +29,6 @@ function M.get_mappings(mode, prefix, buf)
       for k, child in pairs(node.children) do
         if child.mapping and child.mapping.label ~= "which_key_ignore" then
           ret.mappings[k] = vim.tbl_deep_extend("force", {}, ret.mappings[k] or {}, child.mapping)
-          ret.count = ret.count + 1
         end
       end
     end

@@ -119,6 +119,24 @@ function M.back()
   if node then M.keys = node.prefix end
 end
 
+---@param path Node[]
+function M.has_cmd(path)
+  for _, node in pairs(path) do if node.mapping and node.mapping.cmd then return true end end
+  return false
+end
+
+function M.execute(prefix, mode, buf)
+  local path = Keys.get_tree(mode).tree:path(prefix)
+  local path_buf = Keys.get_tree(mode, buf).tree:path(prefix)
+  local has_cmd = M.has_cmd(path) or M.has_cmd(path_buf)
+
+  if has_cmd then
+    vim.api.nvim_feedkeys(M.keys, "m", true)
+  else
+    vim.api.nvim_feedkeys(M.keys, "n", true)
+  end
+end
+
 function M.on_keys(keys, opts)
   opts = opts or {}
   M.keys = keys or ""
@@ -126,29 +144,22 @@ function M.on_keys(keys, opts)
   M.show_cursor()
   -- eat queued characters
   M.get_input(false)
+  local buf = vim.api.nvim_get_current_buf()
 
-  local results = Keys.get_mappings(M.mode, M.keys, vim.api.nvim_get_current_buf())
+  local results = Keys.get_mappings(M.mode, M.keys, buf)
 
   --- Check for an exact match. Feedkeys with remap
-  if results.mapping and not results.mapping.group and results.count == 0 then
+  if results.mapping and not results.mapping.group and #results.mappings == 0 then
     M.hide()
-    if results.mapping.cmd then
-      vim.api.nvim_feedkeys(M.keys, "m", true)
-    else
-      vim.api.nvim_feedkeys(M.keys, "n", true)
-    end
+    M.execute(M.keys, M.mode, buf)
     return
   end
-
-  -- TODO: check whether a parent is a non group. In that case, it's likely
-  -- a pending operator action, so load with remap
-  -- same above
 
   -- Check for no mappings found. Feedkeys without remap
   if #results.mappings == 0 then
     M.hide()
-    -- dump({ vim.api.nvim_get_mode(), vim.fn.mode() })
-    if opts.auto then vim.api.nvim_feedkeys(M.keys, "n", true) end
+    -- only execute if an actual key was typed while WK was open
+    if opts.auto then M.execute(M.keys, M.mode, buf) end
     return
   end
 
