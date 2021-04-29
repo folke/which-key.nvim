@@ -10,7 +10,6 @@ local defaults = {
     -- the presets plugin, adds help for a bunch of default keybindings in Neovim
     -- No actual key bindings are created
     presets = {
-      custom_operators = { gc = "Comments" }, -- add custom operators to get motion completion
       operators = true, -- adds help for operators like d, y, ...
       motions = true, -- adds help for motions
       text_objects = true, -- help for text objects triggered after entering an operator
@@ -20,6 +19,9 @@ local defaults = {
       g = true, -- bindings for prefixed with g
     },
   },
+  -- add operators that will trigger motion and text object completion
+  -- to enable all native operators, set the preset / operators plugin above
+  operators = { gc = "Comments" },
   icons = {
     breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
     separator = "➜", -- symbol used between a key and it's label

@@ -156,7 +156,7 @@ end
 function M.on_keys(keys, opts)
   opts = opts or {}
   M.keys = keys or ""
-  M.mode = opts.mode or vim.api.nvim_get_mode().mode
+  M.mode = opts.mode or Util.get_mode()
   M.show_cursor()
   -- eat queued characters
   M.get_input(false)

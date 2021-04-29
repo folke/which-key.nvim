@@ -6,6 +6,11 @@ function M.count(tab)
   return ret
 end
 
+function M.get_mode()
+  local ret = vim.api.nvim_get_mode()
+  return string.lower(ret.mode)
+end
+
 function M.is_empty(tab) return M.count(tab) == 0 end
 
 function M.t(str) return vim.api.nvim_replace_termcodes(str, true, true, true) end

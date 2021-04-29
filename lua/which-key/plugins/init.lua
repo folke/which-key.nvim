@@ -32,7 +32,7 @@ function M._setup(plugin, opts)
     end
   end
 
-  if plugin.setup then plugin.setup(require("which-key"), opts) end
+  if plugin.setup then plugin.setup(require("which-key"), opts, Config.options) end
 end
 
 ---@param results MappingGroup

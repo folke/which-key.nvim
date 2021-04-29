@@ -7,6 +7,17 @@ local secret = "Þ"
 
 local M = {}
 
+function M.setup()
+  local mappings = {}
+  for op, label in pairs(Config.options.operators) do mappings[op] = { name = label } end
+  M.register(mappings, { mode = "n" })
+  M.register({ i = { name = "inside" }, a = { name = "around" } }, { mode = "v" })
+end
+
+function M.get_operator(prefix)
+  for op, _ in pairs(Config.options.operators) do if prefix:sub(1, #op) == op then return op end end
+end
+
 ---@return MappingGroup
 function M.get_mappings(mode, prefix, buf)
   ---@class MappingGroup
@@ -38,6 +49,22 @@ function M.get_mappings(mode, prefix, buf)
   add(M.get_tree(mode, buf).tree:get(prefix))
 
   if ret.mapping and ret.mapping.plugin then require("which-key.plugins").invoke(ret) end
+
+  local operator = M.get_operator(prefix)
+  if mode == "v" then operator = "" end
+  if (mode == "n" or mode == "v") and operator then
+    local op_prefix = prefix:sub(#operator + 1)
+    local op_results = M.get_mappings("o", op_prefix, buf)
+    if not ret.mapping and op_results.mapping then
+      ret.mapping = op_results.mapping
+      ret.mapping.prefix = prefix
+    end
+    for _, mapping in pairs(op_results.mappings) do
+      mapping.prefix = operator .. mapping.prefix
+      mapping.keys = Util.parse_keys(mapping.prefix)
+      table.insert(ret.mappings, mapping)
+    end
+  end
 
   local tmp = {}
   for _, value in pairs(ret.mappings) do
@@ -177,12 +204,18 @@ function M.hook_del(prefix, mode, buf)
   M.hooked[id] = nil
   if buf then
     pcall(vim.api.nvim_buf_del_keymap, buf, mode, prefix)
+    pcall(vim.api.nvim_buf_del_keymap, buf, mode, prefix .. secret)
   else
     pcall(vim.api.nvim_del_keymap, mode, prefix)
+    pcall(vim.api.nvim_del_keymap, mode, prefix .. secret)
   end
 end
 
 function M.hook_add(prefix, mode, buf)
+  -- never hook into operator pending mode
+  -- this is handled differently
+  if mode == "o" then return end
+
   local opts = { noremap = true, silent = true }
   local id = M.hook_id(prefix, mode, buf)
   -- hook up if needed

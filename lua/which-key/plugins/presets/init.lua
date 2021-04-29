@@ -13,7 +13,8 @@ local operators = {
   ["<lt>"] = "Indent left",
   ["zf"] = "Create fold",
   ["!"] = "Filter though external program",
-  ["v"] = "Start visual mode",
+  ["v"] = "Visual Character Mode",
+  -- ["V"] = "Visual Line Mode",
 }
 
 local motions = {
@@ -80,26 +81,21 @@ local objects = {
   ["i}"] = [[same as iB]],
 }
 
-function M.setup(wk, config)
-  require("which-key.plugins.presets.misc").setup(wk, config)
-
-  for op, label in pairs(config.custom_operators or {}) do operators[op] = label end
+---@param config Options
+function M.setup(wk, opts, config)
+  require("which-key.plugins.presets.misc").setup(wk, opts)
 
   -- Operators
-  if config.operators then wk.register(operators, { mode = "n", prefix = "" }) end
+  if opts.operators then for op, label in pairs(operators) do config.operators[op] = label end end
 
   -- Motions
-  if config.motions then
-    for op, _ in pairs(operators) do wk.register(motions, { mode = "n", prefix = op }) end
-    wk.register(motions, { mode = "v", prefix = "" })
+  if opts.motions then
     wk.register(motions, { mode = "n", prefix = "" })
+    wk.register(motions, { mode = "o", prefix = "" })
   end
 
   -- Text objects
-  if config.text_objects then
-    for op, _ in pairs(operators) do wk.register(objects, { mode = "n", prefix = op }) end
-    wk.register(objects, { mode = "v", prefix = "" })
-  end
+  if opts.text_objects then wk.register(objects, { mode = "o", prefix = "" }) end
 end
 
 return M

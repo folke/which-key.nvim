@@ -14,6 +14,7 @@ function M.setup(options)
   Plugin.setup()
   M.register({}, { prefix = "<leader>", mode = "n" })
   M.register({}, { prefix = "<leader>", mode = "v" })
+  Keys.setup()
 end
 
 function M.show(keys, opts)
@@ -25,7 +26,7 @@ function M.show(keys, opts)
   -- mappings will pass <lt> as <, so change it back
   keys = keys:gsub("[<]", "<lt>")
 
-  opts.mode = opts.mode or vim.api.nvim_get_mode().mode
+  opts.mode = opts.mode or Util.get_mode()
   local buf = vim.api.nvim_get_current_buf()
   -- make sure the trees exist for update
   Keys.get_tree(opts.mode)
