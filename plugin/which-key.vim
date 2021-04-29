@@ -1,1 +1,1 @@
-command! -nargs=* WhichKey lua require('which-key').show(<f-args>)
+command! -nargs=* WhichKey lua require('which-key').show_command(<f-args>)

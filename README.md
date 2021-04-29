@@ -233,10 +233,14 @@ When the **WhichKey** popup is open, you can use the following keybindings (they
 
 Apart from the automatic opening, you can also  manually open **WhichKey** for a certain `prefix`:
 
+> ⁉️ doon't create any keymappings yourself to trigger WhichKey. Unlike with *vim-which-key*, we do this fully automatically.
+> Please remove any left-over triggers you might have from using *vim-which-key*.
+
 ```vim
 :WhichKey " show all mappings
 :WhichKey <leader> " show all <leader> mappings
 :WhichKey <leader> v " show all <leader> mappings for VISUAL mode
+:WhichKey '' v " show ALL mappings for VISUAL mode
 ```
 
 ## 🔥 Plugins
