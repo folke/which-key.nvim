@@ -38,13 +38,12 @@ function M.show_command(keys, mode)
   end
 end
 
-local function ready() return vim.api.nvim_get_vvar("vim_did_enter") == 1 end
-
 local queue = {}
+local loaded = false -- once we loaded everything
 
 -- Defer registering keymaps until VimEnter
 function M.register(mappings, opts)
-  if ready() then
+  if loaded then
     Keys.register(mappings, opts)
     Keys.update()
   else
@@ -67,6 +66,7 @@ function M.load()
   end
   Keys.update()
   queue = {}
+  loaded = true
 end
 
 function M.reset()
