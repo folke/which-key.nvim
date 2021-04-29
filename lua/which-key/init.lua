@@ -1,15 +1,10 @@
 local Keys = require("which-key.keys")
-local View = require("which-key.view")
-local config = require("which-key.config")
-local Plugin = require("which-key.plugins")
 local Util = require("which-key.util")
-
-require("which-key.colors").setup()
 
 ---@class WhichKey
 local M = {}
 
-function M.setup(options) config.setup(options) end
+function M.setup(options) require("which-key.config").setup(options) end
 
 function M.show(keys, opts)
   opts = opts or {}
@@ -28,7 +23,7 @@ function M.show(keys, opts)
   -- update only trees related to buf
   Keys.update(buf)
   -- trigger which key
-  View.open(keys, opts)
+  require("which-key.view").open(keys, opts)
 end
 
 function M.show_command(keys, mode)
@@ -59,7 +54,8 @@ end
 
 -- Load mappings and update only once
 function M.load()
-  Plugin.setup()
+  require("which-key.plugins").setup()
+  require("which-key.colors").setup()
   Keys.register({}, { prefix = "<leader>", mode = "n" })
   Keys.register({}, { prefix = "<leader>", mode = "v" })
   Keys.setup()
@@ -79,7 +75,5 @@ function M.reset()
   -- require("which-key.Keys").mappings = mappings
   require("which-key").setup()
 end
-
-M.dump = Keys.dump
 
 return M

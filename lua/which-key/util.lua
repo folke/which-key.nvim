@@ -1,3 +1,4 @@
+---@class Util
 local M = {}
 
 function M.count(tab)

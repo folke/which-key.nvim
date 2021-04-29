@@ -5,6 +5,7 @@ local Config = require("which-key.config")
 -- secret character that will be used to create <nop> mappings
 local secret = "Þ"
 
+---@class Keys
 local M = {}
 
 function M.setup()
@@ -34,6 +35,7 @@ function M.process_motions(ret, mode, prefix, buf)
     if not ret.mapping and op_results.mapping then
       ret.mapping = op_results.mapping
       ret.mapping.prefix = prefix
+      ret.keys = Util.parse_keys(ret.prefix)
     end
 
     for _, mapping in pairs(op_results.mappings) do
@@ -293,7 +295,7 @@ function M.dump()
       end
     end)
   end
-  dump(todo)
+  return todo
 end
 
 function M.get_tree(mode, buf)
