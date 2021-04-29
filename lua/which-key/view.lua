@@ -126,15 +126,28 @@ function M.has_cmd(path)
 end
 
 function M.execute(prefix, mode, buf)
-  local path = Keys.get_tree(mode).tree:path(prefix)
-  local path_buf = Keys.get_tree(mode, buf).tree:path(prefix)
-  local has_cmd = M.has_cmd(path) or M.has_cmd(path_buf)
+  local hooks = {}
 
-  if has_cmd then
-    vim.api.nvim_feedkeys(M.keys, "m", true)
-  else
-    vim.api.nvim_feedkeys(M.keys, "n", true)
+  local function unhook(nodes, nodes_buf)
+    for _, node in pairs(nodes) do
+      if node.mapping and node.mapping.group and not node.mapping.cmd then
+        table.insert(hooks, { node.mapping.prefix, nodes_buf })
+        Keys.hook_del(node.mapping.prefix, mode, nodes_buf)
+      end
+    end
   end
+
+  -- make sure we remove all WK hooks before executing the sequence
+  -- this is to make existing keybindongs work and prevent recursion
+  unhook(Keys.get_tree(mode).tree:path(prefix))
+  unhook(buf and Keys.get_tree(mode, buf).tree:path(prefix) or {})
+
+  -- feed the keys with remap
+  vim.api.nvim_feedkeys(prefix, "m", true)
+
+  -- defer hooking WK until after the keys were executed
+  vim.defer_fn(
+    function() for _, hook in pairs(hooks) do Keys.hook_add(hook[1], mode, hook[2]) end end, 0)
 end
 
 function M.on_keys(keys, opts)

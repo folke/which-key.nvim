@@ -170,8 +170,40 @@ end
 
 M.hooked = {}
 
-function M.update(buf)
+function M.hook_id(prefix, mode, buf) return mode .. (buf or "") .. prefix end
+
+function M.hook_del(prefix, mode, buf)
+  local id = M.hook_id(prefix, mode, buf)
+  -- if not M.hooked[id] then return end
+  M.hooked[id] = nil
+  if buf then
+    vim.api.nvim_buf_del_keymap(buf, mode, prefix)
+  else
+    vim.api.nvim_del_keymap(mode, prefix)
+  end
+end
+
+function M.hook_add(prefix, mode, buf)
   local opts = { noremap = true, silent = true }
+  local id = M.hook_id(prefix, mode, buf)
+  -- hook up if needed
+  if not M.hooked[id] then
+    local cmd = [[<cmd>lua require("which-key").show(%q, {mode = %q, auto = true})<cr>]]
+    cmd = string.format(cmd, prefix, mode)
+    -- map group triggers and nops
+    -- nops are needed, so that WhichKey always respects timeoutlen
+    if buf then
+      vim.api.nvim_buf_set_keymap(buf, mode, prefix, cmd, opts)
+      vim.api.nvim_buf_set_keymap(buf, mode, prefix .. secret, "<nop>", opts)
+    else
+      vim.api.nvim_set_keymap(mode, prefix, cmd, opts)
+      vim.api.nvim_set_keymap(mode, prefix .. secret, "<nop>", opts)
+    end
+    M.hooked[id] = true
+  end
+end
+
+function M.update(buf)
   for k, tree in pairs(M.mappings) do
     if tree.buf and not vim.api.nvim_buf_is_valid(tree.buf) then
       -- remove group for invalid buffers
@@ -188,23 +220,8 @@ function M.update(buf)
         if not node.mapping then
           node.mapping = { prefix = node.prefix, group = true, keys = Util.parse_keys(node.prefix) }
         end
-        if node.prefix ~= "" and node.mapping.group == true then
-          local id = tree.mode .. (tree.buf or "") .. node.prefix
-          -- hook up if needed
-          if not M.hooked[id] then
-            local cmd = [[<cmd>lua require("which-key").show(%q, {mode = %q, auto = true})<cr>]]
-            cmd = string.format(cmd, node.prefix, tree.mode)
-            -- map group triggers and nops
-            -- nops are needed, so that WhichKey always respects timeoutlen
-            if tree.buf then
-              vim.api.nvim_buf_set_keymap(tree.buf, tree.mode, node.prefix, cmd, opts)
-              vim.api.nvim_buf_set_keymap(tree.buf, tree.mode, node.prefix .. secret, "<nop>", opts)
-            else
-              vim.api.nvim_set_keymap(tree.mode, node.prefix, cmd, opts)
-              vim.api.nvim_set_keymap(tree.mode, node.prefix .. secret, "<nop>", opts)
-            end
-            M.hooked[id] = true
-          end
+        if node.prefix ~= "" and node.mapping.group == true and not node.mapping.cmd then
+          M.hook_add(node.prefix, tree.mode, tree.buf)
         end
       end)
     end
