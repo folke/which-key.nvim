@@ -58,7 +58,7 @@ function M.get_mappings(mode, prefix, buf)
   if not ret.mapping or not ret.mapping.plugin then
     table.sort(tmp, function(a, b)
       if a.group == b.group then
-        return a.key < b.key
+        return (a.key or "") < (b.key or "")
       else
         return (a.group and 1 or 0) < (b.group and 1 or 0)
       end
@@ -174,7 +174,7 @@ function M.hook_id(prefix, mode, buf) return mode .. (buf or "") .. prefix end
 
 function M.hook_del(prefix, mode, buf)
   local id = M.hook_id(prefix, mode, buf)
-  -- if not M.hooked[id] then return end
+  if not M.hooked[id] then return end
   M.hooked[id] = nil
   if buf then
     vim.api.nvim_buf_del_keymap(buf, mode, prefix)
