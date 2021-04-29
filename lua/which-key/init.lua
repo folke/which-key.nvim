@@ -9,13 +9,7 @@ require("which-key.colors").setup()
 ---@class WhichKey
 local M = {}
 
-function M.setup(options)
-  config.setup(options)
-  Plugin.setup()
-  M.register({}, { prefix = "<leader>", mode = "n" })
-  M.register({}, { prefix = "<leader>", mode = "v" })
-  Keys.setup()
-end
+function M.setup(options) config.setup(options) end
 
 function M.show(keys, opts)
   opts = opts or {}
@@ -49,7 +43,35 @@ function M.show_command(keys, mode)
   end
 end
 
-M.register = Keys.register
+local function ready() return vim.api.nvim_get_vvar("vim_did_enter") == 1 end
+
+local queue = {}
+
+-- Defer registering keymaps until VimEnter
+function M.register(mappings, opts)
+  if ready() then
+    Keys.register(mappings, opts)
+    Keys.update()
+  else
+    table.insert(queue, { mappings, opts })
+  end
+end
+
+-- Load mappings and update only once
+function M.load()
+  Plugin.setup()
+  Keys.register({}, { prefix = "<leader>", mode = "n" })
+  Keys.register({}, { prefix = "<leader>", mode = "v" })
+  Keys.setup()
+
+  for _, reg in pairs(queue) do
+    local opts = reg[2] or {}
+    opts.update = false
+    Keys.register(reg[1], opts)
+  end
+  Keys.update()
+  queue = {}
+end
 
 function M.reset()
   -- local mappings = Keys.mappings

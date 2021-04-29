@@ -197,7 +197,6 @@ function M.register(mappings, opts)
     end
     M.get_tree(mode, mapping.buf).tree:add(mapping)
   end
-  M.update()
 end
 
 M.hooked = {}
