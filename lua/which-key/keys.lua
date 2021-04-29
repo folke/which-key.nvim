@@ -203,6 +203,7 @@ function M.register(mappings, opts)
         noremap = mapping.opts.noremap,
         nowait = mapping.opts.nowait or false,
       }
+      if mapping.cmd:lower():sub(1, #("<plug>")) == "<plug>" then keymap_opts.noremap = false end
       if mapping.buf ~= nil then
         vim.api.nvim_buf_set_keymap(mapping.buf, mode, mapping.prefix, mapping.cmd, keymap_opts)
       else
