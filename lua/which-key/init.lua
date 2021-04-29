@@ -21,6 +21,10 @@ function M.show(keys, opts)
   if type(opts) == "string" then opts = { mode = opts } end
 
   keys = keys or ""
+
+  -- mappings will pass <lt> as <, so change it back
+  keys = keys:gsub("[<]", "<lt>")
+
   opts.mode = opts.mode or vim.api.nvim_get_mode().mode
   local buf = vim.api.nvim_get_current_buf()
   -- make sure the trees exist for update

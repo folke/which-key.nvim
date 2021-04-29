@@ -13,7 +13,7 @@ local labels = {
   ["`"] = "Back to position in current buffer where jumped from",
   ["["] = "To beginning of previously changed or yanked text",
   ["]"] = "To end of previously changed or yanked text",
-  ["<"] = "To beginning of last visual selection",
+  ["<lt>"] = "To beginning of last visual selection",
   [">"] = "To end of last visual selection",
 }
 
