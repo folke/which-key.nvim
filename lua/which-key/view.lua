@@ -140,7 +140,7 @@ function M.execute(prefix, mode, buf)
   -- make sure we remove all WK hooks before executing the sequence
   -- this is to make existing keybindongs work and prevent recursion
   unhook(Keys.get_tree(mode).tree:path(prefix))
-  unhook(buf and Keys.get_tree(mode, buf).tree:path(prefix) or {})
+  unhook(buf and Keys.get_tree(mode, buf).tree:path(prefix) or {}, buf)
 
   -- fix <lt>
   prefix = prefix:gsub("<lt>", "<")
