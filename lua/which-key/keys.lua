@@ -223,14 +223,15 @@ end
 ---@param mode string
 ---@param buf number
 function M.update_keymaps(mode, buf)
-  -- if mode == "n" then M.update_keymaps("o", buf) end
-
   ---@type Keymap
   local keymaps = buf and vim.api.nvim_buf_get_keymap(buf, mode) or vim.api.nvim_get_keymap(mode)
-  if mode == "o" then mode = "n" end
   local tree = M.get_tree(mode, buf).tree
   for _, keymap in pairs(keymaps) do
-    if not keymap.lhs:find(secret) then
+    -- skip mappings with our secret nop command
+    local has_secret = keymap.lhs:find(secret)
+    -- skip auto which-key mappings
+    local has_wk = keymap.rhs:find("which%-key") and keymap.rhs:find("auto")
+    if not (has_secret or has_wk) then
       local mapping = {
         id = Util.t(keymap.lhs),
         prefix = keymap.lhs,
