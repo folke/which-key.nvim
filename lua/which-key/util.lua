@@ -37,8 +37,22 @@ function M.parse_keys(keystr)
   return ret
 end
 
-function M.log(msg, hl) vim.api.nvim_echo({ { "WhichKey: " .. msg, hl } }, true, {}) end
+function M.log(msg, hl) vim.api.nvim_echo({ { "WhichKey: ", hl }, { msg } }, true, {}) end
 
 function M.warn(msg) M.log(msg, "WarningMsg") end
+
+function M.error(msg)
+  vim.api.nvim_echo({
+    { "WhichKey: ", "Error" },
+    { msg },
+    { " (please report this issue if it persists)", "Comment" },
+  }, true, {})
+end
+
+function M.check_mode(mode, buf)
+  if not ("nvsoiRct"):find(mode) then
+    M.error(string.format("Invalid mode %q for buf %d", mode, buf or 0))
+  end
+end
 
 return M
