@@ -311,6 +311,14 @@ function M.get_tree(mode, buf)
   return M.mappings[idx]
 end
 
+function M.is_hook(prefix, cmd)
+  -- skip mappings with our secret nop command
+  local has_secret = prefix:find(secret)
+  -- skip auto which-key mappings
+  local has_wk = cmd:find("which%-key") and cmd:find("auto")
+  return has_wk or has_secret
+end
+
 ---@param mode string
 ---@param buf number
 function M.update_keymaps(mode, buf)
@@ -318,12 +326,7 @@ function M.update_keymaps(mode, buf)
   local keymaps = buf and vim.api.nvim_buf_get_keymap(buf, mode) or vim.api.nvim_get_keymap(mode)
   local tree = M.get_tree(mode, buf).tree
   for _, keymap in pairs(keymaps) do
-    -- skip mappings with our secret nop command
-    local has_secret = keymap.lhs:find(secret)
-    -- skip auto which-key mappings
-    local has_wk = keymap.rhs:find("which%-key") and keymap.rhs:find("auto")
-
-    local skip = has_secret or has_wk
+    local skip = M.is_hook(keymap.lhs, keymap.rhs)
 
     -- check if <leader> was remapped
     if not skip and Util.t(keymap.lhs) == Util.t("<leader>") then

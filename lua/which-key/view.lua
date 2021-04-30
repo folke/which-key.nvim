@@ -128,6 +128,14 @@ end
 
 function M.execute(prefix, mode, buf)
 
+  local global_node = Keys.get_tree(mode).tree:get(prefix)
+  local buf_node = buf and Keys.get_tree(mode, buf).tree:get(prefix) or nil
+
+  if global_node and global_node.mapping and Keys.is_hook(prefix, global_node.mapping.cmd) then
+    return
+  end
+  if buf_node and buf_node.mapping and Keys.is_hook(prefix, buf_node.mapping.cmd) then return end
+
   local hooks = {}
 
   local function unhook(nodes, nodes_buf)
