@@ -6,7 +6,10 @@ local M = {}
 
 function M.setup(options) require("which-key.config").setup(options) end
 
-function M.execute(id) Keys.functions(id)() end
+function M.execute(id)
+  local func = Keys.functions[id]
+  func()
+end
 
 function M.show(keys, opts)
   opts = opts or {}

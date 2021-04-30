@@ -161,7 +161,7 @@ function M.parse_mappings(mappings, value, prefix)
       end
       if mapping.cmd and type(mapping.cmd) == "function" then
         table.insert(M.functions, mapping.cmd)
-        mapping.cmd = string.format([[lua require("which-key").execute(%d)]], #M.functions)
+        mapping.cmd = string.format([[<cmd>lua require("which-key").execute(%d)<cr>]], #M.functions)
       end
       table.insert(mappings, mapping)
     end

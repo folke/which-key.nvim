@@ -159,7 +159,7 @@ wk.register({
     n = { "New File" }, -- just a label. don't create any mapping
     e = "Edit File", -- same as above
     ["1"] = "which_key_ignore",  -- special label to hide it in the popup
-    b = { "Foobar", function() print("bar") end } -- you can also pass functions!
+    b = { function() print("bar") end, "Foobar" } -- you can also pass functions!
   },
 }, { prefix = "<leader>" })
 ```
