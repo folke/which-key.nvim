@@ -154,7 +154,7 @@ function M.execute(prefix, mode, buf)
 
   -- fix <lt>
   prefix = prefix:gsub("<lt>", "<")
-  -- prefix = Util.t(prefix)
+  prefix = Util.t(prefix)
   if M.count and M.count ~= 0 then prefix = M.count .. prefix end
 
   -- feed the keys with remap
