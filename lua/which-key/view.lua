@@ -30,8 +30,8 @@ function M.show()
     focusable = false,
     anchor = "SW",
     border = config.options.window.border,
-    row = vim.o.lines - 1 - config.options.window.margin[3] -
-      (config.options.window.border ~= "none" and 2 or 0),
+    row = vim.o.lines - config.options.window.margin[3] -
+      (config.options.window.border ~= "none" and 2 or 0) - vim.o.cmdheight,
     col = config.options.window.margin[2],
     style = "minimal",
   }
