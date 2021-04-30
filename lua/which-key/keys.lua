@@ -304,6 +304,28 @@ function M.dump()
   return todo
 end
 
+function M.check_health()
+  vim.fn["health#report_start"]("WhichKey: checking conflicting keymaps")
+  for _, tree in pairs(M.mappings) do
+    M.update_keymaps(tree.mode, tree.buf)
+    tree.tree:walk( ---@param node Node
+    function(node)
+      local count = 0
+      for _ in pairs(node.children) do count = count + 1 end
+
+      local auto_prefix = not node.mapping or (node.mapping.group == true and not node.mapping.cmd)
+      if node.prefix ~= "" and count > 0 and not auto_prefix then
+        local msg = ("conflicting keymap exists for mode **%q**, lhs: **%q**"):format(tree.mode,
+                                                                                      node.mapping
+                                                                                        .prefix)
+        vim.fn["health#report_warn"](msg)
+        local cmd = node.mapping.cmd or " "
+        vim.fn["health#report_info"](("rhs: `%s`"):format(cmd))
+      end
+    end)
+  end
+end
+
 function M.get_tree(mode, buf)
   Util.check_mode(mode, buf)
   local idx = mode .. (buf or "")
@@ -315,7 +337,7 @@ function M.is_hook(prefix, cmd)
   -- skip mappings with our secret nop command
   local has_secret = prefix:find(secret)
   -- skip auto which-key mappings
-  local has_wk = cmd:find("which%-key") and cmd:find("auto")
+  local has_wk = cmd and cmd:find("which%-key") and cmd:find("auto") or false
   return has_wk or has_secret
 end
 
