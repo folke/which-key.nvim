@@ -57,10 +57,14 @@ use {
 
 ## ⚙️ Configuration
 
-> ❗️ IMPORTANT: the timeout when **WhichKey** opens is controlled by the vim setting [timeoutlen](https://neovim.io/doc/user/options.html#'timeoutlen'). Please refer to the documentation to properly set it up. Setting it to `0`, will effectively always show **WhichKey** immediately, but a setting of `500` (500ms) is probably more appropriate.
-
-> ⁉️ don't create any keymappings yourself to trigger WhichKey. Unlike with *vim-which-key*, we do this fully automatically.
+> ❗️ IMPORTANT: the timeout when **WhichKey** opens is controlled by the vim setting [timeoutlen](https://neovim.io/doc/user/options.html#'timeoutlen').
+> Please refer to the documentation to properly set it up. Setting it to `0`, will effectively
+> always show **WhichKey** immediately, but a setting of `500` (500ms) is probably more appropriate.
+> 
+> ❗️ don't create any keymappings yourself to trigger WhichKey. Unlike with *vim-which-key*, we do this fully automatically.
 > Please remove any left-over triggers you might have from using *vim-which-key*.
+>
+> 🚑 You can run `:checkhealth which_key` to see if there's any conflicting keymaps that will prevent triggering **WhichKey**
 
 WhichKey comes with the following defaults:
 
@@ -132,26 +136,36 @@ Default options for `opts`
 }
 ```
 
+> ❕ When you specify a command in your mapping that starts with `<Plug>`, then we automatically set `noremap=false`, since you always wanty recursive keybindings in this case
+
 ### Mappings
 
-Group names use the special `name` key in the tables. There's multiple ways to define the mappings. See some examples below:
+Group names use the special `name` key in the tables. There's multiple ways to define the mappings.
 
 ```lua
+local wk = require("which-key")
 -- As an example, we will the following mappings:
 --  1. <leader>fn new file
 --  2. <leader>fr show recent files
 --  2. <leader>ff find files
-local wk = require("which-key")
 
--- method 1
 wk.register({
   f = {
-    name = "+file",
-    f = { "<cmd>Telescope find_files<cr>", "Find File" },
-    r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
-    n = { "<cmd>enew<cr>", "New File" },
+    name = "file", -- optional group name
+    f = { "<cmd>Telescope find_files<cr>", "Find File" }, -- create a binding with label
+    r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File", noremap=false, buffer = 123 }, -- additional options for creating the keymap
+    n = { "New File" }, -- just a label. don't create any mapping
+    e = "Edit File", -- same as above
+    ["1"] = "which_key_ignore",  -- special label to hide it in the popup
   },
 }, { prefix = "<leader>" })
+```
+
+<details>
+<summary>Click to see more examples</summary>
+
+```lua
+-- all of the mappings below are equivalent
 
 -- method 2
 wk.register({
@@ -184,48 +198,7 @@ wk.register({
 })
 ```
 
-If you just want to add help for the mapping, without creating it, you can do the following:
-
-```lua
--- only pass one value in the mapping array to just add the help
-wk.register({
-  f = {
-    name = "+file",
-    f = { "Find File" },
-    r = { "Open Recent File" },
-  },
-}, { prefix = "<leader>" })
-
--- or just pass a string
-wk.register({
-  f = {
-    name = "+file",
-    f = "Find File",
-    r = "Open Recent File",
-  },
-}, { prefix = "<leader>" })
-```
-
-You can also pass specific options to some keybinding
-
-```lua
-wk.register({
-  f = {
-    name = "+file",
-    f = { "Find File", noremap = false, buffer = 123 },
-    r = { "Open Recent File" },
-  },
-}, { prefix = "<leader>" })
-```
-
-Ignore some keybindings in **WhichKey** by setting their label to `which_key_ignore`
-
-```lua
-wk.register({
-    ["<leader>0"] = "which_key_ignore",
-    ["<leader>1"] = "which_key_ignore",
-})
-```
+</details>
 
 ## 🚀 Usage
 
@@ -239,7 +212,7 @@ When the **WhichKey** popup is open, you can use the following keybindings (they
 
 Apart from the automatic opening, you can also  manually open **WhichKey** for a certain `prefix`:
 
-> ⁉️ don't create any keymappings yourself to trigger WhichKey. Unlike with *vim-which-key*, we do this fully automatically.
+> ❗️ don't create any keymappings yourself to trigger WhichKey. Unlike with *vim-which-key*, we do this fully automatically.
 > Please remove any left-over triggers you might have from using *vim-which-key*.
 
 ```vim
