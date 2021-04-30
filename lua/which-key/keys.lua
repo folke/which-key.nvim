@@ -221,7 +221,7 @@ end
 
 M.hooked = {}
 
-function M.hook_id(prefix, mode, buf) return mode .. (buf or "") .. prefix end
+function M.hook_id(prefix, mode, buf) return mode .. (buf or "") .. Util.t(prefix) end
 
 function M.is_hooked(prefix, mode, buf) return M.hooked[M.hook_id(prefix, mode, buf)] end
 
