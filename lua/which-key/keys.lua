@@ -223,6 +223,8 @@ M.hooked = {}
 
 function M.hook_id(prefix, mode, buf) return mode .. (buf or "") .. prefix end
 
+function M.is_hooked(prefix, mode, buf) return M.hooked[M.hook_id(prefix, mode, buf)] end
+
 function M.hook_del(prefix, mode, buf)
   local id = M.hook_id(prefix, mode, buf)
   M.hooked[id] = nil
@@ -236,6 +238,20 @@ function M.hook_del(prefix, mode, buf)
 end
 
 function M.hook_add(prefix, mode, buf)
+  -- Check if we need to create the hook
+  if type(Config.options.triggers) == "string" and Config.options.triggers ~= "auto" then
+    if Util.t(prefix) ~= Util.t(Config.options.triggers) then return end
+  end
+  if type(Config.options.triggers) == "table" then
+    local ok = false
+    for _, trigger in pairs(Config.options.triggers) do
+      if Util.t(trigger) == Util.t(prefix) then
+        ok = true
+        break
+      end
+    end
+    if not ok then return end
+  end
   -- never hook into operator pending mode
   -- this is handled differently
   if mode == "o" then return end
