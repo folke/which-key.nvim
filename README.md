@@ -84,7 +84,7 @@ WhichKey comes with the following defaults:
       z = true, -- bindings for folds, spelling and others prefixed with z
       g = true, -- bindings for prefixed with g
     },
-  },
+},
   -- add operators that will trigger motion and text object completion
   -- to enable all native operators, set the preset / operators plugin above
   operators = { gc = "Comments" },
@@ -105,7 +105,9 @@ WhichKey comes with the following defaults:
     spacing = 3, -- spacing between columns
   },
   hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ "}, -- hide mapping boilerplate
-  show_help = true -- show help message on the command line when the popup is visible
+  show_help = true, -- show help message on the command line when the popup is visible
+  triggers = "auto", -- automatically setup triggers
+  -- triggers = {"<leader>"} -- or specifiy a list manually
 }
 ```
 
@@ -138,9 +140,9 @@ Default options for `opts`
 
 > ❕ When you specify a command in your mapping that starts with `<Plug>`, then we automatically set `noremap=false`, since you always wanty recursive keybindings in this case
 
-### Mappings
+### ⌨️ Mappings
 
-Group names use the special `name` key in the tables. There's multiple ways to define the mappings.
+Group names use the special `name` key in the tables. There's multiple ways to define the mappings. `wk.register` can be called multiple times from anywhere in your config files.
 
 ```lua
 local wk = require("which-key")
@@ -196,6 +198,55 @@ wk.register({
   ["<leader>fr"] = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
   ["<leader>fn"] = { "<cmd>enew<cr>", "New File" },
 })
+```
+
+</details>
+
+### 🚙 Operators, Motions and Text Objects
+
+**WhichKey** provides help to work with operators, motions and text objects.
+
+> `[count]operator[count][text-object]`
+
+* operators can be configured with the `operators` option
+  - set `plugins.presets.operators` to `true` to automatically configure vim builtin operators
+  - set this to `false`, to only include the list you configured in the `operators` option.
+  - see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L5) for the full list part of the preset
+* text objects are automatically retrieved from **operator pending** keymaps (`omap`)
+  - set `plugins.presets.text_objects` to `true` to configure builtin text objects
+  - see [here](https://github.com/folke/which-key.nvim/blob/423a50cccfeb8b812e0e89f156316a4bd9d2673a/lua/which-key/plugins/presets/init.lua#L43)
+* motions are part of the preset `plugins.presets.motions` setting
+  - see [here](https://github.com/folke/which-key.nvim/blob/423a50cccfeb8b812e0e89f156316a4bd9d2673a/lua/which-key/plugins/presets/init.lua#L20)
+
+<details>
+<summary>How to disable some operators? (like v)</summary>
+
+```lua
+{
+  plugins = {
+    -- ...
+    presets = {
+      operators = false
+      -- ..
+    },
+  },
+  -- add operators that will trigger motion and text object completion
+  -- to enable all native operators, set the preset / operators plugin above
+  operators = {
+    d = "Delete",
+    c = "Change",
+    y = "Yank (copy)",
+    ["g~"] = "Toggle case",
+    ["gu"] = "Lowercase",
+    ["gU"] = "Uppercase",
+    [">"] = "Indent right",
+    ["<lt>"] = "Indent left",
+    ["zf"] = "Create fold",
+    ["!"] = "Filter though external program",
+    -- ["v"] = "Visual Character Mode",
+    gc = "Comments"
+ },
+}
 ```
 
 </details>
