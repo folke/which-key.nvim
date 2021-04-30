@@ -43,7 +43,7 @@ function M.run(trigger, mode, buf)
     table.insert(items, {
       key = key,
       label = labels[key] or "",
-      value = value .. (line or file),
+      value = value .. (line or file or ""),
       highlights = { { 1, #value - 1, "Number" } },
     })
   end
