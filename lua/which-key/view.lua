@@ -48,7 +48,18 @@ end
 
 function M.get_input(wait)
   while true do
-    local n = wait and vim.fn.getchar() or vim.fn.getchar(0)
+    local n
+    if wait then
+      local ok
+      ok, n = pcall(vim.fn.getchar)
+      -- bail out on keyboard interrupt
+      if not ok then
+        M.on_close()
+        return
+      end
+    else
+      n = vim.fn.getchar(0)
+    end
     if n == 0 then return end
     local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
 
