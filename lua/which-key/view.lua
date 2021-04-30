@@ -140,7 +140,8 @@ function M.execute(prefix, mode, buf)
 
   local function unhook(nodes, nodes_buf)
     for _, node in pairs(nodes) do
-      if Keys.is_hooked(node.mapping.prefix, mode, nodes_buf) then
+      if node.mapping and node.mapping.group and not node.mapping.cmd then
+        -- if Keys.is_hooked(node.mapping.prefix, mode, nodes_buf) then
         table.insert(hooks, { node.mapping.prefix, nodes_buf })
         Keys.hook_del(node.mapping.prefix, mode, nodes_buf)
       end
@@ -154,6 +155,7 @@ function M.execute(prefix, mode, buf)
 
   -- fix <lt>
   prefix = prefix:gsub("<lt>", "<")
+  -- prefix = Util.t(prefix)
   if M.count and M.count ~= 0 then prefix = M.count .. prefix end
 
   -- feed the keys with remap

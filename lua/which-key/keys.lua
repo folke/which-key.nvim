@@ -258,8 +258,9 @@ function M.hook_add(prefix, mode, buf, secret_only)
 
   local opts = { noremap = true, silent = true }
   local id = M.hook_id(prefix, mode, buf)
+  local id_global = nil -- M.hook_id(prefix, mode)
   -- hook up if needed
-  if not M.hooked[id] then
+  if not M.hooked[id] and not M.hooked[id_global] then
     local cmd = [[<cmd>lua require("which-key").show(%q, {mode = %q, auto = true})<cr>]]
     cmd = string.format(cmd, prefix, mode)
     -- map group triggers and nops
