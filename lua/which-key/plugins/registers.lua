@@ -2,7 +2,11 @@ local M = {}
 
 M.name = "registers"
 
-M.actions = { { trigger = "\"", mode = "n" }, { trigger = "<c-r>", mode = "i" } }
+M.actions = {
+  { trigger = "\"", mode = "n" },
+  { trigger = "@", mode = "n" },
+  { trigger = "<c-r>", mode = "i" },
+}
 
 local registers = "*+\"-:.%/#=_abcdefghijklmnopqrstuvwxyz0123456789"
 
