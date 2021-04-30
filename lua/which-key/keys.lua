@@ -237,7 +237,7 @@ function M.hook_del(prefix, mode, buf)
   end
 end
 
-function M.hook_add(prefix, mode, buf)
+function M.hook_add(prefix, mode, buf, secret_only)
   -- Check if we need to create the hook
   if type(Config.options.triggers) == "string" and Config.options.triggers ~= "auto" then
     if Util.t(prefix) ~= Util.t(Config.options.triggers) then return end
@@ -265,10 +265,10 @@ function M.hook_add(prefix, mode, buf)
     -- map group triggers and nops
     -- nops are needed, so that WhichKey always respects timeoutlen
     if buf then
-      vim.api.nvim_buf_set_keymap(buf, mode, prefix, cmd, opts)
+      if secret_only ~= true then vim.api.nvim_buf_set_keymap(buf, mode, prefix, cmd, opts) end
       vim.api.nvim_buf_set_keymap(buf, mode, prefix .. secret, "<nop>", opts)
     else
-      vim.api.nvim_set_keymap(mode, prefix, cmd, opts)
+      if secret_only ~= true then vim.api.nvim_set_keymap(mode, prefix, cmd, opts) end
       vim.api.nvim_set_keymap(mode, prefix .. secret, "<nop>", opts)
     end
     M.hooked[id] = true
@@ -286,18 +286,22 @@ function M.update(buf)
       -- 2. this is a global node
       -- 3. this is a local buffer node for the passed buffer
       M.update_keymaps(tree.mode, tree.buf)
-      tree.tree:walk( ---@param node Node
-      function(node)
-        -- create group mapping if needed
-        if not node.mapping then
-          node.mapping = { prefix = node.prefix, group = true, keys = Util.parse_keys(node.prefix) }
-        end
-        if node.prefix ~= "" and node.mapping.group == true and not node.mapping.cmd then
-          M.hook_add(node.prefix, tree.mode, tree.buf)
-        end
-      end)
+      M.add_hooks(tree.mode, tree.buf, tree.tree.root)
     end
   end
+end
+
+---@param node Node
+function M.add_hooks(mode, buf, node, secret_only)
+  if not node.mapping then
+    node.mapping = { prefix = node.prefix, group = true, keys = Util.parse_keys(node.prefix) }
+  end
+  if node.prefix ~= "" and node.mapping.group == true and not node.mapping.cmd then
+    -- first non-cmd level, so create hook and make all decendents secret only
+    M.hook_add(node.prefix, mode, buf, secret_only)
+    secret_only = true
+  end
+  for _, child in pairs(node.children) do M.add_hooks(mode, buf, child, secret_only) end
 end
 
 function M.dump()
