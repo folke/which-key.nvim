@@ -6,6 +6,8 @@ local M = {}
 
 function M.setup(options) require("which-key.config").setup(options) end
 
+function M.execute(id) Keys.functions(id)() end
+
 function M.show(keys, opts)
   opts = opts or {}
   if type(opts) == "string" then opts = { mode = opts } end

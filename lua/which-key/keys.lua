@@ -8,6 +8,8 @@ local secret = "Þ"
 ---@class Keys
 local M = {}
 
+M.functions = {}
+
 function M.setup()
   local builtin_ops = require("which-key.plugins.presets").operators
   local mappings = {}
@@ -156,6 +158,10 @@ function M.parse_mappings(mappings, value, prefix)
         else
           error("Invalid key mapping: " .. vim.inspect(value))
         end
+      end
+      if mapping.cmd and type(mapping.cmd) == "function" then
+        table.insert(M.functions, mapping.cmd)
+        mapping.cmd = string.format([[lua require("which-key").execute(%d)]], #M.functions)
       end
       table.insert(mappings, mapping)
     end
