@@ -166,7 +166,9 @@ function M.execute(prefix, mode, buf)
 
   -- handle registers that were passed when opening the popup
   if M.reg ~= "\"" and M.reg ~= "+" and M.reg ~= "*" then
-    vim.api.nvim_feedkeys([["]] .. M.reg, "n", false)
+    local reg_key = "\""
+    if M.mode == "i" then reg_key = "<c-r>" end
+    vim.api.nvim_feedkeys(reg_key .. M.reg, "n", false)
   end
 
   -- fix <lt>

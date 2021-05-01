@@ -16,8 +16,10 @@ function Text:new()
   return this
 end
 
+function Text:fix_nl(line) return line:gsub("[\n]", "﬋") end
+
 function Text:nl()
-  local line = self.current:gsub("[\n]", " ")
+  local line = self:fix_nl(self.current)
   table.insert(self.lines, line)
   self.current = ""
   self.lineNr = self.lineNr + 1
@@ -41,7 +43,7 @@ function Text:render(str, group, opts)
 end
 
 function Text:set(row, col, str, group)
-  str = str:gsub("[\n]", " ")
+  str = self:fix_nl(str)
 
   -- extend lines if needed
   for i = 1, row, 1 do if not self.lines[i] then self.lines[i] = "" end end
