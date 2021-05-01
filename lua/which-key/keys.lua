@@ -198,6 +198,7 @@ function M.map(mode, prefix, cmd, buf, opts)
   if other then
     table.insert(M.duplicates, { mode = mode, prefix = prefix, cmd = cmd, buf = buf, other = other })
   end
+  cmd = cmd:gsub("[\\]", "<bslash>")
   if buf ~= nil then
     pcall(vim.api.nvim_buf_set_keymap, buf, mode, prefix, cmd, opts)
   else
@@ -280,6 +281,9 @@ function M.hook_add(prefix, mode, buf, secret_only)
   -- hook up if needed
   if not M.hooked[id] and not M.hooked[id_global] then
     local cmd = [[<cmd>lua require("which-key").show(%q, {mode = %q, auto = true})<cr>]]
+    if vim.g.mapleader == "\\" and prefix:find("<leader>") == 1 then
+      prefix = prefix:gsub("<leader>", "\\")
+    end
     cmd = string.format(cmd, prefix, mode)
     -- map group triggers and nops
     -- nops are needed, so that WhichKey always respects timeoutlen
