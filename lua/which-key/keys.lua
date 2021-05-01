@@ -188,6 +188,22 @@ end
 
 ---@type table<string, MappingTree>
 M.mappings = {}
+M.duplicates = {}
+
+function M.map(mode, prefix, cmd, buf, opts)
+  local other = vim.api.nvim_buf_call(buf, function()
+    local ret = vim.fn.maparg(prefix, mode, false, true)
+    return (ret and ret.lhs and ret.rhs ~= cmd) and ret or nil
+  end)
+  if other then
+    table.insert(M.duplicates, { mode = mode, prefix = prefix, cmd = cmd, buf = buf, other = other })
+  end
+  if buf ~= nil then
+    pcall(vim.api.nvim_buf_set_keymap, buf, mode, prefix, cmd, opts)
+  else
+    pcall(vim.api.nvim_set_keymap, mode, prefix, cmd, opts)
+  end
+end
 
 function M.register(mappings, opts)
   opts = opts or {}
@@ -215,11 +231,7 @@ function M.register(mappings, opts)
         nowait = mapping.opts.nowait or false,
       }
       if mapping.cmd:lower():sub(1, #("<plug>")) == "<plug>" then keymap_opts.noremap = false end
-      if mapping.buf ~= nil then
-        vim.api.nvim_buf_set_keymap(mapping.buf, mode, mapping.prefix, mapping.cmd, keymap_opts)
-      else
-        vim.api.nvim_set_keymap(mode, mapping.prefix, mapping.cmd, keymap_opts)
-      end
+      M.map(mode, mapping.prefix, mapping.cmd, mapping.buf, keymap_opts)
     end
     M.get_tree(mode, mapping.buf).tree:add(mapping)
   end
@@ -271,13 +283,10 @@ function M.hook_add(prefix, mode, buf, secret_only)
     cmd = string.format(cmd, prefix, mode)
     -- map group triggers and nops
     -- nops are needed, so that WhichKey always respects timeoutlen
-    if buf then
-      if secret_only ~= true then vim.api.nvim_buf_set_keymap(buf, mode, prefix, cmd, opts) end
-      vim.api.nvim_buf_set_keymap(buf, mode, prefix .. secret, "<nop>", opts)
-    else
-      if secret_only ~= true then vim.api.nvim_set_keymap(mode, prefix, cmd, opts) end
-      vim.api.nvim_set_keymap(mode, prefix .. secret, "<nop>", opts)
-    end
+
+    if secret_only ~= true then M.map(mode, prefix, cmd, buf, opts) end
+    M.map(mode, prefix .. secret, "<nop>", buf, opts)
+
     M.hooked[id] = true
   end
 end
@@ -350,6 +359,23 @@ function M.check_health()
         vim.fn["health#report_info"](("rhs: `%s`"):format(cmd))
       end
     end)
+  end
+  for _, dup in pairs(M.duplicates) do
+    local msg = ""
+    if dup.buf == dup.other.buffer then
+      msg = "duplicate keymap"
+    else
+      msg = "buffer-local keymap overriding global"
+    end
+    msg = (msg .. " for mode **%q**, buf: %d, lhs: **%q**"):format(dup.mode, dup.buf, dup.prefix)
+    if dup.buf == dup.other.buffer then
+      vim.fn["health#report_error"](msg)
+    else
+      vim.fn["health#report_warn"](msg)
+    end
+    vim.fn["health#report_info"](("old rhs: `%s`"):format(dup.other.rhs or ""))
+    vim.fn["health#report_info"](("new rhs: `%s`"):format(dup.cmd or ""))
+
   end
 end
 
