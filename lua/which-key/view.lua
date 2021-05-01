@@ -10,6 +10,7 @@ local M = {}
 
 M.keys = ""
 M.mode = "n"
+M.reg = nil
 M.auto = false
 M.count = 0
 M.buf = nil
@@ -161,7 +162,12 @@ function M.execute(prefix, mode, buf)
   -- make sure we remove all WK hooks before executing the sequence
   -- this is to make existing keybindongs work and prevent recursion
   unhook(Keys.get_tree(mode).tree:path(prefix))
-  unhook(buf and Keys.get_tree(mode, buf).tree:path(prefix) or {}, buf)
+  if buf then unhook(Keys.get_tree(mode, buf).tree:path(prefix), buf) end
+
+  -- handle registers that were passed when opening the popup
+  if M.reg ~= "\"" and M.reg ~= "+" and M.reg ~= "*" then
+    vim.api.nvim_feedkeys([["]] .. M.reg, "n", false)
+  end
 
   -- fix <lt>
   prefix = prefix:gsub("<lt>", "<")
@@ -181,6 +187,8 @@ function M.open(keys, opts)
   M.keys = keys or ""
   M.mode = opts.mode or Util.get_mode()
   M.count = vim.api.nvim_get_vvar("count")
+  M.reg = vim.api.nvim_get_vvar("register")
+
   M.show_cursor()
   M.on_keys(opts)
 end
