@@ -372,7 +372,8 @@ function M.check_health()
     else
       msg = "buffer-local keymap overriding global"
     end
-    msg = (msg .. " for mode **%q**, buf: %d, lhs: **%q**"):format(dup.mode, dup.buf, dup.prefix)
+    msg = (msg .. " for mode **%q**, buf: %d, lhs: **%q**"):format(dup.mode, dup.buf or "",
+                                                                   dup.prefix)
     if dup.buf == dup.other.buffer then
       vim.fn["health#report_error"](msg)
     else
