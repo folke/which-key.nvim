@@ -257,6 +257,7 @@ function M.hook_del(prefix, mode, buf)
 end
 
 function M.hook_add(prefix, mode, buf, secret_only)
+  if mode == "i" and (prefix == "j" or prefix == "k") then return end
   -- Check if we need to create the hook
   if type(Config.options.triggers) == "string" and Config.options.triggers ~= "auto" then
     if Util.t(prefix) ~= Util.t(Config.options.triggers) then return end
