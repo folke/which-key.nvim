@@ -258,6 +258,7 @@ end
 
 function M.hook_add(prefix, mode, buf, secret_only)
   if mode == "i" and (prefix == "j" or prefix == "k") then return end
+  if mode == "s" then return end
   -- Check if we need to create the hook
   if type(Config.options.triggers) == "string" and Config.options.triggers ~= "auto" then
     if Util.t(prefix) ~= Util.t(Config.options.triggers) then return end
@@ -289,8 +290,9 @@ function M.hook_add(prefix, mode, buf, secret_only)
     -- map group triggers and nops
     -- nops are needed, so that WhichKey always respects timeoutlen
 
-    if secret_only ~= true then M.map(mode, prefix, cmd, buf, opts) end
-    M.map(mode, prefix .. secret, "<nop>", buf, opts)
+    local mapmode = mode == "v" and "x" or mode
+    if secret_only ~= true then M.map(mapmode, prefix, cmd, buf, opts) end
+    M.map(mapmode, prefix .. secret, "<nop>", buf, opts)
 
     M.hooked[id] = true
   end
@@ -386,6 +388,7 @@ function M.check_health()
 end
 
 function M.get_tree(mode, buf)
+  if mode == "s" or mode == "x" then mode = "v" end
   Util.check_mode(mode, buf)
   local idx = mode .. (buf or "")
   if not M.mappings[idx] then M.mappings[idx] = { mode = mode, buf = buf, tree = Tree:new() } end

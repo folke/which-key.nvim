@@ -56,7 +56,7 @@ function M.error(msg)
 end
 
 function M.check_mode(mode, buf)
-  if not ("nvsoiRct"):find(mode) then
+  if not ("nvsxoiRct"):find(mode) then
     M.error(string.format("Invalid mode %q for buf %d", mode, buf or 0))
     return false
   end
