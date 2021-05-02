@@ -284,6 +284,7 @@ function M.hook_add(prefix, mode, buf, secret_only)
   if not M.hooked[id] and not M.hooked[id_global] then
     local cmd = [[<cmd>lua require("which-key").show(%q, {mode = %q, auto = true})<cr>]]
     if vim.g.mapleader == "\\" then prefix = prefix:gsub("<[lL]eader>", "\\") end
+    if vim.g.maplocalleader == "\\" then prefix = prefix:gsub("<[lL]ocalleader>", "\\") end
     cmd = string.format(cmd, prefix, mode)
     -- map group triggers and nops
     -- nops are needed, so that WhichKey always respects timeoutlen
