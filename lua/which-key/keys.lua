@@ -415,6 +415,8 @@ function M.update_keymaps(mode, buf)
   for _, keymap in pairs(keymaps) do
     local skip = M.is_hook(keymap.lhs, keymap.rhs)
 
+    if not skip and Util.t(keymap.rhs) == "" then skip = true end
+
     -- check if <leader> was remapped
     if not skip and Util.t(keymap.lhs) == Util.t("<leader>") then
       if Util.t(keymap.rhs) == "" then
