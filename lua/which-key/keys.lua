@@ -152,6 +152,8 @@ function M.parse_mappings(mappings, value, prefix)
           mapping.opts.noremap = v
         elseif k == "silent" then
           mapping.opts.silent = v
+        elseif k == "mode" then
+          mapping.mode = v
         elseif k == "plugin" then
           mapping.group = true
           mapping.plugin = v
@@ -223,6 +225,7 @@ function M.register(mappings, opts)
   for _, mapping in pairs(mappings) do
     if opts.buffer and not mapping.buf then mapping.buf = opts.buffer end
     mapping.keys = Util.parse_keys(mapping.prefix)
+    mapping.mode = mapping.mode or mode
     if mapping.cmd then
       mapping.opts = vim.tbl_deep_extend("force", { silent = true, noremap = true }, opts,
                                          mapping.opts or {})
@@ -232,9 +235,9 @@ function M.register(mappings, opts)
         nowait = mapping.opts.nowait or false,
       }
       if mapping.cmd:lower():sub(1, #("<plug>")) == "<plug>" then keymap_opts.noremap = false end
-      M.map(mode, mapping.prefix, mapping.cmd, mapping.buf, keymap_opts)
+      M.map(mapping.mode, mapping.prefix, mapping.cmd, mapping.buf, keymap_opts)
     end
-    M.get_tree(mode, mapping.buf).tree:add(mapping)
+    M.get_tree(mapping.mode, mapping.buf).tree:add(mapping)
   end
 end
 
