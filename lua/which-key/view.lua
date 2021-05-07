@@ -47,44 +47,31 @@ function M.show()
   vim.cmd [[autocmd! WinClosed <buffer> lua require("which-key.view").on_close()]]
 end
 
-function M.get_input(wait)
+function M.read_pending()
   while true do
-    local n
-    if wait then
-      local ok
-      ok, n = pcall(vim.fn.getchar)
-      -- bail out on keyboard interrupt
-      if not ok then
-        M.on_close()
-        return
-      end
-    else
-      n = vim.fn.getchar(0)
-    end
+    local n = vim.fn.getchar(0)
     if n == 0 then return end
     local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
 
     -- Fix < characters
     if c == "<" then c = "<lt>" end
 
-    if c == Util.t("<esc>") then
-      M.on_close()
-      return
-    elseif c == Util.t("<c-d>") then
-      M.scroll(false)
-    elseif c == Util.t("<c-u>") then
-      M.scroll(true)
-    elseif c == Util.t("<bs>") then
-      M.back()
-    else
-      M.keys = M.keys .. c
-    end
-
-    if wait then
-      vim.defer_fn(function() M.on_keys({ auto = true }) end, 0)
-      return
-    end
+    M.keys = M.keys .. c
   end
+end
+
+function M.getchar()
+  local ok, n = pcall(vim.fn.getchar)
+
+  -- bail out on keyboard interrupt
+  if not ok then return Util.t("<esc>") end
+
+  local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
+
+  -- Fix < characters
+  -- FIXME: this should not be needed
+  if c == "<" then c = "<lt>" end
+  return c
 end
 
 function M.scroll(up)
@@ -126,8 +113,7 @@ function M.hide_cursor()
 end
 
 function M.back()
-  local buf = vim.api.nvim_get_current_buf()
-  local node = Keys.get_tree(M.mode, buf).tree:get(M.keys, -1) or
+  local node = Keys.get_tree(M.mode, M.buf).tree:get(M.keys, -1) or
                  Keys.get_tree(M.mode).tree:get(M.keys, -1)
   if node then M.keys = node.prefix end
 end
@@ -196,35 +182,52 @@ function M.open(keys, opts)
 end
 
 function M.on_keys(opts)
-  -- eat queued characters
-  M.get_input(false)
   local buf = vim.api.nvim_get_current_buf()
 
-  local results = Keys.get_mappings(M.mode, M.keys, buf)
+  while true do
+    -- loop
+    M.read_pending()
 
-  --- Check for an exact match. Feedkeys with remap
-  if results.mapping and not results.mapping.group and #results.mappings == 0 then
-    M.hide()
-    M.execute(M.keys, M.mode, buf)
-    return
+    local results = Keys.get_mappings(M.mode, M.keys, buf)
+
+    --- Check for an exact match. Feedkeys with remap
+    if results.mapping and not results.mapping.group and #results.mappings == 0 then
+      M.hide()
+      M.execute(M.keys, M.mode, buf)
+      return
+    end
+
+    -- Check for no mappings found. Feedkeys without remap
+    if #results.mappings == 0 then
+      M.hide()
+      -- only execute if an actual key was typed while WK was open
+      if opts.auto then M.execute(M.keys, M.mode, buf) end
+      return
+    end
+
+    local layout = Layout:new(results)
+
+    if not M.is_valid() then M.show() end
+
+    M.render(layout:layout(M.win))
+
+    vim.cmd [[redraw]]
+
+    local c = M.getchar()
+
+    if c == Util.t("<esc>") then
+      M.on_close()
+      break
+    elseif c == Util.t("<c-d>") then
+      M.scroll(false)
+    elseif c == Util.t("<c-u>") then
+      M.scroll(true)
+    elseif c == Util.t("<bs>") then
+      M.back()
+    else
+      M.keys = M.keys .. c
+    end
   end
-
-  -- Check for no mappings found. Feedkeys without remap
-  if #results.mappings == 0 then
-    M.hide()
-    -- only execute if an actual key was typed while WK was open
-    if opts.auto then M.execute(M.keys, M.mode, buf) end
-    return
-  end
-
-  local layout = Layout:new(results)
-
-  if not M.is_valid() then M.show() end
-
-  M.render(layout:layout(M.win))
-
-  -- defer further eating on the main loop
-  vim.defer_fn(function() M.get_input(true) end, 0)
 end
 
 ---@param text Text
