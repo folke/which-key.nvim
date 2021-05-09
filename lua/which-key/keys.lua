@@ -88,17 +88,17 @@ function M.get_mappings(mode, prefix, buf)
   local tmp = {}
   for _, value in pairs(ret.mappings) do
     value.key = value.keys.nvim[prefix_len + 1]
-    if value.group then
-      value.label = value.label or "+prefix"
-      value.label = value.label:gsub("^%+", "")
-      value.label = Config.options.icons.group .. value.label
-    else
-      if not value.label then
+    if value.label or Config.options.ignore_missing == false then
+      if value.group then
+        value.label = value.label or "+prefix"
+        value.label = value.label:gsub("^%+", "")
+        value.label = Config.options.icons.group .. value.label
+      elseif not value.label then
         value.label = value.cmd or ""
         for _, v in ipairs(Config.options.hidden) do value.label = value.label:gsub(v, "") end
       end
+      table.insert(tmp, value)
     end
-    table.insert(tmp, value)
   end
 
   -- Sort items, but not for plugins
