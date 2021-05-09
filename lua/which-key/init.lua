@@ -32,6 +32,7 @@ function M.show(keys, opts)
 end
 
 function M.show_command(keys, mode)
+  keys = keys or ""
   keys = (keys == "\"\"" or keys == "''") and "" or keys
   mode = (mode == "\"\"" or mode == "''") and "" or mode
   mode = mode or "n"

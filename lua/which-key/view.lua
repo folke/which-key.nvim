@@ -53,8 +53,14 @@ function M.read_pending()
     if n == 0 then return end
     local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
 
+    -- for some reason, when executing a :norm command,
+    -- vim keeps feeding <esc> at the end
+    if c == Util.t("<esc>") then return end
+
     -- Fix < characters
     if c == "<" then c = "<lt>" end
+
+    dump(c)
 
     M.keys = M.keys .. c
   end
@@ -183,11 +189,13 @@ end
 
 function M.on_keys(opts)
   local buf = vim.api.nvim_get_current_buf()
+  dump("K: " .. M.keys)
 
   while true do
     -- loop
     M.read_pending()
 
+    dump(M.keys)
     local results = Keys.get_mappings(M.mode, M.keys, buf)
 
     --- Check for an exact match. Feedkeys with remap
