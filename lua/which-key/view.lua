@@ -157,7 +157,7 @@ function M.execute(prefix, mode, buf)
   if buf then unhook(Keys.get_tree(mode, buf).tree:path(prefix), buf) end
 
   -- handle registers that were passed when opening the popup
-  if M.reg ~= "\"" and M.reg ~= "+" and M.reg ~= "*" then
+  if M.reg ~= "\"" then
     local reg_key = "\""
     if M.mode == "i" then reg_key = "<c-r>" end
     vim.api.nvim_feedkeys(reg_key .. M.reg, "n", false)
