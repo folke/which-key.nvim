@@ -84,7 +84,7 @@ WhichKey comes with the following defaults:
       z = true, -- bindings for folds, spelling and others prefixed with z
       g = true, -- bindings for prefixed with g
     },
-},
+  },
   -- add operators that will trigger motion and text object completion
   -- to enable all native operators, set the preset / operators plugin above
   operators = { gc = "Comments" },
