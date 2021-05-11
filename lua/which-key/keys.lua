@@ -9,11 +9,14 @@ local secret = "Þ"
 local M = {}
 
 M.functions = {}
+M.operators = {}
 
 function M.setup()
   local builtin_ops = require("which-key.plugins.presets").operators
+  for op, _ in pairs(builtin_ops) do M.operators[op] = true end
   local mappings = {}
   for op, label in pairs(Config.options.operators) do
+    M.operators[op] = true
     if builtin_ops[op] then
       mappings[op] = { name = label, i = { name = "inside" }, a = { name = "around" } }
     end
@@ -260,9 +263,17 @@ function M.hook_del(prefix, mode, buf)
 end
 
 function M.hook_add(prefix, mode, buf, secret_only)
+  -- don't hook to j or k in INSERT mode
   if mode == "i" and (prefix == "j" or prefix == "k") then return end
+  -- never hook into select mode
   if mode == "s" then return end
+  -- never hook into operator pending mode
+  -- this is handled differently
+  if mode == "o" then return end
   if prefix == Util.t("<esc>") then return end
+  -- never hook into operators in visual mode
+  if (mode == "v" or mode == "x") and M.operators[prefix] then return end
+
   -- Check if we need to create the hook
   if type(Config.options.triggers) == "string" and Config.options.triggers ~= "auto" then
     if Util.t(prefix) ~= Util.t(Config.options.triggers) then return end
@@ -277,9 +288,6 @@ function M.hook_add(prefix, mode, buf, secret_only)
     end
     if not ok then return end
   end
-  -- never hook into operator pending mode
-  -- this is handled differently
-  if mode == "o" then return end
 
   local opts = { noremap = true, silent = true }
   local id = M.hook_id(prefix, mode, buf)
