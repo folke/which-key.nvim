@@ -10,6 +10,7 @@ local M = {}
 
 M.functions = {}
 M.operators = {}
+M.nowait = {}
 
 function M.setup()
   local builtin_ops = require("which-key.plugins.presets").operators
@@ -21,6 +22,7 @@ function M.setup()
       mappings[op] = { name = label, i = { name = "inside" }, a = { name = "around" } }
     end
   end
+  for _, t in pairs(Config.options.triggers_nowait) do M.nowait[t] = true end
   M.register(mappings, { mode = "n" })
   M.register({ i = { name = "inside" }, a = { name = "around" } }, { mode = "v" })
 end
@@ -307,7 +309,7 @@ function M.hook_add(prefix, mode, buf, secret_only)
 
     local mapmode = mode == "v" and "x" or mode
     if secret_only ~= true then M.map(mapmode, prefix, cmd, buf, opts) end
-    M.map(mapmode, prefix .. secret, "<nop>", buf, opts)
+    if not M.nowait[prefix] then M.map(mapmode, prefix .. secret, "<nop>", buf, opts) end
 
     M.hooked[id] = true
   end

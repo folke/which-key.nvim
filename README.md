@@ -60,10 +60,10 @@ use {
 > ❗️ IMPORTANT: the timeout when **WhichKey** opens is controlled by the vim setting [timeoutlen](https://neovim.io/doc/user/options.html#'timeoutlen').
 > Please refer to the documentation to properly set it up. Setting it to `0`, will effectively
 > always show **WhichKey** immediately, but a setting of `500` (500ms) is probably more appropriate.
-> 
+
 > ❗️ don't create any keymappings yourself to trigger WhichKey. Unlike with *vim-which-key*, we do this fully automatically.
 > Please remove any left-over triggers you might have from using *vim-which-key*.
->
+
 > 🚑 You can run `:checkhealth which_key` to see if there's any conflicting keymaps that will prevent triggering **WhichKey**
 
 WhichKey comes with the following defaults:
@@ -109,6 +109,8 @@ WhichKey comes with the following defaults:
   show_help = true, -- show help message on the command line when the popup is visible
   triggers = "auto", -- automatically setup triggers
   -- triggers = {"<leader>"} -- or specifiy a list manually
+  triggers_nowait = {}, -- list of triggers, where WhichKey should not wait for timeoutlen and show immediately
+  -- triggers_nowait = {"<leader>"} -- shows WK immediately when hitting <leader>
 }
 ```
 

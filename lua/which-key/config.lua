@@ -43,6 +43,8 @@ local defaults = {
   show_help = true, -- show a help message in the command line for using WhichKey
   triggers = "auto", -- automatically setup triggers
   -- triggers = {"<leader>"} -- or specifiy a list manually
+  triggers_nowait = {}, -- list of triggers, where WhichKey should not wait for timeoutlen and show immediately
+  -- triggers_nowait = {"<leader>"} -- shows WK immediately when hitting <leader>
 }
 
 ---@type Options
