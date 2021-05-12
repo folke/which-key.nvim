@@ -113,8 +113,6 @@ WhichKey comes with the following defaults:
   show_help = true, -- show help message on the command line when the popup is visible
   triggers = "auto", -- automatically setup triggers
   -- triggers = {"<leader>"} -- or specifiy a list manually
-  triggers_nowait = {}, -- list of triggers, where WhichKey should not wait for timeoutlen and show immediately
-  -- triggers_nowait = {"<leader>"} -- shows WK immediately when hitting <leader>
 }
 ```
 
