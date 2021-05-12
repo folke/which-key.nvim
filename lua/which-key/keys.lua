@@ -44,7 +44,7 @@ function M.process_motions(ret, mode, prefix, buf)
   if (mode == "n" or mode == "v") and operator then
     local op_prefix = prefix:sub(#operator + 1)
     local op_count = op_prefix:match("^(%d+)")
-    if op_count then
+    if op_count and op_count ~= "0" then
       op_prefix = op_prefix:sub(#op_count + 1)
     end
     local op_results = M.get_mappings("o", op_prefix, buf)
