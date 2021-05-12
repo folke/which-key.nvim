@@ -9,6 +9,7 @@ Tree.__index = Tree
 ---@field mapping Mapping
 ---@field prefix string
 ---@field children table<string, Node>
+-- selene: allow(unused_variable)
 local Node
 
 ---@return Tree
@@ -25,15 +26,21 @@ function Tree:get(prefix, index, plugin_context)
   prefix = Util.parse_keys(prefix).term
   local node = self.root
   index = index or #prefix
-  if index < 0 then index = #prefix + index end
+  if index < 0 then
+    index = #prefix + index
+  end
   for i = 1, index, 1 do
     node = node.children[prefix[i]]
     if node and plugin_context and node.mapping and node.mapping.plugin then
       local children = require("which-key.plugins").invoke(node.mapping, plugin_context)
       node.children = {}
-      for _, child in pairs(children) do self:add(child) end
+      for _, child in pairs(children) do
+        self:add(child)
+      end
     end
-    if not node then return nil end
+    if not node then
+      return nil
+    end
   end
   return node
 end
@@ -48,7 +55,9 @@ function Tree:path(prefix)
   for i = 1, #prefix, 1 do
     node = node.children[prefix[i]]
     table.insert(path, node)
-    if not node then break end
+    if not node then
+      break
+    end
   end
   return path
 end
@@ -73,7 +82,9 @@ end
 function Tree:walk(cb, node)
   node = node or self.root
   cb(node)
-  for _, child in pairs(node.children) do self:walk(cb, child) end
+  for _, child in pairs(node.children) do
+    self:walk(cb, child)
+  end
 end
 
 return Tree

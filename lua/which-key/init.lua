@@ -4,7 +4,9 @@ local Util = require("which-key.util")
 ---@class WhichKey
 local M = {}
 
-function M.setup(options) require("which-key.config").setup(options) end
+function M.setup(options)
+  require("which-key.config").setup(options)
+end
 
 function M.execute(id)
   local func = Keys.functions[id]
@@ -13,7 +15,9 @@ end
 
 function M.show(keys, opts)
   opts = opts or {}
-  if type(opts) == "string" then opts = { mode = opts } end
+  if type(opts) == "string" then
+    opts = { mode = opts }
+  end
 
   keys = keys or ""
 
@@ -33,13 +37,12 @@ end
 
 function M.show_command(keys, mode)
   keys = keys or ""
-  keys = (keys == "\"\"" or keys == "''") and "" or keys
-  mode = (mode == "\"\"" or mode == "''") and "" or mode
+  keys = (keys == '""' or keys == "''") and "" or keys
+  mode = (mode == '""' or mode == "''") and "" or mode
   mode = mode or "n"
   keys = Util.t(keys)
   if not Util.check_mode(mode) then
-    Util.error(
-      "Invalid mode passed to :WhichKey (Dont create any keymappings to trigger WhichKey. WhichKey does this automaytically)")
+    Util.error("Invalid mode passed to :WhichKey (Dont create any keymappings to trigger WhichKey. WhichKey does this automaytically)")
   else
     M.show(keys, { mode = mode })
   end

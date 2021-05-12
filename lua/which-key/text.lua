@@ -1,5 +1,3 @@
-local config = require("which-key.config")
-
 ---@class Text
 ---@field lines string[]
 ---@field hl Highlight[]
@@ -8,7 +6,9 @@ local config = require("which-key.config")
 local Text = {}
 Text.__index = Text
 
-function Text.len(str) return vim.fn.strdisplaywidth(str) end
+function Text.len(str)
+  return vim.fn.strdisplaywidth(str)
+end
 
 function Text:new()
   local this = { lines = {}, hl = {}, lineNr = 0, current = "" }
@@ -16,7 +16,9 @@ function Text:new()
   return this
 end
 
-function Text:fix_nl(line) return line:gsub("[\n]", "﬋") end
+function Text:fix_nl(line)
+  return line:gsub("[\n]", "﬋")
+end
 
 function Text:nl()
   local line = self:fix_nl(self.current)
@@ -26,11 +28,15 @@ function Text:nl()
 end
 
 function Text:render(str, group, opts)
-  if type(opts) == "string" then opts = { append = opts } end
+  if type(opts) == "string" then
+    opts = { append = opts }
+  end
   opts = opts or {}
 
   if group then
-    if opts.exact ~= true then group = "WhichKey" .. group end
+    if opts.exact ~= true then
+      group = "WhichKey" .. group
+    end
     local from = string.len(self.current)
     ---@class Highlight
     local hl
@@ -38,15 +44,23 @@ function Text:render(str, group, opts)
     table.insert(self.hl, hl)
   end
   self.current = self.current .. str
-  if opts.append then self.current = self.current .. opts.append end
-  if opts.nl then self:nl() end
+  if opts.append then
+    self.current = self.current .. opts.append
+  end
+  if opts.nl then
+    self:nl()
+  end
 end
 
 function Text:set(row, col, str, group)
   str = self:fix_nl(str)
 
   -- extend lines if needed
-  for i = 1, row, 1 do if not self.lines[i] then self.lines[i] = "" end end
+  for i = 1, row, 1 do
+    if not self.lines[i] then
+      self.lines[i] = ""
+    end
+  end
 
   -- extend columns when needed
   if #self.lines[row] < col then
@@ -55,7 +69,9 @@ function Text:set(row, col, str, group)
 
   self.lines[row] = self.lines[row]:sub(0, col) .. str .. self.lines[row]:sub(col + Text.len(str))
 
-  if not group then return end
+  if not group then
+    return
+  end
   -- set highlights
   table.insert(self.hl, {
     line = row - 1,

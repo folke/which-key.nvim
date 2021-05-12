@@ -7,7 +7,7 @@ M.actions = { { trigger = "`", mode = "n" }, { trigger = "'", mode = "n" } }
 local labels = {
   ["^"] = "Last position of cursor in insert mode",
   ["."] = "Last change in current buffer",
-  ["\""] = "Last exited current buffer",
+  ['"'] = "Last exited current buffer",
   ["0"] = "In last file edited",
   ["'"] = "Back to line in current buffer where jumped from",
   ["`"] = "Back to position in current buffer where jumped from",
@@ -19,12 +19,16 @@ local labels = {
 
 ---@type Plugin
 ---@return PluginItem[]
-function M.run(trigger, mode, buf)
+function M.run(_trigger, _mode, buf)
   local items = {}
 
   local marks = {}
-  for _, mark in pairs(vim.fn.getmarklist(buf)) do table.insert(marks, mark) end
-  for _, mark in pairs(vim.fn.getmarklist()) do table.insert(marks, mark) end
+  for _, mark in pairs(vim.fn.getmarklist(buf)) do
+    table.insert(marks, mark)
+  end
+  for _, mark in pairs(vim.fn.getmarklist()) do
+    table.insert(marks, mark)
+  end
 
   for _, mark in pairs(marks) do
     local key = mark.mark:sub(2, 2)
@@ -33,7 +37,9 @@ function M.run(trigger, mode, buf)
     local line
     if mark.pos[1] and mark.pos[1] ~= 0 then
       local lines = vim.fn.getbufline(mark.pos[1], lnum)
-      if lines and lines[1] then line = lines[1] end
+      if lines and lines[1] then
+        line = lines[1]
+      end
     end
 
     local file = mark.file and vim.fn.fnamemodify(mark.file, ":p:.")
@@ -51,4 +57,3 @@ function M.run(trigger, mode, buf)
 end
 
 return M
-

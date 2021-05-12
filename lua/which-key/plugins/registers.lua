@@ -3,15 +3,15 @@ local M = {}
 M.name = "registers"
 
 M.actions = {
-  { trigger = "\"", mode = "n" },
+  { trigger = '"', mode = "n" },
   { trigger = "@", mode = "n" },
   { trigger = "<c-r>", mode = "i" },
 }
 
-local registers = "*+\"-:.%/#=_abcdefghijklmnopqrstuvwxyz0123456789"
+local registers = '*+"-:.%/#=_abcdefghijklmnopqrstuvwxyz0123456789'
 
 local labels = {
-  ["\""] = "last deleted, changed, or yanked content",
+  ['"'] = "last deleted, changed, or yanked content",
   ["0"] = "last yank",
   ["-"] = "deleted or changed content smaller than one line",
   ["."] = "last inserted text",
@@ -27,7 +27,7 @@ local labels = {
 
 ---@type Plugin
 ---@return PluginItem[]
-function M.run(trigger, mode, buf)
+function M.run(_trigger, _mode, _buf)
   local items = {}
 
   for i = 1, #registers, 1 do

@@ -28,7 +28,11 @@ end
 
 function Layout:max_width(key)
   local max = 0
-  for _, item in pairs(self.items) do if item[key] and #item[key] > max then max = #item[key] end end
+  for _, item in pairs(self.items) do
+    if item[key] and #item[key] > max then
+      max = #item[key]
+    end
+  end
   return max
 end
 
@@ -40,7 +44,9 @@ function Layout:trail()
   local cmd_line = { { " " } }
   for i = 1, len, 1 do
     local node = buf_path[i]
-    if not (node and node.mapping and node.mapping.label) then node = path[i] end
+    if not (node and node.mapping and node.mapping.label) then
+      node = path[i]
+    end
     local step = self.mapping.keys.nvim[i]
     if node and node.mapping and node.mapping.label then
       step = self.options.icons.group .. node.mapping.label
@@ -51,7 +57,9 @@ function Layout:trail()
     end
   end
   local width = 0
-  for _, line in pairs(cmd_line) do width = width + Text.len(line[1]) end
+  for _, line in pairs(cmd_line) do
+    width = width + Text.len(line[1])
+  end
   local help = { --
     ["<bs>"] = "go up one level",
     ["<esc>"] = "close",
@@ -69,7 +77,11 @@ function Layout:trail()
   end
   table.insert(cmd_line, { string.rep(" ", math.floor(vim.o.columns / 2 - help_width / 2) - width) })
 
-  if self.options.show_help then for _, l in pairs(help_line) do table.insert(cmd_line, l) end end
+  if self.options.show_help then
+    for _, l in pairs(help_line) do
+      table.insert(cmd_line, l)
+    end
+  end
   vim.api.nvim_echo(cmd_line, false, {})
 end
 
@@ -82,10 +94,11 @@ function Layout:layout(win)
   local max_label_width = self:max_width("label")
   local max_value_width = self:max_width("value")
 
-  local intro_width = max_key_width + 2 + #self.options.icons.separator +
-                        self.options.layout.spacing
+  local intro_width = max_key_width + 2 + #self.options.icons.separator + self.options.layout.spacing
   local max_width = max_label_width + intro_width + max_value_width
-  if max_width > width then max_width = width end
+  if max_width > width then
+    max_width = width
+  end
 
   local column_width = max_width
 
@@ -105,7 +118,9 @@ function Layout:layout(win)
   local columns = math.floor(width / column_width)
 
   local height = math.ceil(#self.items / columns)
-  if height < self.options.layout.height.min then height = self.options.layout.height.min end
+  if height < self.options.layout.height.min then
+    height = self.options.layout.height.min
+  end
   -- if height > self.options.layout.height.max then height = self.options.layout.height.max end
 
   local col = 1
@@ -115,10 +130,16 @@ function Layout:layout(win)
 
   for _, item in pairs(self.items) do
     local start = (col - 1) * column_width + self.options.layout.spacing
-    if col == 1 then start = start + pad_left end
+    if col == 1 then
+      start = start + pad_left
+    end
     local key = item.key or ""
-    if key == "<lt>" then key = "<" end
-    if #key < max_key_width then key = string.rep(" ", max_key_width - #key) .. key end
+    if key == "<lt>" then
+      key = "<"
+    end
+    if #key < max_key_width then
+      key = string.rep(" ", max_key_width - #key) .. key
+    end
 
     self.text:set(row + pad_top, start, key, "")
     start = start + #key + 1
@@ -142,7 +163,9 @@ function Layout:layout(win)
     end
 
     local label = item.label
-    if Text.len(label) > max_label_width then label = label:sub(0, max_label_width - 4) .. " ..." end
+    if Text.len(label) > max_label_width then
+      label = label:sub(0, max_label_width - 4) .. " ..."
+    end
     self.text:set(row + pad_top, start, label, item.group and "Group" or "Desc")
 
     if row % height == 0 then
@@ -153,7 +176,9 @@ function Layout:layout(win)
     end
   end
 
-  for _ = 1, self.options.window.padding[3], 1 do self.text:nl() end
+  for _ = 1, self.options.window.padding[3], 1 do
+    self.text:nl()
+  end
   self:trail()
   return self.text
 end

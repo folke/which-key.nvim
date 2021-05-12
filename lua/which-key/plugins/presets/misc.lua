@@ -78,7 +78,9 @@ local misc = {
 
 function M.setup(wk, config)
   for key, mappings in pairs(misc) do
-    if config[key] ~= false then wk.register(mappings, { mode = "n", prefix = "" }) end
+    if config[key] ~= false then
+      wk.register(mappings, { mode = "n", prefix = "" })
+    end
   end
 end
 

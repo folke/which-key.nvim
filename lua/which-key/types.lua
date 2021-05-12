@@ -1,3 +1,5 @@
+--# selene: allow(unused_variable)
+
 ---@class Keymap
 ---@field rhs string
 ---@field lhs string
