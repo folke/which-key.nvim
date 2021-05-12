@@ -21,13 +21,18 @@ end
 ---@param prefix string
 ---@param index number defaults to last. If < 0, then offset from last
 ---@return Node
-function Tree:get(prefix, index)
+function Tree:get(prefix, index, plugin_context)
   prefix = Util.parse_keys(prefix).term
   local node = self.root
   index = index or #prefix
   if index < 0 then index = #prefix + index end
   for i = 1, index, 1 do
     node = node.children[prefix[i]]
+    if node and plugin_context and node.mapping and node.mapping.plugin then
+      local children = require("which-key.plugins").invoke(node.mapping, plugin_context)
+      node.children = {}
+      for _, child in pairs(children) do self:add(child) end
+    end
     if not node then return nil end
   end
   return node

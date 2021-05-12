@@ -34,25 +34,21 @@ function M._setup(plugin, opts)
   if plugin.setup then plugin.setup(require("which-key"), opts, Config.options) end
 end
 
----@param results MappingGroup
-function M.invoke(results)
-  local plugin = M.plugins[results.mapping.plugin]
-  local prefix = results.mapping.prefix
-  local items = plugin.run(prefix, results.mode, results.buf)
+---@param mapping Mapping
+function M.invoke(mapping, context)
+  local plugin = M.plugins[mapping.plugin]
+  local prefix = mapping.prefix
+  local items = plugin.run(prefix, context.mode, context.buf)
 
-  for _, item in pairs(items) do
+  local ret = {}
+  for i, item in ipairs(items) do
     ---@type VisualMapping
-    local mapping
-    mapping = {
-      key = item.key,
-      label = item.label,
-      keys = Util.parse_keys(prefix .. item.key),
-      prefix = prefix,
-      value = item.value,
-      highlights = item.highlights,
-    }
-    table.insert(results.mappings, mapping)
+    item.order = i
+    item.keys = Util.parse_keys(prefix .. item.key)
+    item.prefix = prefix .. item.key
+    table.insert(ret, item)
   end
+  return ret
 end
 
 return M

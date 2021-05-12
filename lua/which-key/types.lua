@@ -34,6 +34,7 @@ local MappingOptions
 ---@field opts MappingOptions
 ---@field keys KeyCodes
 ---@field plugin string
+---@field fn fun()
 local Mapping
 
 ---@class MappingTree

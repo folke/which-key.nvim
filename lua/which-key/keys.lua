@@ -80,11 +80,9 @@ function M.get_mappings(mode, prefix, buf)
     end
   end
 
-  add(M.get_tree(mode).tree:get(prefix))
-  add(M.get_tree(mode, buf).tree:get(prefix))
-
-  -- Run a plugin if needed
-  if ret.mapping and ret.mapping.plugin then require("which-key.plugins").invoke(ret) end
+  local plugin_context = { buf = buf, mode = mode }
+  add(M.get_tree(mode).tree:get(prefix, nil, plugin_context))
+  add(M.get_tree(mode, buf).tree:get(prefix, nil, plugin_context))
 
   -- Handle motions
   M.process_motions(ret, mode, prefix, buf)
@@ -107,20 +105,19 @@ function M.get_mappings(mode, prefix, buf)
   end
 
   -- Sort items, but not for plugins
-  if not (ret.mapping and ret.mapping.plugin) then
-    table.sort(tmp, function(a, b)
-      if a.group == b.group then
-        local ak = (a.key or ""):lower()
-        local bk = (b.key or ""):lower()
-        local aw = ak:match("[a-z]") and 1 or 0
-        local bw = bk:match("[a-z]") and 1 or 0
-        if aw == bw then return ak < bk end
-        return aw < bw
-      else
-        return (a.group and 1 or 0) < (b.group and 1 or 0)
-      end
-    end)
-  end
+  table.sort(tmp, function(a, b)
+    if a.order and b.order then return a.order < b.order end
+    if a.group == b.group then
+      local ak = (a.key or ""):lower()
+      local bk = (b.key or ""):lower()
+      local aw = ak:match("[a-z]") and 1 or 0
+      local bw = bk:match("[a-z]") and 1 or 0
+      if aw == bw then return ak < bk end
+      return aw < bw
+    else
+      return (a.group and 1 or 0) < (b.group and 1 or 0)
+    end
+  end)
   ret.mappings = tmp
 
   return ret
