@@ -32,7 +32,10 @@ function M.run(_trigger, _mode, _buf)
 
   for i = 1, #registers, 1 do
     local key = registers:sub(i, i)
-    local value = vim.fn.getreg(key)
+    local ok, value = pcall(vim.fn.getreg, key)
+    if not ok then
+      value = ""
+    end
 
     if value ~= "" then
       table.insert(items, { key = key, label = labels[key] or "", value = value })
