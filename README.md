@@ -306,6 +306,8 @@ Built-in key binding help for `motions`, `text-objects`, `operators`, `windows`,
 
 When enabled, this plugin hooks into `z=` and replaces the full-screen spelling suggestions window by a list of suggestions within **WhichKey**.
 
+![image](https://user-images.githubusercontent.com/292349/118102022-1c361880-b38d-11eb-8e82-79ad266d9bb8.png)
+
 ## 🎨 Colors
 
 The table below shows all the highlight groups defined for LSP Trouble with their default link.
