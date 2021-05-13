@@ -32,6 +32,9 @@ function M.run(_trigger, _mode, buf)
 
   for _, mark in pairs(marks) do
     local key = mark.mark:sub(2, 2)
+    if key == "<" then
+      key = "<lt>"
+    end
     local lnum = mark.pos[2]
 
     local line
