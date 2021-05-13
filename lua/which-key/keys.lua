@@ -179,6 +179,8 @@ function M.parse_mappings(mappings, value, prefix)
           mapping.opts.silent = v
         elseif k == "mode" then
           mapping.mode = v
+        elseif k == "expr" then
+          mapping.opts.expr = v
         elseif k == "plugin" then
           mapping.group = true
           mapping.plugin = v
@@ -259,6 +261,7 @@ function M.register(mappings, opts)
         silent = mapping.opts.silent,
         noremap = mapping.opts.noremap,
         nowait = mapping.opts.nowait or false,
+        expr = mapping.opts.expr or false,
       }
       if mapping.cmd:lower():sub(1, #"<plug>") == "<plug>" then
         keymap_opts.noremap = false
