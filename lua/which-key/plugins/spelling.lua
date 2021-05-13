@@ -14,11 +14,12 @@ end
 ---@type Plugin
 ---@return PluginItem[]
 function M.run(_trigger, _mode, _buf)
+  local cursor_word = vim.fn.expand("<cword>")
+  -- get a misspellled word from under the cursor, if not found, then use the cursor_word instead
   local bad = vim.fn.spellbadword()
   local word = bad[1]
-
   if word == "" then
-    return {}
+    word = cursor_word
   end
 
   local suggestions = vim.fn.spellsuggest(word, M.opts.suggestions or 20, bad[2] == "caps" and 1 or 0)

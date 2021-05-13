@@ -1,20 +1,21 @@
 # 💥 Which Key
 
-**WhichKey** is a lua plugin for Neovim 0.5 that displays a popup with possible keybindings of the command you started typing. Heavily inspired by the original [emacs-which-key](https://github.com/justbur/emacs-which-key) and [vim-which-key](https://github.com/liuchengxu/vim-which-key).
+**WhichKey** is a lua plugin for Neovim 0.5 that displays a popup with possible key bindings of the command you started typing. Heavily inspired by the original [emacs-which-key](https://github.com/justbur/emacs-which-key) and [vim-which-key](https://github.com/liuchengxu/vim-which-key).
 
 ![image](https://user-images.githubusercontent.com/292349/116439438-669f8d00-a804-11eb-9b5b-c7122bd9acac.png)
 
 ## ✨ Features
 
-* opens a poup with suggestions to complete a key binding
+* opens a popup with suggestions to complete a key binding
 * works with any setting for [timeoutlen](https://neovim.io/doc/user/options.html#'timeoutlen'), including instantly (`timeoutlen=0`)
-* works correctly with builtin keybindings
+* works correctly with built-in key bindings
 * works correctly with buffer-local mappings
 * extensible plugin architecture
-* builtin plugins:
+* built-in plugins:
   + **marks:** shows your marks when you hit one of the jump keys.
   + **registers:** shows the contents of your registers
   + **presets:** builtin keybinding help for `motions`, `text-objects`, `operators`, `windows`, `nav`, `z` and `g`
+  + **spelling:** spelling suggestions inside the which-key popup 
 
 ## ⚡️ Requirements
 
@@ -281,7 +282,7 @@ Apart from the automatic opening, you can also  manually open **WhichKey** for a
 
 ## 🔥 Plugins
 
-Three builtin plugins are included with **WhichKey**.
+Four built-in plugins are included with **WhichKey**.
 
 ### Marks
 
@@ -297,9 +298,13 @@ Shows a list of your buffer local and global registers when you hit " in *NORMAL
 
 ### Presets
 
-Builtin keybinding help for `motions`, `text-objects`, `operators`, `windows`, `nav`, `z` and `g`
+Built-in key binding help for `motions`, `text-objects`, `operators`, `windows`, `nav`, `z` and `g`
 
 ![image](https://user-images.githubusercontent.com/292349/116439871-df9ee480-a804-11eb-9529-800e167db65c.png)
+
+### Spelling
+
+When enabled, this plugin hooks into `z=` and replaces the full-screen spelling suggestions window by a list of suggestions within **WhichKey**.
 
 ## 🎨 Colors
 
