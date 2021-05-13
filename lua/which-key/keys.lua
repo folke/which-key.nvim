@@ -296,6 +296,10 @@ function M.hook_add(prefix, mode, buf, secret_only)
   if mode == "i" and (prefix == "j" or prefix == "k") then
     return
   end
+  -- never hook q
+  if mode == "n" and prefix == "q" then
+    return
+  end
   -- never hook into select mode
   if mode == "s" then
     return
