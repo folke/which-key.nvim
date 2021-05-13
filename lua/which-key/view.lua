@@ -50,6 +50,7 @@ function M.show()
 end
 
 function M.read_pending()
+  local esc = ""
   while true do
     local n = vim.fn.getchar(0)
     if n == 0 then
@@ -57,18 +58,27 @@ function M.read_pending()
     end
     local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
 
-    -- for some reason, when executing a :norm command,
-    -- vim keeps feeding <esc> at the end
-    if c == Util.t("<esc>") then
-      return
-    end
-
     -- Fix < characters
     if c == "<" then
       c = "<lt>"
     end
 
-    M.keys = M.keys .. c
+    -- HACK: for some reason, when executing a :norm command,
+    -- vim keeps feeding <esc> at the end
+    if c == Util.t("<esc>") then
+      esc = esc .. c
+      -- more than 10 <esc> in a row? most likely the norm bug
+      if #esc > 10 then
+        return
+      end
+    else
+      -- we have <esc> characters, so add them to keys
+      if esc ~= "" then
+        M.keys = M.keys .. esc
+        esc = ""
+      end
+      M.keys = M.keys .. c
+    end
   end
 end
 
