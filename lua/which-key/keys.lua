@@ -107,7 +107,11 @@ function M.get_mappings(mode, prefix, buf)
   local tmp = {}
   for _, value in pairs(ret.mappings) do
     value.key = value.keys.nvim[prefix_len + 1]
-    if value.label or Config.options.ignore_missing == false then
+    local skip = not value.label and Config.options.ignore_missing == true
+    if Util.t(value.key) == Util.t("<esc>") then
+      skip = true
+    end
+    if not skip then
       if value.group then
         value.label = value.label or "+prefix"
         value.label = value.label:gsub("^%+", "")
