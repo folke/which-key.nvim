@@ -107,6 +107,7 @@ function M.get_mappings(mode, prefix, buf)
   local tmp = {}
   for _, value in pairs(ret.mappings) do
     value.key = value.keys.nvim[prefix_len + 1]
+    value.key = vim.fn.strtrans(value.key)
     local skip = not value.label and Config.options.ignore_missing == true
     if Util.t(value.key) == Util.t("<esc>") then
       skip = true
@@ -121,6 +122,9 @@ function M.get_mappings(mode, prefix, buf)
         for _, v in ipairs(Config.options.hidden) do
           value.label = value.label:gsub(v, "")
         end
+      end
+      if value.value then
+        value.value = vim.fn.strtrans(value.value)
       end
       table.insert(tmp, value)
     end
