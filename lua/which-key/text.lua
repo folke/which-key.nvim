@@ -7,7 +7,7 @@ local Text = {}
 Text.__index = Text
 
 function Text.len(str)
-  return vim.fn.strdisplaywidth(str)
+  return vim.fn.strwidth(str)
 end
 
 function Text:new()
