@@ -1,6 +1,7 @@
 local Config = require("which-key.config")
 local Text = require("which-key.text")
 local Keys = require("which-key.keys")
+local Util = require("which-key.util")
 
 ---@class Layout
 ---@field mapping Mapping
@@ -29,8 +30,8 @@ end
 function Layout:max_width(key)
   local max = 0
   for _, item in pairs(self.items) do
-    if item[key] and #item[key] > max then
-      max = #item[key]
+    if item[key] and Text.len(item[key]) > max then
+      max = Text.len(item[key])
     end
   end
   return max
@@ -94,7 +95,7 @@ function Layout:layout(win)
   local max_label_width = self:max_width("label")
   local max_value_width = self:max_width("value")
 
-  local intro_width = max_key_width + 2 + #self.options.icons.separator + self.options.layout.spacing
+  local intro_width = max_key_width + 2 + Text.len(self.options.icons.separator) + self.options.layout.spacing
   local max_width = max_label_width + intro_width + max_value_width
   if max_width > width then
     max_width = width
@@ -137,26 +138,29 @@ function Layout:layout(win)
     if key == "<lt>" then
       key = "<"
     end
-    if #key < max_key_width then
-      key = string.rep(" ", max_key_width - #key) .. key
+    if key == Util.t("<esc>") then
+      key = "<esc>"
+    end
+    if Text.len(key) < max_key_width then
+      key = string.rep(" ", max_key_width - Text.len(key)) .. key
     end
 
     self.text:set(row + pad_top, start, key, "")
-    start = start + #key + 1
+    start = start + Text.len(key) + 1
 
     self.text:set(row + pad_top, start, self.options.icons.separator, "Separator")
-    start = start + #self.options.icons.separator + 1
+    start = start + Text.len(self.options.icons.separator) + 1
 
     if item.value then
       local value = item.value
       start = start + 1
       if Text.len(value) > max_value_width then
-        value = value:sub(0, max_value_width - 4) .. " ..."
+        value = vim.fn.strcharpart(value, 0, max_value_width - 2) .. " …"
       end
       self.text:set(row + pad_top, start, value, "Value")
       if item.highlights then
         for _, hl in pairs(item.highlights) do
-          self.text:highlight(row + pad_top - 1, start + hl[1] - 1, start + hl[2] - 1, hl[3])
+          self.text:highlight(row + pad_top, start + hl[1] - 1, start + hl[2] - 1, hl[3])
         end
       end
       start = start + max_value_width + 2
@@ -164,7 +168,7 @@ function Layout:layout(win)
 
     local label = item.label
     if Text.len(label) > max_label_width then
-      label = label:sub(0, max_label_width - 4) .. " ..."
+      label = vim.fn.strcharpart(label, 0, max_label_width - 2) .. " …"
     end
     self.text:set(row + pad_top, start, label, item.group and "Group" or "Desc")
 

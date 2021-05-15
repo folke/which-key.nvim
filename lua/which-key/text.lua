@@ -27,31 +27,6 @@ function Text:nl()
   self.lineNr = self.lineNr + 1
 end
 
-function Text:render(str, group, opts)
-  if type(opts) == "string" then
-    opts = { append = opts }
-  end
-  opts = opts or {}
-
-  if group then
-    if opts.exact ~= true then
-      group = "WhichKey" .. group
-    end
-    local from = string.len(self.current)
-    ---@class Highlight
-    local hl
-    hl = { line = self.lineNr, from = from, to = from + string.len(str), group = group }
-    table.insert(self.hl, hl)
-  end
-  self.current = self.current .. str
-  if opts.append then
-    self.current = self.current .. opts.append
-  end
-  if opts.nl then
-    self:nl()
-  end
-end
-
 function Text:set(row, col, str, group)
   str = self:fix_nl(str)
 
@@ -63,27 +38,29 @@ function Text:set(row, col, str, group)
   end
 
   -- extend columns when needed
-  if #self.lines[row] < col then
-    self.lines[row] = self.lines[row] .. string.rep(" ", col - #self.lines[row])
+  local width = Text.len(self.lines[row])
+  if width < col then
+    self.lines[row] = self.lines[row] .. string.rep(" ", col - width)
   end
 
-  self.lines[row] = self.lines[row]:sub(0, col) .. str .. self.lines[row]:sub(col + Text.len(str))
+  local before = vim.fn.strcharpart(self.lines[row], 0, col)
+  local after = vim.fn.strcharpart(self.lines[row], col)
+  self.lines[row] = before .. str .. after
 
   if not group then
     return
   end
   -- set highlights
-  table.insert(self.hl, {
-    line = row - 1,
-    from = col,
-    to = col + string.len(str),
-    group = "WhichKey" .. group,
-  })
-  self:highlight(row - 1, col, col + string.len(str), "WhichKey" .. group)
+  self:highlight(row, col, col + Text.len(str), "WhichKey" .. group)
 end
 
-function Text:highlight(line, from, to, group)
-  table.insert(self.hl, { line = line, from = from, to = to, group = group })
+function Text:highlight(row, from, to, group)
+  local line = self.lines[row]
+  local before = vim.fn.strcharpart(line, 0, from)
+  local str = vim.fn.strcharpart(line, 0, to)
+  from = vim.fn.strlen(before)
+  to = vim.fn.strlen(str)
+  table.insert(self.hl, { line = row - 1, from = from, to = to, group = group })
 end
 
 return Text
