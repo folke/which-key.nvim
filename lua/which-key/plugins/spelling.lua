@@ -16,7 +16,7 @@ end
 function M.run(_trigger, _mode, _buf)
   local cursor_word = vim.fn.expand("<cword>")
   -- get a misspellled word from under the cursor, if not found, then use the cursor_word instead
-  local bad = vim.fn.spellbadword()
+  local bad = vim.fn.spellbadword(cursor_word)
   local word = bad[1]
   if word == "" then
     word = cursor_word
