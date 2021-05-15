@@ -1,6 +1,7 @@
 # 💥 Which Key
 
-**WhichKey** is a lua plugin for Neovim 0.5 that displays a popup with possible key bindings of the command you started typing. Heavily inspired by the original [emacs-which-key](https://github.com/justbur/emacs-which-key) and [vim-which-key](https://github.com/liuchengxu/vim-which-key).
+**WhichKey** is a lua plugin for Neovim 0.5 that displays a popup with possible key bindings of
+the command you started typing. Heavily inspired by the original [emacs-which-key](https://github.com/justbur/emacs-which-key) and [vim-which-key](https://github.com/liuchengxu/vim-which-key).
 
 ![image](https://user-images.githubusercontent.com/292349/116439438-669f8d00-a804-11eb-9b5b-c7122bd9acac.png)
 
@@ -14,8 +15,8 @@
 * built-in plugins:
   + **marks:** shows your marks when you hit one of the jump keys.
   + **registers:** shows the contents of your registers
-  + **presets:** builtin keybinding help for `motions`, `text-objects`, `operators`, `windows`, `nav`, `z` and `g`
-  + **spelling:** spelling suggestions inside the which-key popup 
+  + **presets:** built-in key binding help for `motions`, `text-objects`, `operators`, `windows`, `nav`, `z` and `g`
+  + **spelling:** spelling suggestions inside the which-key popup
 
 ## ⚡️ Requirements
 
@@ -216,14 +217,14 @@ wk.register({
 > `[count]operator[count][text-object]`
 
 * operators can be configured with the `operators` option
-  - set `plugins.presets.operators` to `true` to automatically configure vim builtin operators
-  - set this to `false`, to only include the list you configured in the `operators` option.
-  - see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L5) for the full list part of the preset
-* text objects are automatically retrieved from **operator pending** keymaps (`omap`)
-  - set `plugins.presets.text_objects` to `true` to configure builtin text objects
-  - see [here](https://github.com/folke/which-key.nvim/blob/423a50cccfeb8b812e0e89f156316a4bd9d2673a/lua/which-key/plugins/presets/init.lua#L43)
+  + set `plugins.presets.operators` to `true` to automatically configure vim built-in operators
+  + set this to `false`, to only include the list you configured in the `operators` option.
+  + see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L5) for the full list part of the preset
+* text objects are automatically retrieved from **operator pending** key maps (`omap`)
+  + set `plugins.presets.text_objects` to `true` to configure built-in text objects
+  + see [here](https://github.com/folke/which-key.nvim/blob/423a50cccfeb8b812e0e89f156316a4bd9d2673a/lua/which-key/plugins/presets/init.lua#L43)
 * motions are part of the preset `plugins.presets.motions` setting
-  - see [here](https://github.com/folke/which-key.nvim/blob/423a50cccfeb8b812e0e89f156316a4bd9d2673a/lua/which-key/plugins/presets/init.lua#L20)
+  + see [here](https://github.com/folke/which-key.nvim/blob/423a50cccfeb8b812e0e89f156316a4bd9d2673a/lua/which-key/plugins/presets/init.lua#L20)
 
 <details>
 <summary>How to disable some operators? (like v)</summary>
@@ -239,7 +240,7 @@ presets.operators["v"] = nil
 
 ## 🚀 Usage
 
-When the **WhichKey** popup is open, you can use the following keybindings (they are also displayed at the bottom of the screen):
+When the **WhichKey** popup is open, you can use the following key bindings (they are also displayed at the bottom of the screen):
 
 * hit one of the keys to open a group or execute a key binding
 * `<esc>` to cancel and close the popup
@@ -299,3 +300,7 @@ The table below shows all the highlight groups defined for LSP Trouble with thei
 | *WhichKeyDesc*      | Identifier  | the label of the key                        |
 | *WhichKeyFloat*     | NormalFloat | Normal in the popup window                  |
 | *WhichKeyValue*     | Comment     | used by plugins that provide values         |
+
+<!-- markdownlint-disable-file MD033 -->
+<!-- markdownlint-configure-file { "MD013": { "line_length": 120 } } -->
+<!-- markdownlint-configure-file { "MD004": { "style": "sublist" } } -->
