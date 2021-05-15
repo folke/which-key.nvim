@@ -47,6 +47,9 @@ function M.process_motions(ret, mode, prefix, buf)
     if op_count == "0" then
       op_count = nil
     end
+    if Config.options.motions.count == false then
+      op_count = nil
+    end
     if op_count then
       op_prefix = op_prefix:sub(#op_count + 1)
     end
