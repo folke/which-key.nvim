@@ -229,31 +229,10 @@ wk.register({
 <summary>How to disable some operators? (like v)</summary>
 
 ```lua
-{
-  plugins = {
-    -- ...
-    presets = {
-      operators = false
-      -- ..
-    },
-  },
-  -- add operators that will trigger motion and text object completion
-  -- to enable all native operators, set the preset / operators plugin above
-  operators = {
-    d = "Delete",
-    c = "Change",
-    y = "Yank (copy)",
-    ["g~"] = "Toggle case",
-    ["gu"] = "Lowercase",
-    ["gU"] = "Uppercase",
-    [">"] = "Indent right",
-    ["<lt>"] = "Indent left",
-    ["zf"] = "Create fold",
-    ["!"] = "Filter though external program",
-    -- ["v"] = "Visual Character Mode",
-    gc = "Comments"
- },
-}
+-- make sure to run this code before calling setup()
+-- refer to the full lists at https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua
+local presets = require("which-key.plugins.presets")
+presets.operators["v"] = nil
 ```
 
 </details>

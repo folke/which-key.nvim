@@ -17,7 +17,7 @@ M.operators = {
   -- ["V"] = "Visual Line Mode",
 }
 
-local motions = {
+M.motions = {
   ["h"] = "Left",
   ["j"] = "Down",
   ["k"] = "Up",
@@ -40,7 +40,7 @@ local motions = {
   ["}"] = "Next empty line",
 }
 
-local objects = {
+M.objects = {
   a = { name = "around" },
   i = { name = "inside" },
   ['a"'] = [[double quoted string]],
@@ -94,13 +94,13 @@ function M.setup(wk, opts, config)
 
   -- Motions
   if opts.motions then
-    wk.register(motions, { mode = "n", prefix = "" })
-    wk.register(motions, { mode = "o", prefix = "" })
+    wk.register(M.motions, { mode = "n", prefix = "" })
+    wk.register(M.motions, { mode = "o", prefix = "" })
   end
 
   -- Text objects
   if opts.text_objects then
-    wk.register(objects, { mode = "o", prefix = "" })
+    wk.register(M.objects, { mode = "o", prefix = "" })
   end
 end
 
