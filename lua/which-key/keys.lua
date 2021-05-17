@@ -11,6 +11,7 @@ local M = {}
 M.functions = {}
 M.operators = {}
 M.nowait = {}
+M.blacklist = {}
 
 function M.setup()
   local builtin_ops = require("which-key.plugins.presets").operators
@@ -29,6 +30,12 @@ function M.setup()
   end
   M.register(mappings, { mode = "n" })
   M.register({ i = { name = "inside" }, a = { name = "around" } }, { mode = "v" })
+  for mode, blacklist in pairs(Config.options.triggers_blacklist) do
+    for _, prefix in ipairs(blacklist) do
+      M.blacklist[mode] = M.blacklist[mode] or {}
+      M.blacklist[mode][prefix] = true
+    end
+  end
 end
 
 function M.get_operator(prefix)
@@ -306,6 +313,10 @@ function M.hook_del(prefix, mode, buf)
 end
 
 function M.hook_add(prefix, mode, buf, secret_only)
+  -- check if this trigger is blacklisted
+  if M.blacklist[mode] and M.blacklist[mode][prefix] then
+    return
+  end
   -- don't hook to j or k in INSERT mode
   if mode == "i" and (prefix == "j" or prefix == "k") then
     return
