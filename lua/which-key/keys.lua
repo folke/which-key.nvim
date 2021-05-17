@@ -503,7 +503,7 @@ function M.update_keymaps(mode, buf)
     end
 
     -- check if <leader> was remapped
-    if not skip and Util.t(keymap.lhs) == Util.t("<leader>") then
+    if not skip and Util.t(keymap.lhs) == Util.t("<leader>") and mode == "n" then
       if Util.t(keymap.rhs) == "" then
         skip = true
       else
