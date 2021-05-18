@@ -115,6 +115,9 @@ function M.get_mappings(mode, prefix, buf)
   for _, value in pairs(ret.mappings) do
     value.key = value.keys.nvim[prefix_len + 1]
     value.key = vim.fn.strtrans(value.key)
+    if Config.options.key_labels[value.key] then
+      value.key = Config.options.key_labels[value.key]
+    end
     local skip = not value.label and Config.options.ignore_missing == true
     if Util.t(value.key) == Util.t("<esc>") then
       skip = true
