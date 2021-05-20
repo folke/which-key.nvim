@@ -14,6 +14,10 @@ end
 ---@type Plugin
 ---@return PluginItem[]
 function M.run(_trigger, _mode, _buf)
+  -- if started with a count, let the default keybinding work
+  local count = vim.api.nvim_get_vvar("count")
+  if count and count > 0 then return {} end
+
   local cursor_word = vim.fn.expand("<cword>")
   -- get a misspellled word from under the cursor, if not found, then use the cursor_word instead
   local bad = vim.fn.spellbadword(cursor_word)
