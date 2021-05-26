@@ -135,7 +135,7 @@ function Layout:layout(win)
     if self.options.layout.align == "right" then
       offset_x = (columns - columns_used) * column_width
     elseif self.options.layout.align == "center" then
-      offset_x = (columns - columns_used) * column_width / 2
+      offset_x = math.floor((columns - columns_used) * column_width / 2)
     end
   end
 
