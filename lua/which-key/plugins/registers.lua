@@ -8,7 +8,7 @@ M.actions = {
   { trigger = "<c-r>", mode = "i" },
 }
 
-local registers = '*+"-:.%/#=_abcdefghijklmnopqrstuvwxyz0123456789'
+M.registers = '*+"-:.%/#=_abcdefghijklmnopqrstuvwxyz0123456789'
 
 local labels = {
   ['"'] = "last deleted, changed, or yanked content",
@@ -30,8 +30,8 @@ local labels = {
 function M.run(_trigger, _mode, _buf)
   local items = {}
 
-  for i = 1, #registers, 1 do
-    local key = registers:sub(i, i)
+  for i = 1, #M.registers, 1 do
+    local key = M.registers:sub(i, i)
     local ok, value = pcall(vim.fn.getreg, key)
     if not ok then
       value = ""
