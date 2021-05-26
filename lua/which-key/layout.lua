@@ -129,8 +129,18 @@ function Layout:layout(win)
   local pad_top = self.options.window.padding[3]
   local pad_left = self.options.window.padding[4]
 
+  local columns_used = math.min(columns, math.ceil(#self.items / height))
+  local offset_x = 0
+  if columns_used < columns then
+    if self.options.layout.align == "right" then
+      offset_x = (columns - columns_used) * column_width
+    elseif self.options.layout.align == "center" then
+      offset_x = (columns - columns_used) * column_width / 2
+    end
+  end
+
   for _, item in pairs(self.items) do
-    local start = (col - 1) * column_width + self.options.layout.spacing
+    local start = (col - 1) * column_width + self.options.layout.spacing + offset_x
     if col == 1 then
       start = start + pad_left
     end
