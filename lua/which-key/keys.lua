@@ -225,6 +225,9 @@ function M.get_buf_option(opts)
   for _, k in pairs({ "buffer", "bufnr", "buf" }) do
     if opts[k] then
       local v = opts[k]
+      if v == 0 then
+        v = vim.api.nvim_get_current_buf()
+      end
       opts[k] = nil
       if k == "buffer" then
         return v
@@ -243,6 +246,7 @@ M.duplicates = {}
 function M.map(mode, prefix, cmd, buf, opts)
   local other = vim.api.nvim_buf_call(buf, function()
     local ret = vim.fn.maparg(prefix, mode, false, true)
+    ---@diagnostic disable-next-line: undefined-field
     return (ret and ret.lhs and ret.rhs ~= cmd) and ret or nil
   end)
   if other then
