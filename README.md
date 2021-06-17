@@ -168,10 +168,14 @@ Group names use the special `name` key in the tables. There's multiple ways to d
 
 ```lua
 local wk = require("which-key")
--- As an example, we will the following mappings:
---  1. <leader>fn new file
---  2. <leader>fr show recent files
---  2. <leader>ff find files
+-- As an example, we will the create following mappings:
+--  * <leader>ff find files
+--  * <leader>fr show recent files
+--  * <leader>fb Foobar
+-- we'll document:
+--  * <leader>fn new file
+--  * <leader>fe edit file
+-- and hide <leader>1
 
 wk.register({
   f = {
