@@ -94,13 +94,13 @@ function M.setup(wk, opts, config)
 
   -- Motions
   if opts.motions then
-    wk.register(M.motions, { mode = "n", prefix = "" })
-    wk.register(M.motions, { mode = "o", prefix = "" })
+    wk.register(M.motions, { mode = "n", prefix = "", preset = true })
+    wk.register(M.motions, { mode = "o", prefix = "", preset = true })
   end
 
   -- Text objects
   if opts.text_objects then
-    wk.register(M.objects, { mode = "o", prefix = "" })
+    wk.register(M.objects, { mode = "o", prefix = "", preset = true })
   end
 end
 

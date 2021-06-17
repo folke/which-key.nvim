@@ -28,8 +28,8 @@ function M.setup()
   for _, t in pairs(Config.options.triggers_nowait) do
     M.nowait[t] = true
   end
-  M.register(mappings, { mode = "n" })
-  M.register({ i = { name = "inside" }, a = { name = "around" } }, { mode = "v" })
+  M.register(mappings, { mode = "n", preset = true })
+  M.register({ i = { name = "inside" }, a = { name = "around" } }, { mode = "v", preset = true })
   for mode, blacklist in pairs(Config.options.triggers_blacklist) do
     for _, prefix in ipairs(blacklist) do
       M.blacklist[mode] = M.blacklist[mode] or {}
@@ -277,6 +277,9 @@ function M.register(mappings, opts)
   for _, mapping in pairs(mappings) do
     if opts.buffer and not mapping.buf then
       mapping.buf = opts.buffer
+    end
+    if opts.preset then
+      mapping.preset = true
     end
     mapping.keys = Util.parse_keys(mapping.prefix)
     mapping.mode = mapping.mode or mode

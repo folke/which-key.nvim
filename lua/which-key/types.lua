@@ -36,6 +36,7 @@ local MappingOptions
 ---@field cmd string
 ---@field opts MappingOptions
 ---@field keys KeyCodes
+---@field preset boolean
 ---@field plugin string
 ---@field fn fun()
 local Mapping
