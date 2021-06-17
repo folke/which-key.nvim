@@ -160,7 +160,7 @@ Default options for `opts`
 }
 ```
 
-> ❕ When you specify a command in your mapping that starts with `<Plug>`, then we automatically set `noremap=false`, since you always wanty recursive keybindings in this case
+> ❕ When you specify a command in your mapping that starts with `<Plug>`, then we automatically set `noremap=false`, since you always want recursive keybindings in this case
 
 ### ⌨️ Mappings
 
