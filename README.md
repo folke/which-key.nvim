@@ -309,7 +309,7 @@ When enabled, this plugin hooks into `z=` and replaces the full-screen spelling 
 
 ## 🎨 Colors
 
-The table below shows all the highlight groups defined for LSP Trouble with their default link.
+The table below shows all the highlight groups defined for **WhichKey** with their default link.
 
 | Highlight Group     | Defaults to | Description                                 |
 | ------------------- | ----------- | ------------------------------------------- |
