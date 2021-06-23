@@ -52,6 +52,9 @@ function Layout:trail()
     if node and node.mapping and node.mapping.label then
       step = self.options.icons.group .. node.mapping.label
     end
+    if Config.options.key_labels[step] then
+      step = Config.options.key_labels[step]
+    end
     table.insert(cmd_line, { step, "WhichKeyGroup" })
     if i ~= #self.mapping.keys.nvim then
       table.insert(cmd_line, { " " .. self.options.icons.breadcrumb .. " ", "WhichKeySeparator" })
