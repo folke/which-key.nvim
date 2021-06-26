@@ -10,7 +10,7 @@ end
 
 function M.execute(id)
   local func = Keys.functions[id]
-  func()
+  return func()
 end
 
 function M.show(keys, opts)
