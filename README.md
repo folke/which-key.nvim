@@ -30,6 +30,7 @@ Install the plugin with your preferred package manager:
 
 ```vim
 " Vim Script
+Plug 'nvim-lua/plenary.nvim'
 Plug 'folke/which-key.nvim'
 
 lua << EOF
@@ -47,6 +48,7 @@ EOF
 -- Lua
 use {
   "folke/which-key.nvim",
+  requires = { "nvim-lua/plenary.nvim" },
   config = function()
     require("which-key").setup {
       -- your configuration comes here
