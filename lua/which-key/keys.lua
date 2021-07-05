@@ -331,6 +331,10 @@ function M.hook_add(prefix, mode, buf, secret_only)
   if M.blacklist[mode] and M.blacklist[mode][prefix] then
     return
   end
+  -- don't hook numbers. See #118
+  if tonumber(prefix) then
+    return
+  end
   -- don't hook to j or k in INSERT mode
   if mode == "i" and (prefix == "j" or prefix == "k") then
     return
@@ -532,12 +536,14 @@ function M.update_keymaps(mode, buf)
       if Util.t(keymap.rhs) == "" then
         skip = true
       else
-        Util.warn(string.format(
-          "Your <leader> key for %q mode in buf %d is currently mapped to %q. WhichKey automatically creates triggers, so please remove the mapping",
-          mode,
-          buf or 0,
-          keymap.rhs
-        ))
+        Util.warn(
+          string.format(
+            "Your <leader> key for %q mode in buf %d is currently mapped to %q. WhichKey automatically creates triggers, so please remove the mapping",
+            mode,
+            buf or 0,
+            keymap.rhs
+          )
+        )
       end
     end
 
