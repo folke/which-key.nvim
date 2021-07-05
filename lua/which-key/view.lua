@@ -189,7 +189,7 @@ function M.execute(prefix, mode, buf)
   end
 
   -- handle registers that were passed when opening the popup
-  if M.reg ~= '"' and M.mode ~= "i" then
+  if M.reg ~= '"' and M.mode ~= "i" and M.mode ~= "c" then
     vim.api.nvim_feedkeys('"' .. M.reg, "n", false)
   end
 
