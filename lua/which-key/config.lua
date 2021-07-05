@@ -21,6 +21,8 @@ local defaults = {
       nav = true, -- misc bindings to work with windows
       z = true, -- bindings for folds, spelling and others prefixed with z
       g = true, -- bindings for prefixed with g
+      extra = false, -- overrides other presets for extensive built-in bindings
+      mouse = false, -- bindings for the mouse (only works with extra)
     },
   },
   -- add operators that will trigger motion and text object completion
@@ -33,9 +35,7 @@ local defaults = {
     -- ["<cr>"] = "RET",
     -- ["<tab>"] = "TAB",
   },
-  motions = {
-    count = true,
-  },
+  motions = { count = true },
   icons = {
     breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
     separator = "➜", -- symbol used between a key and it's label
@@ -71,9 +71,7 @@ local defaults = {
 M.options = {}
 
 ---@return Options
-function M.setup(options)
-  M.options = vim.tbl_deep_extend("force", {}, defaults, options or {})
-end
+function M.setup(options) M.options = vim.tbl_deep_extend("force", {}, defaults, options or {}) end
 
 M.setup()
 

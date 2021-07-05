@@ -1,31 +1,37 @@
-local wk = require("which-key")
+local M = {}
 
-local insert_binds = {
+--[[
+changed: i_CTRL-C
+
+dependent on setting:
+- insertmode: i_CTRL-C, i_CTRL_L
+
+--]]
+
+M.missing = { ["{char1}<BS>{char2}"] = "enter digraph (only when 'digraph' option set)" }
+
+M.same_as = {
+  ["<C-g>j"] = { "<C-g><C-j>", "<C-g><Down>" },
+  ["<C-g>k"] = { "<C-g><C-k>", "<C-g><Up>" },
+  ["<BS>"] = { "<C-h>" },
+  ["<Tab>"] = { "<C-i>" },
+  ["<CR>"] = { "<NL>", "<C-j>" },
+}
+
+M.mapping = {
   ["<C-@>"] = "insert previously inserted text and stop insert",
   ["<C-a>"] = "insert previously inserted text",
-  ["<C-c>"] = "quit insert mode, without checking for abbreviation, unless 'insertmode' set.",
+  ["<C-c>"] = "quit insert mode, without checking for abbreviation",
   ["<C-d>"] = "delete one shiftwidth of indent in the current line",
   ["<C-e>"] = "insert the character which is below the cursor",
-  ["<C-g>"] = {
-    ["<C-j>"] = "line down, to column where inserting started",
-    ["j"] = "line down, to column where inserting started",
-    ["<Down>"] = "line down, to column where inserting started",
-    ["<C-k>"] = "line up, to column where inserting started",
-    ["k"] = "line up, to column where inserting started",
-    ["<Up>"] = "line up, to column where inserting started",
-    ["u"] = "start new undoable edit",
-    ["U"] = "don't break undo with next cursor movement",
-
-  },
+  ["<C-g>j"] = "line down, to column where inserting started",
+  ["<C-g>k"] = "line up, to column where inserting started",
+  ["<C-g>u"] = "start new undoable edit",
+  ["<C-g>U"] = "don't break undo with next cursor movement",
   ["<BS>"] = "delete character before the cursor",
-  -- ["{char1}<BS>{char2}"] = "enter digraph (only when 'digraph' option set)",
-  ["<C-h>"] = "same as <BS>",
   ["<Tab>"] = "insert a <Tab> character",
-  ["<C-i>"] = "same as <Tab>",
-  ["<NL>"] = "same as <CR>",
-  ["<C-j>"] = "same as <CR>",
-  ["<C-k>"] = "enter digraph",
-  ["<C-l>"] = "when 'insertmode' set: Leave Insert mode",
+  ["<C-k>"] = "�,� enter digraph",
+  ["<C-l>"] = "Leave Insert mode",
   ["<CR>"] = "begin new line",
   ["<C-m>"] = "same as <CR>",
   ["<C-n>"] = "find next match for keyword in front of the cursor",
@@ -95,19 +101,21 @@ local insert_binds = {
   ["<F1>"] = "same as <Help>",
   ["<Help>"] = "stop insert mode and display help window",
   ["<Insert>"] = "toggle Insert/Replace mode",
-  -- ["<LeftMouse>"] = "cursor at mouse click",
-  -- ["<ScrollWheelDown>"] = "move window three lines down",
-  -- ["<S-ScrollWheelDown>"] = "move window one page down",
-  -- ["<ScrollWheelUp>"] = "move window three lines up",
-  -- ["<S-ScrollWheelUp>"] = "move window one page up",
-  -- ["<ScrollWheelLeft>"] = "move window six columns left",
-  -- ["<S-ScrollWheelLeft>"] = "move window one page left",
-  -- ["<ScrollWheelRight>"] = "move window six columns right",
-  -- ["<S-ScrollWheelRight>"] = "move window one page right",
 }
 
--- commands in completion mode (see |popupmenu-keys|)
-local popup = {
+M.mouse = {
+  ["<LeftMouse>"] = "cursor at mouse click",
+  ["<ScrollWheelDown>"] = "move window three lines down",
+  ["<S-ScrollWheelDown>"] = "move window one page down",
+  ["<ScrollWheelUp>"] = "move window three lines up",
+  ["<S-ScrollWheelUp>"] = "move window one page up",
+  ["<ScrollWheelLeft>"] = "move window six columns left",
+  ["<S-ScrollWheelLeft>"] = "move window one page left",
+  ["<ScrollWheelRight>"] = "move window six columns right",
+  ["<S-ScrollWheelRight>"] = "move window one page right",
+}
+
+M.popup_menu = {
   ["<C-e>"] = "stop completion and go back to original text",
   ["<C-y>"] = "accept selected match and stop completion",
   ["<C-l>"] = "insert one character from the current match",
@@ -120,4 +128,4 @@ local popup = {
   ["<PageDown>"] = "select a match several entries forward",
 }
 
-wk.register(insert_binds, { mode = "i", prefix = "", preset = true })
+return M

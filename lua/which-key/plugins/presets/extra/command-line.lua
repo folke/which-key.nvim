@@ -1,6 +1,6 @@
-local wk = require("which-key")
+local M = {}
 
-local command_line_binds = {
+M.mapping = {
   ["<C-a>"] = "do completion on the pattern in front of the cursor and insert all matches",
   ["<C-b>"] = "cursor to begin of command-line",
   ["<C-c>"] = "same as <Esc>",
@@ -59,7 +59,8 @@ local command_line_binds = {
   ["<PageDown>"] = "same as <S-Down>",
   ["<PageUp>"] = "same as <S-Up>",
   ["<Insert>"] = "toggle insert/overstrike mode",
-  -- ["<LeftMouse>"] = "cursor at mouse click",
 }
 
-wk.register(command_line_binds, { mode = "c", preset = true })
+M.mouse = { ["<LeftMouse>"] = "cursor at mouse click" }
+
+return M
