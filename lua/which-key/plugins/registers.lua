@@ -6,6 +6,7 @@ M.actions = {
   { trigger = '"', mode = "n" },
   { trigger = "@", mode = "n" },
   { trigger = "<c-r>", mode = "i" },
+  { trigger = "<c-r>", mode = "c" },
 }
 
 M.registers = '*+"-:.%/#=_abcdefghijklmnopqrstuvwxyz0123456789'
