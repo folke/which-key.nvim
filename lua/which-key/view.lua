@@ -17,10 +17,9 @@ M.buf = nil
 M.win = nil
 
 function M.is_valid()
-  return M.buf
-    and vim.api.nvim_buf_is_valid(M.buf)
-    and vim.api.nvim_buf_is_loaded(M.buf)
-    and vim.api.nvim_win_is_valid(M.win)
+  return M.buf and vim.api.nvim_buf_is_valid(M.buf) and vim.api.nvim_buf_is_loaded(M.buf) and vim.api.nvim_win_is_valid(
+    M.win
+  )
 end
 
 function M.show()
@@ -29,12 +28,18 @@ function M.show()
   end
   local opts = {
     relative = "editor",
-    width = vim.o.columns - config.options.window.margin[2] - config.options.window.margin[4] - (config.options.window.border ~= "none" and 2 or 0),
+    width = vim.o.columns
+      - config.options.window.margin[2]
+      - config.options.window.margin[4]
+      - (config.options.window.border ~= "none" and 2 or 0),
     height = config.options.layout.height.min,
     focusable = false,
     anchor = "SW",
     border = config.options.window.border,
-    row = vim.o.lines - config.options.window.margin[3] - (config.options.window.border ~= "none" and 2 or 0) - vim.o.cmdheight,
+    row = vim.o.lines
+      - config.options.window.margin[3]
+      - (config.options.window.border ~= "none" and 2 or 0)
+      - vim.o.cmdheight,
     col = config.options.window.margin[2],
     style = "minimal",
   }
