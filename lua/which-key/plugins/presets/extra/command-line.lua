@@ -9,11 +9,11 @@ local command_line_binds = {
   ["<C-f>"] = "default value for 'cedit': opens the",
   ["<C-g>"] = "next match when 'incsearch' is active",
   ["<BS>"] = "delete the character in front of the cursor",
-  -- ['{char1} <BS> {char2}'] = 'enter digraph when \'digraph\' is on',
+  -- ["{char1} <BS> {char2}"] = "enter digraph when 'digraph' is on",
   ["<C-h>"] = "same as <BS>",
   ["<Tab>"] = "if 'wildchar' is <Tab>: Do completion on the pattern in front of the cursor",
   ["<S-Tab>"] = "same as CTRL-P",
-  -- [''wildchar'']='Do completion on the pattern in front of the cursor (default: <Tab>)',
+  -- ["'wildchar'"] = "Do completion on the pattern in front of the cursor (default: <Tab>)",
   ["<C-i>"] = "same as <Tab>",
   ["<NL>"] = "same as <CR>",
   ["<C-j>"] = "same as <CR>",
@@ -24,9 +24,9 @@ local command_line_binds = {
   ["<C-n>"] = "after using 'wildchar' with multiple matches: go to next match, otherwise: recall older command-line from history.",
   ["<C-p>"] = "after using 'wildchar' with multiple matches: go to previous match, otherwise: recall older command-line from history.",
   ["<C-q>"] = "same as CTRL-V, unless it's used for terminal control flow",
-  -- ['CTRL-R {regname}'] = 'insert the contents of a register or object under the cursor as if typed',
-  -- ['CTRL-R CTRL-R {regname}'] = '',
-  -- ['CTRL-R CTRL-O {regname}'] = 'insert the contents of a register or object under the cursor literally',
+  -- ["CTRL-R {regname}"] = "insert the contents of a register or object under the cursor as if typed",
+  -- ["CTRL-R CTRL-R {regname}"] = "",
+  -- ["CTRL-R CTRL-O {regname}"] = "insert the contents of a register or object under the cursor literally",
   ["<C-t>"] = "previous match when 'incsearch' is active",
   ["<C-u>"] = "remove all characters",
   ["<C-v>"] = "insert next non-digit literally, insert three digit decimal number as a single byte.",
@@ -59,7 +59,7 @@ local command_line_binds = {
   ["<PageDown>"] = "same as <S-Down>",
   ["<PageUp>"] = "same as <S-Up>",
   ["<Insert>"] = "toggle insert/overstrike mode",
-  -- ['<LeftMouse>'] = 'cursor at mouse click'
+  -- ["<LeftMouse>"] = "cursor at mouse click",
 }
 
 wk.register(command_line_binds, { mode = "c", preset = true })
