@@ -2,7 +2,12 @@ local M = {}
 
 M.name = "marks"
 
-M.actions = { { trigger = "`", mode = "n" }, { trigger = "'", mode = "n" } }
+M.actions = { 
+  { trigger = "`", mode = "n" },
+  { trigger = "'", mode = "n" },
+  { trigger = "g`", mode = "n" },
+  { trigger = "g'", mode = "n" }
+}
 
 local labels = {
   ["^"] = "Last position of cursor in insert mode",
