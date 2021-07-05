@@ -6,6 +6,11 @@ local M = {}
 
 function M.setup(options)
   require("which-key.config").setup(options)
+  if vim.v.vim_did_enter == 0 then
+    vim.cmd([[au VimEnter * ++once lua require("which-key").load()]])
+  else
+    M.load()
+  end
 end
 
 function M.execute(id)
@@ -42,7 +47,9 @@ function M.show_command(keys, mode)
   mode = mode or "n"
   keys = Util.t(keys)
   if not Util.check_mode(mode) then
-    Util.error("Invalid mode passed to :WhichKey (Dont create any keymappings to trigger WhichKey. WhichKey does this automaytically)")
+    Util.error(
+      "Invalid mode passed to :WhichKey (Dont create any keymappings to trigger WhichKey. WhichKey does this automaytically)"
+    )
   else
     M.show(keys, { mode = mode })
   end
@@ -63,6 +70,9 @@ end
 
 -- Load mappings and update only once
 function M.load()
+  if loaded then
+    return
+  end
   require("which-key.plugins").setup()
   require("which-key.colors").setup()
   Keys.register({}, { prefix = "<leader>", mode = "n" })
