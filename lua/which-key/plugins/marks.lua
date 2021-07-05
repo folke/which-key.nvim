@@ -6,7 +6,7 @@ M.actions = {
   { trigger = "`", mode = "n" },
   { trigger = "'", mode = "n" },
   { trigger = "g`", mode = "n" },
-  { trigger = "g'", mode = "n" }
+  { trigger = "g'", mode = "n" },
 }
 
 local labels = {
