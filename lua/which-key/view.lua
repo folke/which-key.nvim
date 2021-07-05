@@ -62,7 +62,7 @@ function M.read_pending()
   while true do
     local n = vim.fn.getchar(0)
     if n == 0 then
-      return
+      break
     end
     local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
 
@@ -87,6 +87,10 @@ function M.read_pending()
       end
       M.keys = M.keys .. c
     end
+  end
+  if esc ~= "" then
+    M.keys = M.keys .. esc
+    esc = ""
   end
 end
 
