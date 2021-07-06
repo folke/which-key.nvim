@@ -11,12 +11,12 @@ local function schedule_load()
   if scheduled then
     return
   end
+  scheduled = true
   if vim.v.vim_did_enter == 0 then
     vim.cmd([[au VimEnter * ++once lua require("which-key").load()]])
   else
     M.load()
   end
-  scheduled = true
 end
 
 function M.setup(options)
