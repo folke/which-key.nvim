@@ -4,7 +4,9 @@ local Util = require("which-key.util")
 ---@class WhichKey
 local M = {}
 
+local did_setup = false
 function M.setup(options)
+  did_setup = true
   require("which-key.config").setup(options)
   if vim.v.vim_did_enter == 0 then
     vim.cmd([[au VimEnter * ++once lua require("which-key").load()]])
@@ -60,6 +62,9 @@ local loaded = false -- once we loaded everything
 
 -- Defer registering keymaps until VimEnter
 function M.register(mappings, opts)
+  if not did_setup then
+    Util.error("Did you forget to run WhichKey setup?")
+  end
   if loaded then
     Keys.register(mappings, opts)
     Keys.update()
