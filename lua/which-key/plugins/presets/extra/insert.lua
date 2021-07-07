@@ -58,14 +58,14 @@ M.mapping = {
   ["<C-g>U"] = "don't break undo with next Δ movement",
   ["<BS>"] = "delete character before Δ",
   ["<Tab>"] = "insert a <Tab> character",
-  ["<C-k>"] = "δδ enter digraph",
+  ["<C-k>"] = "δδ_enter digraph",
   ["<CR>"] = "begin new line",
   ["<C-n>"] = "find next match for keyword in front of Δ",
   ["<C-o>"] = "execute a single command and return to insert mode",
   ["<C-p>"] = "find previous match for keyword in front of Δ",
   ["<C-t>"] = "insert one shiftwidth of indent in currentline",
   ["<C-u>"] = "delete all entered characters in the current line",
-  ["<C-v>"] = "σσσ insert three digit decimal number as a single byte",
+  ["<C-v>"] = "σσσ_insert three digit decimal number as a single byte",
   ["<C-w>"] = "delete word before Δ",
   ["<C-x>"] = {
     name = "sub",
@@ -126,18 +126,6 @@ M.mouse = {
   ["<S-ScrollWheelLeft>"] = "move window one page left",
   ["<ScrollWheelRight>"] = "move window six columns right",
   ["<S-ScrollWheelRight>"] = "move window one page right",
-}
-
-M.completion = {
-  ["<C-e>"] = "stop completion and go back to original text",
-  ["<C-y>"] = "accept selected match and stop completion",
-  ["<C-l>"] = "insert one character from the current match",
-  ["<CR>"] = "insert currently selected match",
-  ["<BS>"] = "delete one character and redo search",
-  ["<Up>"] = "select the previous match",
-  ["<Down>"] = "select the next match",
-  ["<PageUp>"] = "select a match several entries back",
-  ["<PageDown>"] = "select a match several entries forward",
 }
 
 return M

@@ -5,24 +5,42 @@ local M = {}
 M.name = "marks"
 
 M.actions = {
-  { trigger = "`", mode = "n" },
   { trigger = "'", mode = "n" },
+  { trigger = "`", mode = "n" },
   { trigger = "g`", mode = "n" },
   { trigger = "g'", mode = "n" },
 }
 
 if extra == true then
   M.actions = {
-    { trigger = "`", mode = "n", label = "μ_Ξ Δ to the mark {a-zA-Z0-9}" },
-    {
-      trigger = "'",
-      mode = "n",
-      label = "μ_Ξ Δ to the first CHAR on the line with mark {a-zA-Z0-9}",
-    },
-    { trigger = "g`", mode = "n", label = "μ_Ξ like |'| but without changing the jumplist" },
-    { trigger = "g'", mode = "n", label = "μ_Ξ like |`| but without changing the jumplist" },
+    { trigger = "'", mode = "n", label = "μ,Ξ_Δ to the first CHAR on the line with mark μ" },
+    { trigger = "`", mode = "n", label = "μ,Ξ_Δ to the mark μ" },
+    { trigger = "g`", mode = "n", label = "μ,Ξ_like |'| but without changing the jumplist" },
+    { trigger = "g'", mode = "n", label = "μ,Ξ_like |`| but without changing the jumplist" },
   }
 end
+
+--[[
+  n
+  ["''"] = "Ξ_Δ to the first CHAR of the line where Δ was before the latest jump.",
+  ["'("] = "Ξ_Δ to the first CHAR on the line of the start of the current sentence",
+  ["')"] = "Ξ_Δ to the first CHAR on the line of the end of the current sentence",
+  ["'<LT>"] = "Ξ_Δ to the first CHAR of the line where highlighted area starts/started in the current buffer.",
+  ["'>"] = "Ξ_Δ to the first CHAR of the line where highlighted area ends/ended in the current buffer.",
+  ["'["] = "Ξ_Δ to the first CHAR on the line of the start of last operated text or start of put text",
+  ["']"] = "Ξ_Δ to the first CHAR on the line of the end of last operated text or end of put text",
+  ["'{"] = "Ξ_Δ to the first CHAR on the line of the start of the current paragraph",
+  ["'}"] = "Ξ_Δ to the first CHAR on the line of the end of the current paragraph",
+  ["`("] = "Ξ_Δ to the start of the current sentence",
+  ["`)"] = "Ξ_Δ to the end of the current sentence",
+  ["`<LT>"] = "Ξ_Δ to the start of the highlighted area",
+  ["`>"] = "Ξ_Δ to the end of the highlighted area",
+  ["`["] = "Ξ_Δ to the start of last operated text or start of putted text",
+  ["`]"] = "Ξ_Δ to the end of last operated text or end of putted text",
+  ["``"] = "Ξ_Δ to the position before latest jump",
+  ["`{"] = "Ξ_Δ to the start of the current paragraph",
+  ["`}"] = "Ξ_Δ to the end of the current paragraph",
+]]
 
 local labels = {
   ["^"] = "Last position of cursor in insert mode",
