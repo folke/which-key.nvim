@@ -10,9 +10,7 @@ function M.setup()
   for name, opts in pairs(Config.options.plugins) do
     -- only setup plugin if we didnt load it before
     if not M.plugins[name] then
-      if type(opts) == "boolean" then
-        opts = { enabled = opts }
-      end
+      if type(opts) == "boolean" then opts = { enabled = opts } end
       opts.enabled = opts.enabled ~= false
       if opts.enabled then
         M.plugins[name] = require("which-key.plugins." .. name)
@@ -24,6 +22,7 @@ end
 
 ---@param plugin Plugin
 function M._setup(plugin, opts)
+
   if plugin.actions then
     for _, trigger in pairs(plugin.actions) do
       local prefix = trigger.trigger
@@ -33,9 +32,7 @@ function M._setup(plugin, opts)
     end
   end
 
-  if plugin.setup then
-    plugin.setup(require("which-key"), opts, Config.options)
-  end
+  if plugin.setup then plugin.setup(require("which-key"), opts, Config.options) end
 end
 
 ---@param mapping Mapping

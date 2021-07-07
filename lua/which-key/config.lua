@@ -21,7 +21,7 @@ local defaults = {
       nav = true, -- misc bindings to work with windows
       z = true, -- bindings for folds, spelling and others prefixed with z
       g = true, -- bindings for prefixed with g
-      extra = false, -- overrides other presets for extensive built-in bindings
+      extra = false, -- overrides other plugins for extensive built-in bindings
       mouse = false, -- bindings for the mouse (only works with extra)
     },
   },

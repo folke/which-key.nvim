@@ -83,9 +83,8 @@ M.objects = {
 
 ---@param config Options
 function M.setup(wk, opts, config)
-  -- Use extra info instead of misc
-
-  if opts.extra ~= false then
+  -- Use  info instead of misc
+  if opts.extra == true then
     local ext = require("which-key.plugins.presets.extra")
     ext.setup(wk, opts)
     M.operators = ext.operators
