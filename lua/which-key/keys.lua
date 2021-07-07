@@ -13,7 +13,11 @@ M.operators = {}
 M.nowait = {}
 M.blacklist = {}
 
+local extra = false
+
 function M.setup()
+  extra = Config.options.plugins.presets.extra
+
   local builtin_ops = require("which-key.plugins.presets").operators
   for op, _ in pairs(builtin_ops) do
     M.operators[op] = true
@@ -22,7 +26,11 @@ function M.setup()
   for op, label in pairs(Config.options.operators) do
     M.operators[op] = true
     if builtin_ops[op] then
-      mappings[op] = { name = label, i = { name = "inside" }, a = { name = "around" } }
+      if extra ~= true then
+        mappings[op] = { name = label, i = { name = "inside" }, a = { name = "around" } }
+      else
+        mappings[op] = { name = label }
+      end
     end
   end
   for _, t in pairs(Config.options.triggers_nowait) do
@@ -48,7 +56,7 @@ end
 
 function M.process_motions(ret, mode, prefix, buf)
   local operator = mode == "v" and "" or M.get_operator(prefix)
-  if (mode == "n" or mode == "v") and operator then
+  if (mode == "n" or mode == "v" and extra ~= true) and operator then
     local op_prefix = prefix:sub(#operator + 1)
     local op_count = op_prefix:match("^(%d+)")
     if op_count == "0" then
@@ -472,7 +480,8 @@ function M.check_health()
 
         local auto_prefix = not node.mapping or (node.mapping.group == true and not node.mapping.cmd)
         if node.prefix ~= "" and count > 0 and not auto_prefix then
-          local msg = ("conflicting keymap exists for mode **%q**, lhs: **%q**"):format(tree.mode, node.mapping.prefix)
+          local msg = "conflicting keymap exists for mode **%q**, lhs: **%q**"
+          msg = msg:format(tree.mode, node.mapping.prefix)
           vim.fn["health#report_warn"](msg)
           local cmd = node.mapping.cmd or " "
           vim.fn["health#report_info"](("rhs: `%s`"):format(cmd))

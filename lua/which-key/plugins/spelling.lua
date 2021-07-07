@@ -1,8 +1,16 @@
+local extra = require("which-key.config").options.plugins.presets.extra
+
 local M = {}
 
 M.name = "spelling"
 
 M.actions = { { trigger = "z=", mode = "n" } }
+
+if extra == true then
+  M.actions = {
+    { trigger = "z=", mode = "n", label = "give spelling suggestions" },
+  }
+end
 
 M.opts = {}
 
@@ -16,7 +24,9 @@ end
 function M.run(_trigger, _mode, _buf)
   -- if started with a count, let the default keybinding work
   local count = vim.api.nvim_get_vvar("count")
-  if count and count > 0 then return {} end
+  if count and count > 0 then
+    return {}
+  end
 
   local cursor_word = vim.fn.expand("<cword>")
   -- get a misspellled word from under the cursor, if not found, then use the cursor_word instead
@@ -34,9 +44,13 @@ function M.run(_trigger, _mode, _buf)
   for i, label in ipairs(suggestions) do
     local key = keys:sub(i, i)
 
-    table.insert(items, { key = key, label = label, fn = function()
-      vim.cmd("norm! ciw" .. label)
-    end })
+    table.insert(items, {
+      key = key,
+      label = label,
+      fn = function()
+        vim.cmd("norm! ciw" .. label)
+      end,
+    })
   end
   return items
 end

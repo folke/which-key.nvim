@@ -1,3 +1,5 @@
+local extra = require("which-key.config").options.plugins.presets.extra
+
 local M = {}
 
 M.name = "registers"
@@ -7,6 +9,33 @@ M.actions = {
   { trigger = "@", mode = "n" },
   { trigger = "<c-r>", mode = "i" },
   { trigger = "<c-r>", mode = "c" },
+}
+
+if extra == true then
+  M.actions = {
+    { trigger = '"', mode = "n", label = "λ_use λ for next delete, yank or put" },
+    { trigger = "@", mode = "n", label = "α,Ψ_execute the contents of register α N times" },
+    { trigger = "<c-r>", mode = "i", label = "λ_insert a register's content" },
+    {
+      trigger = "<c-r>",
+      mode = "c",
+      label = "λ_insert a register's content or Δobject as if typed",
+    },
+  }
+end
+
+local insert_mapping = {
+  ["<C-r><C-r>"] = "λ_insert a register's content literally",
+  ["<C-r><C-o>"] = 'λ_like "<C-r><C-r>", but don\'t auto-indent',
+  ["<C-r><C-p>"] = 'λ_like "<C-r><C-r>", but fix indent',
+}
+
+local command_same_as = {
+  ["<C-r><C-r>"] = { "<C-r><C-o>" },
+}
+
+local command_mapping = {
+  ["<C-r><C-r>"] = "λ_insert a register's content or Δobject literally",
 }
 
 M.registers = '*+"-:.%/#=_abcdefghijklmnopqrstuvwxyz0123456789'
