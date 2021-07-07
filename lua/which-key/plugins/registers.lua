@@ -24,7 +24,6 @@ if extra == true then
   }
 end
 --[[
-
   i
   ["<C-r><C-r>"] = "λ_insert a register's content literally",
   ["<C-r><C-o>"] = "λ_like \"<C-r><C-r>\", but don't auto-indent",
