@@ -45,7 +45,7 @@ end
 local labels = {
   ["^"] = "Last position of cursor in insert mode",
   ["."] = "Last change in current buffer",
-  ["\""] = "Last exited current buffer",
+  ['"'] = "Last exited current buffer",
   ["0"] = "In last file edited",
   ["'"] = "Back to line in current buffer where jumped from",
   ["`"] = "Back to position in current buffer where jumped from",
@@ -61,18 +61,26 @@ function M.run(_trigger, _mode, buf)
   local items = {}
 
   local marks = {}
-  for _, mark in pairs(vim.fn.getmarklist(buf)) do table.insert(marks, mark) end
-  for _, mark in pairs(vim.fn.getmarklist()) do table.insert(marks, mark) end
+  for _, mark in pairs(vim.fn.getmarklist(buf)) do
+    table.insert(marks, mark)
+  end
+  for _, mark in pairs(vim.fn.getmarklist()) do
+    table.insert(marks, mark)
+  end
 
   for _, mark in pairs(marks) do
     local key = mark.mark:sub(2, 2)
-    if key == "<" then key = "<lt>" end
+    if key == "<" then
+      key = "<lt>"
+    end
     local lnum = mark.pos[2]
 
     local line
     if mark.pos[1] and mark.pos[1] ~= 0 then
       local lines = vim.fn.getbufline(mark.pos[1], lnum)
-      if lines and lines[1] then line = lines[1] end
+      if lines and lines[1] then
+        line = lines[1]
+      end
     end
 
     local file = mark.file and vim.fn.fnamemodify(mark.file, ":p:.")

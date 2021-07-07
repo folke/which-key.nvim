@@ -14,7 +14,7 @@ M.not_used = {
   ["<C-s>"] = "not used or used for terminal control flow",
   ["<C-\\>a-z"] = "reserved for extensions",
   ["<C-\\>others"] = "not used",
-  ["<Space> to '~'"] = "not used, except '0' and '^' followed by CTRL-D",
+  ["<Space> to '~'"] = "not used, except '0' and '^' followed by '<C-D>'",
   ["Meta charcters"] = "(0x80 to 0xff, 128 to 255) not used",
 }
 
@@ -47,7 +47,7 @@ M.mode = {
 }
 
 M.mapping = {
-  ["<C-@>"] = "insert previously inserted text and stop insert",
+  ["<C-@>"] = "insert previously inserted text, stop insert",
   ["<C-a>"] = "insert previously inserted text",
   ["<C-c>"] = "quit insert mode, without checking for abbreviation",
   ["<C-d>"] = "delete one shiftwidth of indent in the current line",
@@ -61,7 +61,7 @@ M.mapping = {
   ["<C-k>"] = "δδ_enter digraph",
   ["<CR>"] = "begin new line",
   ["<C-n>"] = "find next match for keyword in front of Δ",
-  ["<C-o>"] = "execute a single command and return to insert mode",
+  ["<C-o>"] = "execute a single command, return to insert mode",
   ["<C-p>"] = "find previous match for keyword in front of Δ",
   ["<C-t>"] = "insert one shiftwidth of indent in currentline",
   ["<C-u>"] = "delete all entered characters in the current line",
@@ -96,11 +96,11 @@ M.mapping = {
     ["<C-d>"] = "delete all indent in the current line",
   },
   ["^"] = {
-    name = "like \"0<C-d>\", but restore it in the next line",
-    ["^<C-d>"] = "like \"0<C-d>\", but restore it in the next line",
+    name = "like '0<C-d>', but restore it in the next line",
+    ["^<C-d>"] = "like '0<C-d>', but restore it in the next line",
   },
   ["<Del>"] = "delete Δcharacter",
-  ["<Help>"] = "stop insert mode and display help window",
+  ["<Help>"] = "stop insert mode, display help window",
   ["<Left>"] = "Δ one character left",
   ["<S-Left>"] = "Δ one word left",
   ["<Right>"] = "Δ one character right",

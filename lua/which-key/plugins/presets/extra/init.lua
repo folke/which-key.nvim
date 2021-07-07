@@ -1,10 +1,15 @@
 local M = {}
 
+M.operators_when = {
+  ["tildeop"] = {
+    ["~"] = "ξ,Ψ_if 'tildeop' on, switch case of text",
+  },
+}
+
 M.operators = {
-  ["c"] = "ξ,ΛΨ_delete text and start insert",
+  ["c"] = "ξ,ΛΨ_(change) delete text, start insert",
   ["d"] = "ξ,ΛΨ_delete text",
   ["y"] = "ξ,Λ_yank text",
-  ["~"] = "ξ,Ψ_if 'tildeop' on, switch case of text",
   ["!"] = "ξζ,Ψ_filter text through the ζ command",
   ["<LT>"] = "ξ,Ψ_shift lines one 'shiftwidth' leftwards",
   [">"] = "ξ,Ψ_shift lines one 'shiftwidth' rightwards",
@@ -12,7 +17,7 @@ M.operators = {
   ["gU"] = "ξ,Ψ_make text uppercase",
   ["gq"] = "ξ,Ψ_format text",
   ["gu"] = "ξ,Ψ_make text lowercase",
-  ["gw"] = "ξ,Ψ_format text and keep Δ",
+  ["gw"] = "ξ,Ψ_format text, keep Δ",
   ["g?"] = "ξ,Ψ_encode with Rot13",
   ["g@"] = "ξ_call 'operatorfunc'",
   ["g~"] = "ξ,Ψ_swap case for text",
@@ -127,9 +132,9 @@ M.motions = {
   ["]s"] = "Ξ_move to next misspelled word",
   ["]z"] = "Ξ_move to end of open fold",
   ["]}"] = "Ξ_Δ N times forward to unmatched '}'",
-  ["g#"] = "Ξ_like \"#\", but without using \"\\<\" and \"\\>\"",
+  ["g#"] = "Ξ_like '#', but without using '\\<' and '\\>'",
   ["g$"] = "Ξ_go to the rightmost character of screen line",
-  ["g*"] = "Ξ_like \"*\", but without using \"\\<\" and \"\\>\"",
+  ["g*"] = "Ξ_like '*', but without using '\\<' and '\\>'",
   ["g,"] = "Ξ_go to N newer position in change list",
   ["g0"] = "Ξ_go to the leftmost character of screen line",
   ["g;"] = "Ξ_go to N older position in change list",
@@ -165,30 +170,30 @@ M.same_as_objects = {
 M.objects = {
   a = { name = "around" },
   i = { name = "inside" },
-  ["a\""] = "double quoted string",
+  ['a"'] = "double quoted string",
   ["a'"] = "single quoted string",
-  ["a<LT>"] = "\"a <>\" from '<' to the matching '>'",
-  ["aB"] = "\"a Block\" from \"[{\" to \"]}\" (with brackets)",
-  ["aW"] = "\"a WORD\" (with white space)",
-  ["a["] = "\"a []\" from '[' to the matching ']'",
+  ["a<LT>"] = "'a <>' from '<' to the matching '>'",
+  ["aB"] = "'a Block' from '[{' to ']}' (with brackets)",
+  ["aW"] = "'a WORD' (with white space)",
+  ["a["] = "'a []' from '[' to the matching ']'",
   ["a`"] = "string in backticks",
-  ["ab"] = "\"a block\" from \"[(\" to \"])\" (with braces)",
-  ["ap"] = "\"a paragraph\" (with white space)",
-  ["as"] = "\"a sentence\" (with white space)",
-  ["at"] = "\"a tag block\" (with white space)",
-  ["aw"] = "\"a word\" (with white space)",
-  ["i\""] = "double quoted string without the quotes",
+  ["ab"] = "'a block' from '[(' to '])' (with braces)",
+  ["ap"] = "'a paragraph' (with white space)",
+  ["as"] = "'a sentence' (with white space)",
+  ["at"] = "'a tag block' (with white space)",
+  ["aw"] = "'a word' (with white space)",
+  ['i"'] = "double quoted string without the quotes",
   ["i'"] = "single quoted string without the quotes",
-  ["i<LT>"] = "\"inner <>\" from '<' to the matching '>'",
-  ["iB"] = "\"inner Block\" from \"[{\" and \"]}\"",
-  ["iW"] = "\"inner WORD\"",
-  ["i["] = "\"inner []\" from '[' to the matching ']'",
+  ["i<LT>"] = "'inner <>' from '<' to the matching '>'",
+  ["iB"] = "'inner Block' from '[{' and ']}'",
+  ["iW"] = "'inner WORD'",
+  ["i["] = "'inner []' from '[' to the matching ']'",
   ["i`"] = "string in backticks without the backticks",
-  ["ib"] = "\"inner block\" from \"[(\" to \"])\"",
-  ["ip"] = "\"inner paragraph\"",
-  ["is"] = "\"inner sentence\"",
-  ["it"] = "\"inner tag block\"",
-  ["iw"] = "\"inner word\"",
+  ["ib"] = "'inner block' from '[(' to '])'",
+  ["ip"] = "'inner paragraph'",
+  ["is"] = "'inner sentence'",
+  ["it"] = "'inner tag block'",
+  ["iw"] = "'inner word'",
 }
 
 local operator_pending_mapping = {
@@ -198,18 +203,20 @@ local operator_pending_mapping = {
 }
 
 M.completion = {
-  ["<C-e>"] = "stop completion and go back to original text",
-  ["<C-y>"] = "accept selected match and stop completion",
+  ["<C-e>"] = "stop completion, go back to original text",
+  ["<C-y>"] = "accept selected match, stop completion",
   ["<C-l>"] = "insert one character from the current match",
   ["<CR>"] = "insert currently selected match",
-  ["<BS>"] = "delete one character and redo search",
+  ["<BS>"] = "delete one character, redo search",
   ["<Up>"] = "select the previous match",
   ["<Down>"] = "select the next match",
   ["<PageUp>"] = "select a match several entries back",
   ["<PageDown>"] = "select a match several entries forward",
 }
 
-local function map(wk, m, mp) wk.register(mp, { mode = m, prefix = "", preset = true }) end
+local function map(wk, m, mp)
+  wk.register(mp, { mode = m, prefix = "", preset = true })
+end
 
 function M.setup(wk, config)
   local insert = require("which-key.plugins.presets.extra.insert")
@@ -230,7 +237,7 @@ function M.setup(wk, config)
 
   for op, label in pairs(operator_pending_mapping) do
     local motion = visual_mapping
-    motion.name = label;
+    motion.name = label
     map(wk, "o", { [op] = motion })
   end
 end

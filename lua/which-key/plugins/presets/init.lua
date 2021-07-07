@@ -43,7 +43,7 @@ M.motions = {
 M.objects = {
   a = { name = "around" },
   i = { name = "inside" },
-  ["a\""] = [[double quoted string]],
+  ['a"'] = [[double quoted string]],
   ["a'"] = [[single quoted string]],
   ["a("] = [[same as ab]],
   ["a)"] = [[same as ab]],
@@ -61,7 +61,7 @@ M.objects = {
   ["aw"] = [[a word (with white space)]],
   ["a{"] = [[same as aB]],
   ["a}"] = [[same as aB]],
-  ["i\""] = [[double quoted string without the quotes]],
+  ['i"'] = [[double quoted string without the quotes]],
   ["i'"] = [[single quoted string without the quotes]],
   ["i("] = [[same as ib]],
   ["i)"] = [[same as ib]],
@@ -95,7 +95,11 @@ function M.setup(wk, opts, config)
   end
 
   -- Operators
-  if opts.operators then for op, label in pairs(M.operators) do config.operators[op] = label end end
+  if opts.operators then
+    for op, label in pairs(M.operators) do
+      config.operators[op] = label
+    end
+  end
 
   -- Motions
   if opts.motions then
@@ -104,7 +108,9 @@ function M.setup(wk, opts, config)
   end
 
   -- Text objects
-  if opts.text_objects then wk.register(M.objects, { mode = "o", prefix = "", preset = true }) end
+  if opts.text_objects then
+    wk.register(M.objects, { mode = "o", prefix = "", preset = true })
+  end
 end
 
 return M

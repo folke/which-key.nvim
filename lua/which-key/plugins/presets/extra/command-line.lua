@@ -43,7 +43,7 @@ M.mode = {
 }
 
 M.mapping = {
-  ["<C-a>"] = "do completion on patternΔ and insert all matches",
+  ["<C-a>"] = "do completion on patternΔ, insert all matches",
   ["<C-b>"] = "Δ to begin of command-line",
   ["<C-d>"] = "list completions that match patternΔ",
   ["<C-e>"] = "Δ to end of command-line",
@@ -52,7 +52,7 @@ M.mapping = {
   ["<BS>"] = "delete characterΔ",
   ["<Tab>"] = "do completion on patternΔ",
   ["<C-k>"] = "δδ_enter digraph",
-  ["<C-l>"] = "do completion on patternΔ and insert the longest common part",
+  ["<C-l>"] = "do completion on patternΔ, insert the longest common part",
   ["<CR>"] = "execute entered command",
   ["<C-n>"] = "go to next wildchar match or recall older command-line",
   ["<C-p>"] = "go to previous wildchar match or recall older command-line",
