@@ -1,6 +1,6 @@
 local M = {}
 
-M.not_included = { ["Q"] = "does not start Ex mode" }
+M.not_used = { ["Q"] = "does not start Ex mode" }
 
 M.same_as = {
   ["<C-a>"] = { "g<C-a>" },

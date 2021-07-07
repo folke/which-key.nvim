@@ -1,8 +1,16 @@
+local extra = require("which-key.config").options.plugins.presets.extra
+
 local M = {}
 
 M.name = "spelling"
 
 M.actions = { { trigger = "z=", mode = "n" } }
+
+if extra == true then
+  M.actions = {
+    { trigger = "z=", mode = "n", label = "give spelling suggestions" },
+  }
+end
 
 M.opts = {}
 

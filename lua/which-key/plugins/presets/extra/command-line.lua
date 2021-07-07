@@ -3,6 +3,9 @@ local M = {}
 M.when = {
   ["cedit"] = { ["<C-f>"] = "no-op", ["cedit value"] = "opens the command-line window" },
   ["wildchar"] = { ["<Tab>"] = "no-op", ["wildchar value"] = "do completion on patternΔ" },
+  ["digraph"] = {
+    ["{char1}<BS>{char2}"] = "enter digraph when 'digraph' is on",
+  },
 }
 
 M.not_used = {
@@ -17,7 +20,6 @@ M.not_used = {
 }
 
 M.not_included = {
-  ["{char1}<BS>{char2}"] = "enter digraph when 'digraph' is on",
   ["<C-v>{char}"] = "insert next non-digit literally",
 }
 

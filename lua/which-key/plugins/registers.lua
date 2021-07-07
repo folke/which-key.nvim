@@ -23,18 +23,20 @@ if extra == true then
     },
   }
 end
---[[
-  i
+
+local insert_mapping = {
   ["<C-r><C-r>"] = "λ_insert a register's content literally",
-  ["<C-r><C-o>"] = "λ_like \"<C-r><C-r>\", but don't auto-indent",
-  ["<C-r><C-p>"] = "λ_like \"<C-r><C-r>\", but fix indent",
+  ["<C-r><C-o>"] = 'λ_like "<C-r><C-r>", but don\'t auto-indent',
+  ["<C-r><C-p>"] = 'λ_like "<C-r><C-r>", but fix indent',
+}
 
-  c
+local command_same_as = {
+  ["<C-r><C-r>"] = { "<C-r><C-o>" },
+}
+
+local command_mapping = {
   ["<C-r><C-r>"] = "λ_insert a register's content or Δobject literally",
-
-  c same_as 
-  ["<C-r><C-r>"] = { "<C-r><C-o>"}
---]]
+}
 
 M.registers = '*+"-:.%/#=_abcdefghijklmnopqrstuvwxyz0123456789'
 

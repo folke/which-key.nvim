@@ -7,6 +7,9 @@ M.when = {
     ["<C-z>"] = "suspend Vim",
     ["<Esc>"] = "no-op",
   },
+  ["digraph"] = {
+    ["{char1}<BS>{char2>"] = "enter digraph (only when 'digraph' option set)",
+  },
 }
 
 M.not_used = {
@@ -19,7 +22,6 @@ M.not_used = {
 }
 
 M.not_included = {
-  ["{char1}<BS>{char2>"] = "enter digraph (only when 'digraph' option set)",
   ["<C-v>{char}"] = "insert next non-digit literally",
 }
 

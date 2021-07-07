@@ -28,7 +28,6 @@ M.not_used = {
 
 M.not_included = {
   ["{count}<Del>"] = "remove the last digit from {count}",
-  ["<Help>"] = "open a help window",
   ["z{height}<CR>"] = "redraw, make window {height} lines high",
   ["gV"] = "don't reselect the previous Visual area when executing a mapping or menu in Select mode",
   ["1"] = "prepend to command to give a count",
@@ -153,7 +152,6 @@ local z_binds = {
   ["+"] = "like 'z<CR>', but Δ on line N (default line below window)",
   ["-"] = "redraw, Δ line at bottom of window, Δ on first non-blank",
   ["."] = "redraw, Δ line to center of window, Δ on first non-blank",
-  ["="] = "give spelling suggestions",
   ["A"] = "open a closed fold or close an open fold recursively",
   ["C"] = "close folds recursively",
   ["D"] = "delete folds recursively",
@@ -281,6 +279,7 @@ M.mapping = {
   ["yy"] = "Λ_yank N lines",
   ["z"] = z_binds,
   ["~"] = "switch case of Δcharacter and move to the right N times",
+  ["<Help>"] = "open a help window",
 }
 
 M.mouse = {

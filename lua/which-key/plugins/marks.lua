@@ -20,8 +20,7 @@ if extra == true then
   }
 end
 
---[[
-  n
+local normal_mapping = {
   ["''"] = "Ξ_Δ to the first CHAR of the line where Δ was before the latest jump.",
   ["'("] = "Ξ_Δ to the first CHAR on the line of the start of the current sentence",
   ["')"] = "Ξ_Δ to the first CHAR on the line of the end of the current sentence",
@@ -40,7 +39,7 @@ end
   ["``"] = "Ξ_Δ to the position before latest jump",
   ["`{"] = "Ξ_Δ to the start of the current paragraph",
   ["`}"] = "Ξ_Δ to the end of the current paragraph",
-]]
+}
 
 local labels = {
   ["^"] = "Last position of cursor in insert mode",
