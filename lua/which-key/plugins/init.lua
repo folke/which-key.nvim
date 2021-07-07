@@ -22,7 +22,6 @@ end
 
 ---@param plugin Plugin
 function M._setup(plugin, opts)
-
   if plugin.actions then
     for _, trigger in pairs(plugin.actions) do
       local prefix = trigger.trigger

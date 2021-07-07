@@ -4,8 +4,22 @@ local Util = require("which-key.util")
 ---@class WhichKey
 local M = {}
 
+local loaded = false -- once we loaded everything
+local scheduled = false
+
+local function schedule_load()
+  if scheduled then return end
+  scheduled = true
+  if vim.v.vim_did_enter == 0 then
+    vim.cmd([[au VimEnter * ++once lua require("which-key").load()]])
+  else
+    M.load()
+  end
+end
+
 function M.setup(options)
   require("which-key.config").setup(options)
+  schedule_load()
 end
 
 function M.execute(id)
@@ -15,9 +29,7 @@ end
 
 function M.show(keys, opts)
   opts = opts or {}
-  if type(opts) == "string" then
-    opts = { mode = opts }
-  end
+  if type(opts) == "string" then opts = { mode = opts } end
 
   keys = keys or ""
 
@@ -37,22 +49,23 @@ end
 
 function M.show_command(keys, mode)
   keys = keys or ""
-  keys = (keys == '""' or keys == "''") and "" or keys
-  mode = (mode == '""' or mode == "''") and "" or mode
+  keys = (keys == "\"\"" or keys == "''") and "" or keys
+  mode = (mode == "\"\"" or mode == "''") and "" or mode
   mode = mode or "n"
   keys = Util.t(keys)
   if not Util.check_mode(mode) then
-    Util.error("Invalid mode passed to :WhichKey (Dont create any keymappings to trigger WhichKey. WhichKey does this automaytically)")
+    Util.error(
+      "Invalid mode passed to :WhichKey (Dont create any keymappings to trigger WhichKey. WhichKey does this automaytically)")
   else
     M.show(keys, { mode = mode })
   end
 end
 
 local queue = {}
-local loaded = false -- once we loaded everything
 
 -- Defer registering keymaps until VimEnter
 function M.register(mappings, opts)
+  schedule_load()
   if loaded then
     Keys.register(mappings, opts)
     Keys.update()
@@ -63,6 +76,7 @@ end
 
 -- Load mappings and update only once
 function M.load()
+  if loaded then return end
   require("which-key.plugins").setup()
   require("which-key.colors").setup()
   Keys.register({}, { prefix = "<leader>", mode = "n" })

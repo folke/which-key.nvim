@@ -297,6 +297,8 @@ end
 function M.hook_add(prefix, mode, buf, secret_only)
   -- check if this trigger is blacklisted
   if M.blacklist[mode] and M.blacklist[mode][prefix] then return end
+  -- don't hook numbers. See #118
+  if tonumber(prefix) then return end
   -- don't hook to j or k in INSERT mode
   if mode == "i" and (prefix == "j" or prefix == "k") then return end
   -- never hook q

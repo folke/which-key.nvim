@@ -17,24 +17,22 @@ M.buf = nil
 M.win = nil
 
 function M.is_valid()
-  return M.buf
-    and vim.api.nvim_buf_is_valid(M.buf)
-    and vim.api.nvim_buf_is_loaded(M.buf)
-    and vim.api.nvim_win_is_valid(M.win)
+  return M.buf and vim.api.nvim_buf_is_valid(M.buf) and vim.api.nvim_buf_is_loaded(M.buf) and
+           vim.api.nvim_win_is_valid(M.win)
 end
 
 function M.show()
-  if M.is_valid() then
-    return
-  end
+  if M.is_valid() then return end
   local opts = {
     relative = "editor",
-    width = vim.o.columns - config.options.window.margin[2] - config.options.window.margin[4] - (config.options.window.border ~= "none" and 2 or 0),
+    width = vim.o.columns - config.options.window.margin[2] - config.options.window.margin[4] -
+      (config.options.window.border ~= "none" and 2 or 0),
     height = config.options.layout.height.min,
     focusable = false,
     anchor = "SW",
     border = config.options.window.border,
-    row = vim.o.lines - config.options.window.margin[3] - (config.options.window.border ~= "none" and 2 or 0) - vim.o.cmdheight,
+    row = vim.o.lines - config.options.window.margin[3] -
+      (config.options.window.border ~= "none" and 2 or 0) - vim.o.cmdheight,
     col = config.options.window.margin[2],
     style = "minimal",
   }
@@ -56,24 +54,18 @@ function M.read_pending()
   local esc = ""
   while true do
     local n = vim.fn.getchar(0)
-    if n == 0 then
-      return
-    end
+    if n == 0 then break end
     local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
 
     -- Fix < characters
-    if c == "<" then
-      c = "<lt>"
-    end
+    if c == "<" then c = "<lt>" end
 
     -- HACK: for some reason, when executing a :norm command,
     -- vim keeps feeding <esc> at the end
     if c == Util.t("<esc>") then
       esc = esc .. c
       -- more than 10 <esc> in a row? most likely the norm bug
-      if #esc > 10 then
-        return
-      end
+      if #esc > 10 then return end
     else
       -- we have <esc> characters, so add them to keys
       if esc ~= "" then
@@ -83,23 +75,23 @@ function M.read_pending()
       M.keys = M.keys .. c
     end
   end
+  if esc ~= "" then
+    M.keys = M.keys .. esc
+    esc = ""
+  end
 end
 
 function M.getchar()
   local ok, n = pcall(vim.fn.getchar)
 
   -- bail out on keyboard interrupt
-  if not ok then
-    return Util.t("<esc>")
-  end
+  if not ok then return Util.t("<esc>") end
 
   local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
 
   -- Fix < characters
   -- FIXME: this should not be needed
-  if c == "<" then
-    c = "<lt>"
-  end
+  if c == "<" then c = "<lt>" end
   return c
 end
 
@@ -114,9 +106,7 @@ function M.scroll(up)
   vim.api.nvim_win_set_cursor(M.win, cursor)
 end
 
-function M.on_close()
-  M.hide()
-end
+function M.on_close() M.hide() end
 
 function M.hide()
   vim.api.nvim_echo({ { "" } }, false, {})
@@ -134,7 +124,8 @@ end
 function M.show_cursor()
   local buf = vim.api.nvim_get_current_buf()
   local cursor = vim.api.nvim_win_get_cursor(0)
-  vim.api.nvim_buf_add_highlight(buf, config.namespace, "Cursor", cursor[1] - 1, cursor[2], cursor[2] + 1)
+  vim.api.nvim_buf_add_highlight(buf, config.namespace, "Cursor", cursor[1] - 1, cursor[2],
+                                 cursor[2] + 1)
 end
 
 function M.hide_cursor()
@@ -143,19 +134,14 @@ function M.hide_cursor()
 end
 
 function M.back()
-  local node = Keys.get_tree(M.mode, M.buf).tree:get(M.keys, -1) or Keys.get_tree(M.mode).tree:get(M.keys, -1)
-  if node then
-    M.keys = node.prefix
-  end
+  local node = Keys.get_tree(M.mode, M.buf).tree:get(M.keys, -1) or
+                 Keys.get_tree(M.mode).tree:get(M.keys, -1)
+  if node then M.keys = node.prefix end
 end
 
 ---@param path Node[]
 function M.has_cmd(path)
-  for _, node in pairs(path) do
-    if node.mapping and node.mapping.cmd then
-      return true
-    end
-  end
+  for _, node in pairs(path) do if node.mapping and node.mapping.cmd then return true end end
   return false
 end
 
@@ -166,9 +152,7 @@ function M.execute(prefix, mode, buf)
   if global_node and global_node.mapping and Keys.is_hook(prefix, global_node.mapping.cmd) then
     return
   end
-  if buf_node and buf_node.mapping and Keys.is_hook(prefix, buf_node.mapping.cmd) then
-    return
-  end
+  if buf_node and buf_node.mapping and Keys.is_hook(prefix, buf_node.mapping.cmd) then return end
 
   local hooks = {}
 
@@ -184,31 +168,24 @@ function M.execute(prefix, mode, buf)
   -- make sure we remove all WK hooks before executing the sequence
   -- this is to make existing keybindongs work and prevent recursion
   unhook(Keys.get_tree(mode).tree:path(prefix))
-  if buf then
-    unhook(Keys.get_tree(mode, buf).tree:path(prefix), buf)
-  end
+  if buf then unhook(Keys.get_tree(mode, buf).tree:path(prefix), buf) end
 
   -- handle registers that were passed when opening the popup
-  if M.reg ~= '"' and M.mode ~= "i" and M.mode ~= "c" then
-    vim.api.nvim_feedkeys('"' .. M.reg, "n", false)
+  if M.reg ~= "\"" and M.mode ~= "i" and M.mode ~= "c" then
+    vim.api.nvim_feedkeys("\"" .. M.reg, "n", false)
   end
 
   -- fix <lt>
   prefix = prefix:gsub("<lt>", "<")
   -- prefix = Util.t(prefix)
-  if M.count and M.count ~= 0 then
-    prefix = M.count .. prefix
-  end
+  if M.count and M.count ~= 0 then prefix = M.count .. prefix end
 
   -- feed the keys with remap
   vim.api.nvim_feedkeys(prefix, "m", true)
 
   -- defer hooking WK until after the keys were executed
-  vim.defer_fn(function()
-    for _, hook in pairs(hooks) do
-      Keys.hook_add(hook[1], mode, hook[2])
-    end
-  end, 0)
+  vim.defer_fn(
+    function() for _, hook in pairs(hooks) do Keys.hook_add(hook[1], mode, hook[2]) end end, 0)
 end
 
 function M.open(keys, opts)
@@ -246,17 +223,13 @@ function M.on_keys(opts)
     if #results.mappings == 0 then
       M.hide()
       -- only execute if an actual key was typed while WK was open
-      if opts.auto then
-        M.execute(M.keys, M.mode, buf)
-      end
+      if opts.auto then M.execute(M.keys, M.mode, buf) end
       return
     end
 
     local layout = Layout:new(results)
 
-    if not M.is_valid() then
-      M.show()
-    end
+    if not M.is_valid() then M.show() end
 
     M.render(layout:layout(M.win))
 
@@ -283,9 +256,7 @@ end
 function M.render(text)
   vim.api.nvim_buf_set_lines(M.buf, 0, -1, false, text.lines)
   local height = #text.lines
-  if height > config.options.layout.height.max then
-    height = config.options.layout.height.max
-  end
+  if height > config.options.layout.height.max then height = config.options.layout.height.max end
   vim.api.nvim_win_set_height(M.win, height)
   if vim.api.nvim_buf_is_valid(M.buf) then
     vim.api.nvim_buf_clear_namespace(M.buf, config.namespace, 0, -1)
