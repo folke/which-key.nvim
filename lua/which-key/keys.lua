@@ -260,6 +260,36 @@ function M.map(mode, prefix, cmd, buf, opts)
   end
 end
 
+function M.register_hydra(keys, prefix, opts)
+  opts = opts or {}
+  prefix = prefix or ""
+
+  local mode = opts.mode or "n"
+  local buf = M.get_buf_option(opts)
+
+  if type(keys) == "string" then
+    keys = prefix .. keys
+    keys = M.get_tree(mode).tree:get(keys, nil, {buf = buf, mode = mode})
+    if not vim.tbl_isempty(keys.children) then
+      for _, v in pairs(keys.children) do
+        if vim.tbl_isempty(v.children) then
+          M.register_hydra(v.mapping.prefix)
+        end
+      end
+    else
+      keys.mapping.hydra = true
+      M.get_tree(mode, buf).tree:add(keys.mapping)
+    end
+  elseif type(keys) == "table" then
+    for k, v in pairs(keys) do
+      if type(v) == "table" then
+        prefix = prefix .. k
+      end
+      M.register_hydra(v, prefix)
+    end
+  end
+end
+
 function M.register(mappings, opts)
   opts = opts or {}
 

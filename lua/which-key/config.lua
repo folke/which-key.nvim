@@ -55,6 +55,7 @@ local defaults = {
   },
   ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
   hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "^:", "^ ", "^call ", "^lua " }, -- hide mapping boilerplate
+  hydra = true,
   show_help = true, -- show a help message in the command line for using WhichKey
   triggers = "auto", -- automatically setup triggers
   -- triggers = {"<leader>"} -- or specifiy a list manually

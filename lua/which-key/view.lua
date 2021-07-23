@@ -223,6 +223,17 @@ function M.open(keys, opts)
 end
 
 function M.on_keys(opts)
+  local function get_prev_prefix(mapping)
+    local prefix = mapping.keys.nvim
+    local prev_prefix = ""
+
+    prefix[#prefix] = ""
+    for _, v in pairs(prefix) do
+      prev_prefix = prev_prefix .. v
+    end
+    return prev_prefix
+  end
+
   local buf = vim.api.nvim_get_current_buf()
 
   while true do
@@ -239,7 +250,12 @@ function M.on_keys(opts)
       else
         M.execute(M.keys, M.mode, buf)
       end
-      return
+
+      if not (config.options.hydra and results.mapping.hydra) then
+        return
+      end
+      M.open(get_prev_prefix(results.mapping), {buf = buf, mode = M.mode})
+      -- results = Keys.get_mappings(M.mode, get_prev_prefix(results.mapping), buf)
     end
 
     -- Check for no mappings found. Feedkeys without remap
