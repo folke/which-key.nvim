@@ -17,10 +17,9 @@ M.buf = nil
 M.win = nil
 
 function M.is_valid()
-  return M.buf
-    and vim.api.nvim_buf_is_valid(M.buf)
-    and vim.api.nvim_buf_is_loaded(M.buf)
-    and vim.api.nvim_win_is_valid(M.win)
+  return M.buf and vim.api.nvim_buf_is_valid(M.buf) and vim.api.nvim_buf_is_loaded(M.buf) and vim.api.nvim_win_is_valid(
+    M.win
+  )
 end
 
 function M.show()
@@ -29,12 +28,18 @@ function M.show()
   end
   local opts = {
     relative = "editor",
-    width = vim.o.columns - config.options.window.margin[2] - config.options.window.margin[4] - (config.options.window.border ~= "none" and 2 or 0),
+    width = vim.o.columns
+      - config.options.window.margin[2]
+      - config.options.window.margin[4]
+      - (config.options.window.border ~= "none" and 2 or 0),
     height = config.options.layout.height.min,
     focusable = false,
     anchor = "SW",
     border = config.options.window.border,
-    row = vim.o.lines - config.options.window.margin[3] - (config.options.window.border ~= "none" and 2 or 0) - vim.o.cmdheight,
+    row = vim.o.lines
+      - config.options.window.margin[3]
+      - (config.options.window.border ~= "none" and 2 or 0)
+      - vim.o.cmdheight,
     col = config.options.window.margin[2],
     style = "minimal",
   }
@@ -57,7 +62,7 @@ function M.read_pending()
   while true do
     local n = vim.fn.getchar(0)
     if n == 0 then
-      return
+      break
     end
     local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
 
@@ -82,6 +87,10 @@ function M.read_pending()
       end
       M.keys = M.keys .. c
     end
+  end
+  if esc ~= "" then
+    M.keys = M.keys .. esc
+    esc = ""
   end
 end
 
@@ -189,7 +198,7 @@ function M.execute(prefix, mode, buf)
   end
 
   -- handle registers that were passed when opening the popup
-  if M.reg ~= '"' and M.mode ~= "i" then
+  if M.reg ~= '"' and M.mode ~= "i" and M.mode ~= "c" then
     vim.api.nvim_feedkeys('"' .. M.reg, "n", false)
   end
 

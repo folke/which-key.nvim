@@ -211,7 +211,11 @@ function M.parse_mappings(mappings, value, prefix)
       end
       if mapping.cmd and type(mapping.cmd) == "function" then
         table.insert(M.functions, mapping.cmd)
-        mapping.cmd = string.format([[<cmd>lua require("which-key").execute(%d)<cr>]], #M.functions)
+        if mapping.opts.expr then
+          mapping.cmd = string.format([[luaeval('require("which-key").execute(%d)')]], #M.functions)
+        else
+          mapping.cmd = string.format([[<cmd>lua require("which-key").execute(%d)<cr>]], #M.functions)
+        end
       end
       table.insert(mappings, mapping)
     end
@@ -355,6 +359,10 @@ end
 function M.hook_add(prefix, mode, buf, secret_only)
   -- check if this trigger is blacklisted
   if M.blacklist[mode] and M.blacklist[mode][prefix] then
+    return
+  end
+  -- don't hook numbers. See #118
+  if tonumber(prefix) then
     return
   end
   -- don't hook to j or k in INSERT mode
@@ -558,12 +566,14 @@ function M.update_keymaps(mode, buf)
       if Util.t(keymap.rhs) == "" then
         skip = true
       else
-        Util.warn(string.format(
-          "Your <leader> key for %q mode in buf %d is currently mapped to %q. WhichKey automatically creates triggers, so please remove the mapping",
-          mode,
-          buf or 0,
-          keymap.rhs
-        ))
+        Util.warn(
+          string.format(
+            "Your <leader> key for %q mode in buf %d is currently mapped to %q. WhichKey automatically creates triggers, so please remove the mapping",
+            mode,
+            buf or 0,
+            keymap.rhs
+          )
+        )
       end
     end
 
