@@ -17,9 +17,10 @@ M.buf = nil
 M.win = nil
 
 function M.is_valid()
-  return M.buf and vim.api.nvim_buf_is_valid(M.buf) and vim.api.nvim_buf_is_loaded(M.buf) and vim.api.nvim_win_is_valid(
-    M.win
-  )
+  return M.buf
+    and vim.api.nvim_buf_is_valid(M.buf)
+    and vim.api.nvim_buf_is_loaded(M.buf)
+    and vim.api.nvim_win_is_valid(M.win)
 end
 
 function M.show()
@@ -195,6 +196,12 @@ function M.execute(prefix, mode, buf)
   unhook(Keys.get_tree(mode).tree:path(prefix))
   if buf then
     unhook(Keys.get_tree(mode, buf).tree:path(prefix), buf)
+  end
+
+  -- feed CTRL-O again if called from CTRL-O
+  local full_mode = Util.get_mode()
+  if full_mode == "nii" or full_mode == "nir" or full_mode == "niv" or full_mode == "vs" then
+    vim.api.nvim_feedkeys(Util.t("<C-O>"), "n", false)
   end
 
   -- handle registers that were passed when opening the popup
