@@ -10,8 +10,10 @@ function M.count(tab)
 end
 
 function M.get_mode()
-  local ret = vim.api.nvim_get_mode()
-  return string.lower(ret.mode)
+  local mode = vim.api.nvim_get_mode().mode
+  mode = mode:gsub(M.t("<C-V>"), "v")
+  mode = mode:gsub(M.t("<C-S>"), "s")
+  return mode:lower()
 end
 
 function M.is_empty(tab)
