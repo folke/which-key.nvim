@@ -9,6 +9,12 @@ M.actions = {
   { trigger = "<c-r>", mode = "c" },
 }
 
+function M.setup(_wk, _config, options)
+  for _, action in ipairs(M.actions) do
+    table.insert(options.triggers_nowait, action.trigger)
+  end
+end
+
 M.registers = '*+"-:.%/#=_abcdefghijklmnopqrstuvwxyz0123456789'
 
 local labels = {

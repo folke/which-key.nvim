@@ -2,12 +2,18 @@ local M = {}
 
 M.name = "marks"
 
-M.actions = { 
+M.actions = {
   { trigger = "`", mode = "n" },
   { trigger = "'", mode = "n" },
   { trigger = "g`", mode = "n" },
   { trigger = "g'", mode = "n" },
 }
+
+function M.setup(_wk, _config, options)
+  for _, action in ipairs(M.actions) do
+    table.insert(options.triggers_nowait, action.trigger)
+  end
+end
 
 local labels = {
   ["^"] = "Last position of cursor in insert mode",
