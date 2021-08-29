@@ -4,14 +4,16 @@ M.name = "registers"
 
 M.actions = {
   { trigger = '"', mode = "n" },
-  { trigger = "@", mode = "n" },
+  { trigger = "@", mode = "n", delay = true },
   { trigger = "<c-r>", mode = "i" },
   { trigger = "<c-r>", mode = "c" },
 }
 
 function M.setup(_wk, _config, options)
   for _, action in ipairs(M.actions) do
-    table.insert(options.triggers_nowait, action.trigger)
+    if not action.delay then
+      table.insert(options.triggers_nowait, action.trigger)
+    end
   end
 end
 
