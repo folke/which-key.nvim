@@ -42,6 +42,7 @@ function M.show()
       - (config.options.window.border ~= "none" and 2 or 0)
       - vim.o.cmdheight,
     col = config.options.window.margin[2],
+    winblend = config.options.window.winblend,
     style = "minimal",
   }
   if config.options.window.position == "top" then
@@ -55,6 +56,8 @@ function M.show()
   -- vim.api.nvim_win_hide(M.win)
   vim.api.nvim_win_set_option(M.win, "winhighlight", "NormalFloat:WhichKeyFloat")
   vim.api.nvim_win_set_option(M.win, "foldmethod", "manual")
+  vim.api.nvim_win_set_option(M.win, 'winblend', winblend)
+
   vim.cmd([[autocmd! WinClosed <buffer> lua require("which-key.view").on_close()]])
 end
 
