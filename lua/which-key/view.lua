@@ -283,9 +283,9 @@ function M.on_keys(opts)
     if c == Util.t("<esc>") then
       M.on_close()
       break
-    elseif c == Util.t("<c-d>") then
+    elseif c == Util.t(config.options.popup_mappings.scroll_down) then
       M.scroll(false)
-    elseif c == Util.t("<c-u>") then
+    elseif c == Util.t(config.options.popup_mappings.scroll_up) then
       M.scroll(true)
     elseif c == Util.t("<bs>") then
       M.back()

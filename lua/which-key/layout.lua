@@ -69,8 +69,8 @@ function Layout:trail()
     ["<esc>"] = "close",
   }
   if #self.text.lines > self.options.layout.height.max then
-    help["<c-d>"] = "scroll down"
-    help["<c-u>"] = "scroll up"
+    help[Config.options.popup_mappings.scroll_down] = "scroll down"
+    help[Config.options.popup_mappings.scroll_up] = "scroll up"
   end
   local help_line = {}
   local help_width = 0
