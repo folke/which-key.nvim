@@ -32,14 +32,14 @@ function M.show()
     width = vim.o.columns
       - config.options.window.margin[2]
       - config.options.window.margin[4]
-      - (config.options.window.border ~= "none" and 2 or 0),
+      - (vim.fn.has("nvim-0.6") == 0 and config.options.window.border ~= "none" and 2 or 0),
     height = config.options.layout.height.min,
     focusable = false,
     anchor = "SW",
     border = config.options.window.border,
     row = vim.o.lines
       - config.options.window.margin[3]
-      - (config.options.window.border ~= "none" and 2 or 0)
+      - (vim.fn.has("nvim-0.6") == 0 and config.options.window.border ~= "none" and 2 or 0)
       - vim.o.cmdheight,
     col = config.options.window.margin[2],
     style = "minimal",
