@@ -205,12 +205,15 @@ function M.parse_mappings(mappings, value, prefix)
         elseif k == "plugin" then
           mapping.group = true
           mapping.plugin = v
+		elseif k == "args" then
+          mapping.args = v
         else
           error("Invalid key mapping: " .. vim.inspect(value))
         end
       end
       if mapping.cmd and type(mapping.cmd) == "function" then
-        table.insert(M.functions, mapping.cmd)
+        table.insert(M.functions, { func = mapping.cmd, args = mapping.args or {} })
+		mapping.args = nil
         if mapping.opts.expr then
           mapping.cmd = string.format([[luaeval('require("which-key").execute(%d)')]], #M.functions)
         else
