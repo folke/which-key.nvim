@@ -9,8 +9,8 @@ local links = {
   Value = "Comment",
 }
 
-if vim.fn.hlexists("WhichKeySeperator") then
-  links["Separator"] = "WhichKeySeperator"
+if vim.fn.hlexists("WhichKeySeparator") then
+  links["Separator"] = "WhichKeySeparator"
 end
 
 function M.setup()
