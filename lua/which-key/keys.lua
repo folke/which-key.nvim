@@ -192,7 +192,7 @@ function M.parse_mappings(mappings, value, prefix)
         if k == 1 then
           mapping.label = v
         elseif k == 2 then
-          mapping.cmd = mapping.label
+          mapping.cmd = value[1]
           mapping.label = v
         elseif k == "noremap" then
           mapping.opts.noremap = v
