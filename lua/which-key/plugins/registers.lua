@@ -3,7 +3,7 @@ local M = {}
 M.name = "registers"
 
 M.actions = {
-  { trigger = '"', mode = "n" },
+  { trigger = '"', mode = "n", delay = true },
   { trigger = "@", mode = "n", delay = true },
   { trigger = "<c-r>", mode = "i" },
   { trigger = "<c-r>", mode = "c" },
