@@ -260,7 +260,7 @@ function M.map(mode, prefix, cmd, buf, opts)
   if buf ~= nil then
     pcall(vim.api.nvim_buf_set_keymap, buf, mode, prefix, cmd, opts)
   else
-    pcall(vim.api.nvim_set_keymap, mode, prefix, cmd, opts)
+    vim.keymap.set( mode, prefix, cmd, opts)
   end
 end
 

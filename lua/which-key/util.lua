@@ -21,6 +21,7 @@ function M.is_empty(tab)
 end
 
 function M.t(str)
+  if type(str)~="string" then return end
   return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
