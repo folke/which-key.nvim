@@ -248,6 +248,7 @@ M.mappings = {}
 M.duplicates = {}
 
 function M.map(mode, prefix, cmd, buf, opts)
+  buf = buf or 0
   local other = vim.api.nvim_buf_call(buf, function()
     local ret = vim.fn.maparg(prefix, mode, false, true)
     ---@diagnostic disable-next-line: undefined-field
@@ -521,6 +522,7 @@ end
 ---@param mode string
 ---@param buf number
 function M.update_keymaps(mode, buf)
+  buf = buf or 0
   ---@type Keymap
   local keymaps = buf and vim.api.nvim_buf_get_keymap(buf, mode) or vim.api.nvim_get_keymap(mode)
   local tree = M.get_tree(mode, buf).tree
