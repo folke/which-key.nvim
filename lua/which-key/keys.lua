@@ -248,7 +248,7 @@ M.mappings = {}
 M.duplicates = {}
 
 function M.map(mode, prefix, cmd, buf, opts)
-  local other = vim.api.nvim_buf_call(buf, function()
+  local other = vim.api.nvim_buf_call(buf or 0, function()
     local ret = vim.fn.maparg(prefix, mode, false, true)
     ---@diagnostic disable-next-line: undefined-field
     return (ret and ret.lhs and ret.rhs ~= cmd) and ret or nil
