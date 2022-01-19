@@ -524,16 +524,21 @@ function M.update_keymaps(mode, buf)
   ---@type Keymap
   local keymaps = buf and vim.api.nvim_buf_get_keymap(buf, mode) or vim.api.nvim_get_keymap(mode)
   local tree = M.get_tree(mode, buf).tree
+
+  local function is_no_op(keymap)
+    return not keymap.callback and Util.t(keymap.rhs) == ""
+  end
+
   for _, keymap in pairs(keymaps) do
     local skip = M.is_hook(keymap.lhs, keymap.rhs)
 
-    if not skip and Util.t(keymap.rhs) == "" then
+    if is_no_op(keymap) then
       skip = true
     end
 
     -- check if <leader> was remapped
     if not skip and Util.t(keymap.lhs) == Util.t("<leader>") and mode == "n" then
-      if Util.t(keymap.rhs) == "" then
+      if is_no_op(keymap) then
         skip = true
       else
         Util.warn(
