@@ -173,7 +173,7 @@ Group names use the special `name` key in the tables. There's multiple ways to d
 
 ```lua
 local wk = require("which-key")
--- As an example, we will the create following mappings:
+-- As an example, we will create the following mappings:
 --  * <leader>ff find files
 --  * <leader>fr show recent files
 --  * <leader>fb Foobar
