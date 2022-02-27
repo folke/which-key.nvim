@@ -29,9 +29,7 @@ end
 function M.parse_keys(keystr)
   local keys = {}
   local special = nil
-  -- for i = 1, utf8.len(keystr), 1 do
   for p, c in utf8.codes(keystr) do
-    -- local c = keystr:sub(i, i)
     if c == "<" then
       special = "<"
     elseif c == ">" and special then
