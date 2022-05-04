@@ -12,7 +12,8 @@
 ---@field script number
 ---@field sid number
 ---@field silent number
----@field id string internal keycodes for lhs
+---@field id string terminal keycodes for lhs
+---@field desc string
 local Keymap
 
 ---@class KeyCodes
@@ -32,6 +33,7 @@ local MappingOptions
 ---@field buf number
 ---@field group boolean
 ---@field label string
+---@field desc string
 ---@field prefix string
 ---@field cmd string
 ---@field opts MappingOptions
