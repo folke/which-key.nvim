@@ -222,6 +222,14 @@ function M.open(keys, opts)
   M.count = vim.api.nvim_get_vvar("count")
   M.reg = vim.api.nvim_get_vvar("register")
 
+  if string.find(vim.o.clipboard, "unnamedplus") and M.reg == "+" then
+    M.reg = '"'
+  end
+
+  if string.find(vim.o.clipboard, "unnamed") and M.reg == "*" then
+    M.reg = '"'
+  end
+
   M.show_cursor()
   M.on_keys(opts)
 end
