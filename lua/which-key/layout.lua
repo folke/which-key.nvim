@@ -38,17 +38,17 @@ function Layout:max_width(key)
 end
 
 function Layout:trail()
-  local prefix = self.results.prefix
-  local buf_path = Keys.get_tree(self.results.mode, self.results.buf).tree:path(prefix)
-  local path = Keys.get_tree(self.results.mode).tree:path(prefix)
-  local len = #self.results.mapping.keys.nvim
+  local prefix_i = self.results.prefix_i
+  local buf_path = Keys.get_tree(self.results.mode, self.results.buf).tree:path(prefix_i)
+  local path = Keys.get_tree(self.results.mode).tree:path(prefix_i)
+  local len = #self.results.mapping.keys.notation
   local cmd_line = { { " " } }
   for i = 1, len, 1 do
     local node = buf_path[i]
     if not (node and node.mapping and node.mapping.label) then
       node = path[i]
     end
-    local step = self.mapping.keys.nvim[i]
+    local step = self.mapping.keys.notation[i]
     if node and node.mapping and node.mapping.label then
       step = self.options.icons.group .. node.mapping.label
     end
@@ -56,7 +56,7 @@ function Layout:trail()
       step = Config.options.key_labels[step]
     end
     table.insert(cmd_line, { step, "WhichKeyGroup" })
-    if i ~= #self.mapping.keys.nvim then
+    if i ~= #self.mapping.keys.notation then
       table.insert(cmd_line, { " " .. self.options.icons.breadcrumb .. " ", "WhichKeySeparator" })
     end
   end
