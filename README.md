@@ -191,6 +191,7 @@ wk.register({
     e = "Edit File", -- same as above
     ["1"] = "which_key_ignore",  -- special label to hide it in the popup
     b = { function() print("bar") end, "Foobar" } -- you can also pass functions!
+    c = { require"telescope.builtin".find_files, args = { require"telescope.themes".get_ivy() }, "Find file, but with ivy-theme" } -- pass arguments to lua functions via args as an array
   },
 }, { prefix = "<leader>" })
 ```

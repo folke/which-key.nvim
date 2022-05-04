@@ -25,8 +25,8 @@ function M.setup(options)
 end
 
 function M.execute(id)
-  local func = Keys.functions[id]
-  return func()
+  local map = Keys.functions[id]
+  return map.func(unpack(map.args))
 end
 
 function M.show(keys, opts)
