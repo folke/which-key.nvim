@@ -55,7 +55,7 @@ function M.show()
   -- vim.api.nvim_win_hide(M.win)
   vim.api.nvim_win_set_option(M.win, "winhighlight", "NormalFloat:WhichKeyFloat")
   vim.api.nvim_win_set_option(M.win, "foldmethod", "manual")
-  vim.api.nvim_win_set_option(M.win, 'winblend', config.options.window.winblend)
+  vim.api.nvim_win_set_option(M.win, "winblend", config.options.window.winblend)
 
   vim.cmd([[autocmd! WinClosed <buffer> lua require("which-key.view").on_close()]])
 end
@@ -68,11 +68,6 @@ function M.read_pending()
       break
     end
     local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
-
-    -- Fix < characters
-    if c == "<" then
-      c = "<lt>"
-    end
 
     -- HACK: for some reason, when executing a :norm command,
     -- vim keeps feeding <esc> at the end
@@ -106,12 +101,6 @@ function M.getchar()
   end
 
   local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
-
-  -- Fix < characters
-  -- FIXME: this should not be needed
-  if c == "<" then
-    c = "<lt>"
-  end
   return c
 end
 
@@ -157,7 +146,7 @@ end
 function M.back()
   local node = Keys.get_tree(M.mode, M.buf).tree:get(M.keys, -1) or Keys.get_tree(M.mode).tree:get(M.keys, -1)
   if node then
-    M.keys = node.prefix
+    M.keys = node.prefix_i
   end
 end
 
@@ -171,14 +160,14 @@ function M.has_cmd(path)
   return false
 end
 
-function M.execute(prefix, mode, buf)
-  local global_node = Keys.get_tree(mode).tree:get(prefix)
-  local buf_node = buf and Keys.get_tree(mode, buf).tree:get(prefix) or nil
+function M.execute(prefix_i, mode, buf)
+  local global_node = Keys.get_tree(mode).tree:get(prefix_i)
+  local buf_node = buf and Keys.get_tree(mode, buf).tree:get(prefix_i) or nil
 
-  if global_node and global_node.mapping and Keys.is_hook(prefix, global_node.mapping.cmd) then
+  if global_node and global_node.mapping and Keys.is_hook(prefix_i, global_node.mapping.cmd) then
     return
   end
-  if buf_node and buf_node.mapping and Keys.is_hook(prefix, buf_node.mapping.cmd) then
+  if buf_node and buf_node.mapping and Keys.is_hook(prefix_i, buf_node.mapping.cmd) then
     return
   end
 
@@ -195,9 +184,9 @@ function M.execute(prefix, mode, buf)
 
   -- make sure we remove all WK hooks before executing the sequence
   -- this is to make existing keybindongs work and prevent recursion
-  unhook(Keys.get_tree(mode).tree:path(prefix))
+  unhook(Keys.get_tree(mode).tree:path(prefix_i))
   if buf then
-    unhook(Keys.get_tree(mode, buf).tree:path(prefix), buf)
+    unhook(Keys.get_tree(mode, buf).tree:path(prefix_i), buf)
   end
 
   -- feed CTRL-O again if called from CTRL-O
@@ -211,15 +200,12 @@ function M.execute(prefix, mode, buf)
     vim.api.nvim_feedkeys('"' .. M.reg, "n", false)
   end
 
-  -- fix <lt>
-  prefix = prefix:gsub("<lt>", "<")
-  -- prefix = Util.t(prefix)
   if M.count and M.count ~= 0 then
-    prefix = M.count .. prefix
+    prefix_i = M.count .. prefix_i
   end
 
   -- feed the keys with remap
-  vim.api.nvim_feedkeys(prefix, "m", true)
+  vim.api.nvim_feedkeys(prefix_i, "m", true)
 
   -- defer hooking WK until after the keys were executed
   vim.defer_fn(function()

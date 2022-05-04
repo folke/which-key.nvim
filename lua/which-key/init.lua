@@ -37,9 +37,6 @@ function M.show(keys, opts)
 
   keys = keys or ""
 
-  -- mappings will pass <lt> as <, so change it back
-  keys = keys:gsub("[<]", "<lt>")
-
   opts.mode = opts.mode or Util.get_mode()
   local buf = vim.api.nvim_get_current_buf()
   -- make sure the trees exist for update

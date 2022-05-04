@@ -31,26 +31,30 @@ function M.setup()
   M.register(mappings, { mode = "n", preset = true })
   M.register({ i = { name = "inside" }, a = { name = "around" } }, { mode = "v", preset = true })
   for mode, blacklist in pairs(Config.options.triggers_blacklist) do
-    for _, prefix in ipairs(blacklist) do
+    for _, prefix_n in ipairs(blacklist) do
       M.blacklist[mode] = M.blacklist[mode] or {}
-      M.blacklist[mode][prefix] = true
+      M.blacklist[mode][prefix_n] = true
     end
   end
 end
 
-function M.get_operator(prefix)
-  for op, _ in pairs(Config.options.operators) do
-    if prefix:sub(1, #op) == op then
-      return op
+function M.get_operator(prefix_i)
+  for op_n, _ in pairs(Config.options.operators) do
+    local op_i = Util.t(op_n)
+    if prefix_i:sub(1, #op_i) == op_i then
+      return op_i, op_n
     end
   end
 end
 
-function M.process_motions(ret, mode, prefix, buf)
-  local operator = mode == "v" and "" or M.get_operator(prefix)
-  if (mode == "n" or mode == "v") and operator then
-    local op_prefix = prefix:sub(#operator + 1)
-    local op_count = op_prefix:match("^(%d+)")
+function M.process_motions(ret, mode, prefix_i, buf)
+  local op_i, op_n = "", ""
+  if mode ~= "v" then
+    op_i, op_n = M.get_operator(prefix_i)
+  end
+  if (mode == "n" or mode == "v") and op_i then
+    local op_prefix_i = prefix_i:sub(#op_i + 1)
+    local op_count = op_prefix_i:match("^(%d+)")
     if op_count == "0" then
       op_count = nil
     end
@@ -58,18 +62,18 @@ function M.process_motions(ret, mode, prefix, buf)
       op_count = nil
     end
     if op_count then
-      op_prefix = op_prefix:sub(#op_count + 1)
+      op_prefix_i = op_prefix_i:sub(#op_count + 1)
     end
-    local op_results = M.get_mappings("o", op_prefix, buf)
+    local op_results = M.get_mappings("o", op_prefix_i, buf)
 
     if not ret.mapping and op_results.mapping then
       ret.mapping = op_results.mapping
-      ret.mapping.prefix = prefix
-      ret.keys = Util.parse_keys(ret.prefix)
+      ret.mapping.prefix = op_n .. (op_count or "") .. ret.mapping.prefix
+      ret.mapping.keys = Util.parse_keys(ret.mapping.prefix)
     end
 
     for _, mapping in pairs(op_results.mappings) do
-      mapping.prefix = operator .. (op_count or "") .. mapping.prefix
+      mapping.prefix = op_n .. (op_count or "") .. mapping.prefix
       mapping.keys = Util.parse_keys(mapping.prefix)
       table.insert(ret.mappings, mapping)
     end
@@ -77,17 +81,17 @@ function M.process_motions(ret, mode, prefix, buf)
 end
 
 ---@return MappingGroup
-function M.get_mappings(mode, prefix, buf)
+function M.get_mappings(mode, prefix_i, buf)
   ---@class MappingGroup
   ---@field mode string
-  ---@field prefix string
+  ---@field prefix_i string
   ---@field buf number
   ---@field mapping Mapping
   ---@field mappings VisualMapping[]
   local ret
-  ret = { mapping = nil, mappings = {}, mode = mode, buf = buf, prefix = prefix }
+  ret = { mapping = nil, mappings = {}, mode = mode, buf = buf, prefix_i = prefix_i }
 
-  local prefix_len = #Util.parse_keys(prefix).nvim
+  local prefix_len = #Util.parse_internal(prefix_i)
 
   ---@param node Node
   local function add(node)
@@ -104,17 +108,16 @@ function M.get_mappings(mode, prefix, buf)
   end
 
   local plugin_context = { buf = buf, mode = mode }
-  add(M.get_tree(mode).tree:get(prefix, nil, plugin_context))
-  add(M.get_tree(mode, buf).tree:get(prefix, nil, plugin_context))
+  add(M.get_tree(mode).tree:get(prefix_i, nil, plugin_context))
+  add(M.get_tree(mode, buf).tree:get(prefix_i, nil, plugin_context))
 
   -- Handle motions
-  M.process_motions(ret, mode, prefix, buf)
+  M.process_motions(ret, mode, prefix_i, buf)
 
   -- Fix labels
   local tmp = {}
   for _, value in pairs(ret.mappings) do
-    value.key = value.keys.nvim[prefix_len + 1]
-    value.key = vim.fn.strtrans(value.key)
+    value.key = value.keys.notation[prefix_len + 1]
     if Config.options.key_labels[value.key] then
       value.key = Config.options.key_labels[value.key]
     end
@@ -165,29 +168,29 @@ end
 
 ---@param mappings Mapping[]
 ---@return Mapping[]
-function M.parse_mappings(mappings, value, prefix)
-  prefix = prefix or ""
+function M.parse_mappings(mappings, value, prefix_n)
+  prefix_n = prefix_n or ""
   if type(value) == "string" then
-    table.insert(mappings, { prefix = prefix, label = value })
+    table.insert(mappings, { prefix = prefix_n, label = value })
   elseif type(value) == "table" then
     if #value == 0 then
       -- key group
       for k, v in pairs(value) do
         if k ~= "name" then
-          M.parse_mappings(mappings, v, prefix .. k)
+          M.parse_mappings(mappings, v, prefix_n .. k)
         end
       end
-      if prefix ~= "" then
+      if prefix_n ~= "" then
         if value.name then
           value.name = value.name:gsub("^%+", "")
         end
-        table.insert(mappings, { prefix = prefix, label = value.name, group = true })
+        table.insert(mappings, { prefix = prefix_n, label = value.name, group = true })
       end
     else
       -- key mapping
       ---@type Mapping
       local mapping
-      mapping = { prefix = prefix, opts = {}, buf = M.get_buf_option(value) }
+      mapping = { prefix = prefix_n, opts = {}, buf = M.get_buf_option(value) }
       for k, v in pairs(value) do
         if k == 1 then
           mapping.label = v
@@ -247,32 +250,32 @@ end
 M.mappings = {}
 M.duplicates = {}
 
-function M.map(mode, prefix, cmd, buf, opts)
+function M.map(mode, prefix_n, cmd, buf, opts)
   local other = vim.api.nvim_buf_call(buf or 0, function()
-    local ret = vim.fn.maparg(prefix, mode, false, true)
+    local ret = vim.fn.maparg(prefix_n, mode, false, true)
     ---@diagnostic disable-next-line: undefined-field
     return (ret and ret.lhs and ret.rhs ~= cmd) and ret or nil
   end)
   if other then
-    table.insert(M.duplicates, { mode = mode, prefix = prefix, cmd = cmd, buf = buf, other = other })
+    table.insert(M.duplicates, { mode = mode, prefix = prefix_n, cmd = cmd, buf = buf, other = other })
   end
   cmd = cmd:gsub("[\\]", "<bslash>")
   if buf ~= nil then
-    pcall(vim.api.nvim_buf_set_keymap, buf, mode, prefix, cmd, opts)
+    pcall(vim.api.nvim_buf_set_keymap, buf, mode, prefix_n, cmd, opts)
   else
-    pcall(vim.api.nvim_set_keymap, mode, prefix, cmd, opts)
+    pcall(vim.api.nvim_set_keymap, mode, prefix_n, cmd, opts)
   end
 end
 
 function M.register(mappings, opts)
   opts = opts or {}
 
-  local prefix = opts.prefix or ""
+  local prefix_n = opts.prefix or ""
   local mode = opts.mode or "n"
 
   opts.buffer = M.get_buf_option(opts)
 
-  mappings = M.parse_mappings({}, mappings, prefix)
+  mappings = M.parse_mappings({}, mappings, prefix_n)
 
   -- always create the root node for the mode, even if there's no mappings,
   -- to ensure we have at least a trigger hooked for non documented keymaps
@@ -306,41 +309,41 @@ end
 
 M.hooked = {}
 
-function M.hook_id(prefix, mode, buf)
-  return mode .. (buf or "") .. Util.t(prefix)
+function M.hook_id(prefix_n, mode, buf)
+  return mode .. (buf or "") .. Util.t(prefix_n)
 end
 
-function M.is_hooked(prefix, mode, buf)
-  return M.hooked[M.hook_id(prefix, mode, buf)]
+function M.is_hooked(prefix_n, mode, buf)
+  return M.hooked[M.hook_id(prefix_n, mode, buf)]
 end
 
-function M.hook_del(prefix, mode, buf)
-  local id = M.hook_id(prefix, mode, buf)
+function M.hook_del(prefix_n, mode, buf)
+  local id = M.hook_id(prefix_n, mode, buf)
   M.hooked[id] = nil
   if buf then
-    pcall(vim.api.nvim_buf_del_keymap, buf, mode, prefix)
-    pcall(vim.api.nvim_buf_del_keymap, buf, mode, prefix .. secret)
+    pcall(vim.api.nvim_buf_del_keymap, buf, mode, prefix_n)
+    pcall(vim.api.nvim_buf_del_keymap, buf, mode, prefix_n .. secret)
   else
-    pcall(vim.api.nvim_del_keymap, mode, prefix)
-    pcall(vim.api.nvim_del_keymap, mode, prefix .. secret)
+    pcall(vim.api.nvim_del_keymap, mode, prefix_n)
+    pcall(vim.api.nvim_del_keymap, mode, prefix_n .. secret)
   end
 end
 
-function M.hook_add(prefix, mode, buf, secret_only)
+function M.hook_add(prefix_n, mode, buf, secret_only)
   -- check if this trigger is blacklisted
-  if M.blacklist[mode] and M.blacklist[mode][prefix] then
+  if M.blacklist[mode] and M.blacklist[mode][prefix_n] then
     return
   end
   -- don't hook numbers. See #118
-  if tonumber(prefix) then
+  if tonumber(prefix_n) then
     return
   end
   -- don't hook to j or k in INSERT mode
-  if mode == "i" and (prefix == "j" or prefix == "k") then
+  if mode == "i" and (prefix_n == "j" or prefix_n == "k") then
     return
   end
   -- never hook q
-  if mode == "n" and prefix == "q" then
+  if mode == "n" and prefix_n == "q" then
     return
   end
   -- never hook into select mode
@@ -352,24 +355,24 @@ function M.hook_add(prefix, mode, buf, secret_only)
   if mode == "o" then
     return
   end
-  if prefix == Util.t("<esc>") then
+  if Util.t(prefix_n) == Util.t("<esc>") then
     return
   end
   -- never hook into operators in visual mode
-  if (mode == "v" or mode == "x") and M.operators[prefix] then
+  if (mode == "v" or mode == "x") and M.operators[prefix_n] then
     return
   end
 
   -- Check if we need to create the hook
   if type(Config.options.triggers) == "string" and Config.options.triggers ~= "auto" then
-    if Util.t(prefix) ~= Util.t(Config.options.triggers) then
+    if Util.t(prefix_n) ~= Util.t(Config.options.triggers) then
       return
     end
   end
   if type(Config.options.triggers) == "table" then
     local ok = false
     for _, trigger in pairs(Config.options.triggers) do
-      if Util.t(trigger) == Util.t(prefix) then
+      if Util.t(trigger) == Util.t(prefix_n) then
         ok = true
         break
       end
@@ -380,27 +383,27 @@ function M.hook_add(prefix, mode, buf, secret_only)
   end
 
   local opts = { noremap = true, silent = true }
-  local id = M.hook_id(prefix, mode, buf)
-  local id_global = M.hook_id(prefix, mode)
+  local id = M.hook_id(prefix_n, mode, buf)
+  local id_global = M.hook_id(prefix_n, mode)
   -- hook up if needed
   if not M.hooked[id] and not M.hooked[id_global] then
     local cmd = [[<cmd>lua require("which-key").show(%q, {mode = %q, auto = true})<cr>]]
     if vim.g.mapleader == "\\" or vim.g.mapleader == nil then
-      prefix = prefix:gsub("<[lL]eader>", "\\")
+      prefix_n = prefix_n:gsub("<[lL]eader>", "\\")
     end
     if vim.g.maplocalleader == "\\" or vim.g.maplocalleader == nil then
-      prefix = prefix:gsub("<[lL]ocalleader>", "\\")
+      prefix_n = prefix_n:gsub("<[lL]ocalleader>", "\\")
     end
-    cmd = string.format(cmd, prefix, mode)
+    cmd = string.format(cmd, Util.t(prefix_n), mode)
     -- map group triggers and nops
     -- nops are needed, so that WhichKey always respects timeoutlen
 
     local mapmode = mode == "v" and "x" or mode
     if secret_only ~= true then
-      M.map(mapmode, prefix, cmd, buf, opts)
+      M.map(mapmode, prefix_n, cmd, buf, opts)
     end
-    if not M.nowait[prefix] then
-      M.map(mapmode, prefix .. secret, "<nop>", buf, opts)
+    if not M.nowait[prefix_n] then
+      M.map(mapmode, prefix_n .. secret, "<nop>", buf, opts)
     end
 
     M.hooked[id] = true
@@ -426,11 +429,11 @@ end
 ---@param node Node
 function M.add_hooks(mode, buf, node, secret_only)
   if not node.mapping then
-    node.mapping = { prefix = node.prefix, group = true, keys = Util.parse_keys(node.prefix) }
+    node.mapping = { prefix = node.prefix_n, group = true, keys = Util.parse_keys(node.prefix_n) }
   end
-  if node.prefix ~= "" and node.mapping.group == true and not node.mapping.cmd then
+  if node.prefix_n ~= "" and node.mapping.group == true and not node.mapping.cmd then
     -- first non-cmd level, so create hook and make all decendents secret only
-    M.hook_add(node.prefix, mode, buf, secret_only)
+    M.hook_add(node.prefix_n, mode, buf, secret_only)
     secret_only = true
   end
   for _, child in pairs(node.children) do
@@ -471,7 +474,7 @@ function M.check_health()
         end
 
         local auto_prefix = not node.mapping or (node.mapping.group == true and not node.mapping.cmd)
-        if node.prefix ~= "" and count > 0 and not auto_prefix then
+        if node.prefix_i ~= "" and count > 0 and not auto_prefix then
           local msg = ("conflicting keymap exists for mode **%q**, lhs: **%q**"):format(tree.mode, node.mapping.prefix)
           vim.fn["health#report_warn"](msg)
           local cmd = node.mapping.cmd or " "
@@ -561,7 +564,7 @@ function M.update_keymaps(mode, buf)
         keys = Util.parse_keys(keymap.lhs),
       }
       -- don't include Plug keymaps
-      if mapping.keys.nvim[1]:lower() ~= "<plug>" then
+      if mapping.keys.notation[1]:lower() ~= "<plug>" then
         tree:add(mapping)
       end
     end
