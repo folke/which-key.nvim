@@ -12,7 +12,7 @@
 ---@field script number
 ---@field sid number
 ---@field silent number
----@field id string terminal keycodes for lhs
+---@field id string internal keycodes for lhs
 ---@field desc string
 local Keymap
 
