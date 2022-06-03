@@ -22,7 +22,7 @@ function M.setup()
   for op, label in pairs(Config.options.operators) do
     M.operators[op] = true
     if builtin_ops[op] then
-      mappings[op] = { name = label, i = { name = "inside" }, a = { name = "around" } }
+      mappings[op] = { name = label }
     end
   end
   for _, t in pairs(Config.options.triggers_nowait) do
