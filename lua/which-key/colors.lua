@@ -2,7 +2,7 @@ local M = {}
 
 local links = {
   [""] = "Function",
-  Separator = "DiffAdded",
+  Separator = "DiffAdd",
   Group = "Keyword",
   Desc = "Identifier",
   Float = "NormalFloat",
