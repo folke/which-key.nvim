@@ -120,7 +120,7 @@ function M.on_close()
 end
 
 function M.hide()
-  vim.api.nvim_echo({ { "" } }, false, {})
+  vim.cmd [[echon ""]]
   M.hide_cursor()
   if M.buf and vim.api.nvim_buf_is_valid(M.buf) then
     vim.api.nvim_buf_delete(M.buf, { force = true })
