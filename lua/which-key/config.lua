@@ -70,6 +70,7 @@ local defaults = {
     i = { "j", "k" },
     v = { "j", "k" },
   },
+  buftype = "nofile",
 }
 
 ---@type Options
