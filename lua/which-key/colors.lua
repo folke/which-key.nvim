@@ -2,7 +2,7 @@ local M = {}
 
 local links = {
   [""] = "Function",
-  Separator = "DiffAdd",
+  Separator = "Comment",
   Group = "Keyword",
   Desc = "Identifier",
   Float = "NormalFloat",
@@ -10,15 +10,8 @@ local links = {
 }
 
 function M.setup()
-  for k, v in pairs({
-    [""] = "Function",
-    Separator = "DiffAdd",
-    Group = "Keyword",
-    Desc = "Identifier",
-    Float = "NormalFloat",
-    Value = "Comment",
-  }) do
-    vim.api.nvim_set_hl(0, 'WhichKey'..k, {link = v, default = true})
+  for k, v in pairs(links) do
+    vim.api.nvim_set_hl(0, "WhichKey" .. k, { link = v, default = true })
   end
 end
 
