@@ -136,7 +136,7 @@ function M.hide()
     M.is_visual_multi_mod = false
     vim.cmd([[normal \\gS]]) -- reselect visual-multi text
   end
-  vim.cmd("mode")
+  vim.cmd("redraw")
 end
 
 function M.show_cursor()
