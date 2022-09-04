@@ -15,6 +15,7 @@ M.auto = false
 M.count = 0
 M.buf = nil
 M.win = nil
+M.is_visual_multi_mode = nil
 
 function M.is_valid()
   return M.buf
@@ -24,6 +25,7 @@ function M.is_valid()
 end
 
 function M.show()
+  M.is_visual_multi_mod = vim.b.visual_multi
   if M.is_valid() then
     return
   end
@@ -130,6 +132,11 @@ function M.hide()
     vim.api.nvim_win_close(M.win, { force = true })
     M.win = nil
   end
+  if M.is_visual_multi_mod then
+    M.is_visual_multi_mod = false
+    vim.cmd([[normal \\gS]]) -- reselect visual-multi text
+  end
+  vim.cmd("redraw")
 end
 
 function M.show_cursor()
@@ -264,7 +271,11 @@ function M.on_keys(opts)
 
     M.render(layout:layout(M.win))
 
-    vim.cmd([[redraw]])
+    if vim.opt.cmdheight:get() == 0 then
+      vim.cmd([[mode]])
+    else
+      vim.cmd([[redraw]])
+    end
 
     local c = M.getchar()
 

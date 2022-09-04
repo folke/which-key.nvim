@@ -2,20 +2,16 @@ local M = {}
 
 local links = {
   [""] = "Function",
-  Separator = "DiffAdded",
+  Separator = "Comment",
   Group = "Keyword",
   Desc = "Identifier",
   Float = "NormalFloat",
   Value = "Comment",
 }
 
-if vim.fn.hlexists("WhichKeySeperator") then
-  links["Separator"] = "WhichKeySeperator"
-end
-
 function M.setup()
   for k, v in pairs(links) do
-    vim.api.nvim_command("hi def link WhichKey" .. k .. " " .. v)
+    vim.api.nvim_set_hl(0, "WhichKey" .. k, { link = v, default = true })
   end
 end
 
