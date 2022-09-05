@@ -55,7 +55,7 @@ function M.show()
   vim.api.nvim_buf_set_option(M.buf, "filetype", "WhichKey")
   vim.api.nvim_buf_set_option(M.buf, "buftype", "nofile")
   -- vim.api.nvim_win_hide(M.win)
-  vim.api.nvim_win_set_option(M.win, "winhighlight", "NormalFloat:WhichKeyFloat")
+  vim.api.nvim_win_set_option(M.win, "winhighlight", "NormalFloat:WhichKeyFloat,NormalBorder:WhichKeyBorder")
   vim.api.nvim_win_set_option(M.win, "foldmethod", "manual")
   vim.api.nvim_win_set_option(M.win, "winblend", config.options.window.winblend)
 
