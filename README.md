@@ -327,7 +327,7 @@ The table below shows all the highlight groups defined for **WhichKey** with the
 | *WhichKeySeparator* | DiffAdd     | the separator between the key and its label |
 | *WhichKeyDesc*      | Identifier  | the label of the key                        |
 | *WhichKeyFloat*     | NormalFloat | Normal in the popup window                  |
-| *WhichKeyBorder*    | NormalBorder| Normal in the popup window                  |
+| *WhichKeyBorder*    | FloatBorder | Normal in the popup window                  |
 | *WhichKeyValue*     | Comment     | used by plugins that provide values         |
 
 <!-- markdownlint-disable-file MD033 -->
