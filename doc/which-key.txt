@@ -391,13 +391,14 @@ suggestions window by a list of suggestions within **WhichKey**.
 The table below shows all the highlight groups defined for **WhichKey** with
 their default link.
 
-│  Highlight Group  │Defaults to│                Description                │
-│_WhichKey_         │Function   │the key                                    │
-│_WhichKeyGroup_    │Keyword    │a group                                    │
-│_WhichKeySeparator_│DiffAdd    │the separator between the key and its label│
-│_WhichKeyDesc_     │Identifier │the label of the key                       │
-│_WhichKeyFloat_    │NormalFloat│Normal in the popup window                 │
-│_WhichKeyValue_    │Comment    │used by plugins that provide values        │
+│  Highlight Group  │Defaults to │                Description                │
+│_WhichKey_         │Function    │the key                                    │
+│_WhichKeyGroup_    │Keyword     │a group                                    │
+│_WhichKeySeparator_│DiffAdd     │the separator between the key and its label│
+│_WhichKeyDesc_     │Identifier  │the label of the key                       │
+│_WhichKeyFloat_    │NormalFloat │Normal in the popup window                 │
+│_WhichKeyBorder_   │NormalBorder│Normal in the popup window                 │
+│_WhichKeyValue_    │Comment     │used by plugins that provide values        │
 
 
 
