@@ -12,6 +12,7 @@
 ---@field script number
 ---@field sid number
 ---@field silent number
+---@field callback fun()|nil
 ---@field id string terminal keycodes for lhs
 ---@field desc string
 local Keymap
@@ -38,6 +39,7 @@ local MappingOptions
 ---@field cmd string
 ---@field opts MappingOptions
 ---@field keys KeyCodes
+---@field callback fun()|nil
 ---@field preset boolean
 ---@field plugin string
 ---@field fn fun()
