@@ -55,7 +55,11 @@ function M.show()
   vim.api.nvim_buf_set_option(M.buf, "filetype", "WhichKey")
   vim.api.nvim_buf_set_option(M.buf, "buftype", config.options.buftype)
   -- vim.api.nvim_win_hide(M.win)
-  vim.api.nvim_win_set_option(M.win, "winhighlight", "NormalFloat:WhichKeyFloat")
+  local winhl = "NormalFloat:WhichKeyFloat"
+  if vim.fn.hlexists("FloatBorder") == 1 then
+    winhl = winhl .. ",FloatBorder:WhichKeyBorder"
+  end
+  vim.api.nvim_win_set_option(M.win, "winhighlight", winhl)
   vim.api.nvim_win_set_option(M.win, "foldmethod", "manual")
   vim.api.nvim_win_set_option(M.win, "winblend", config.options.window.winblend)
 
