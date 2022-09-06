@@ -213,11 +213,16 @@ function M.parse_mappings(mappings, value, prefix_n)
         end
       end
       if mapping.cmd and type(mapping.cmd) == "function" then
-        table.insert(M.functions, mapping.cmd)
-        if mapping.opts.expr then
-          mapping.cmd = string.format([[luaeval('require("which-key").execute(%d)')]], #M.functions)
+        if vim.fn.has("nvim-0.7.0") then
+          mapping.callback = mapping.cmd
+          mapping.cmd = ""
         else
-          mapping.cmd = string.format([[<cmd>lua require("which-key").execute(%d)<cr>]], #M.functions)
+          table.insert(M.functions, mapping.cmd)
+          if mapping.opts.expr then
+            mapping.cmd = string.format([[luaeval('require("which-key").execute(%d)')]], #M.functions)
+          else
+            mapping.cmd = string.format([[<cmd>lua require("which-key").execute(%d)<cr>]], #M.functions)
+          end
         end
       end
       table.insert(mappings, mapping)
@@ -290,15 +295,16 @@ function M.register(mappings, opts)
     end
     mapping.keys = Util.parse_keys(mapping.prefix)
     mapping.mode = mapping.mode or mode
-    if mapping.cmd then
+    if mapping.cmd or mapping.callback then
       mapping.opts = vim.tbl_deep_extend("force", { silent = true, noremap = true }, opts, mapping.opts or {})
       local keymap_opts = {
+        callback = mapping.callback,
         silent = mapping.opts.silent,
         noremap = mapping.opts.noremap,
         nowait = mapping.opts.nowait or false,
         expr = mapping.opts.expr or false,
       }
-      if mapping.cmd:lower():sub(1, #"<plug>") == "<plug>" then
+      if mapping.cmd and mapping.cmd:lower():sub(1, #"<plug>") == "<plug>" then
         keymap_opts.noremap = false
       end
       M.map(mapping.mode, mapping.prefix, mapping.cmd, mapping.buf, keymap_opts)
