@@ -19,6 +19,7 @@ M.is_visual_multi_mode = nil
 
 function M.is_valid()
   return M.buf
+    and M.win
     and vim.api.nvim_buf_is_valid(M.buf)
     and vim.api.nvim_buf_is_loaded(M.buf)
     and vim.api.nvim_win_is_valid(M.win)
@@ -54,7 +55,8 @@ function M.show()
   M.win = vim.api.nvim_open_win(M.buf, false, opts)
   vim.api.nvim_buf_set_option(M.buf, "filetype", "WhichKey")
   vim.api.nvim_buf_set_option(M.buf, "buftype", "nofile")
-  -- vim.api.nvim_win_hide(M.win)
+  vim.api.nvim_buf_set_option(M.buf, "bufhidden", "wipe")
+
   local winhl = "NormalFloat:WhichKeyFloat"
   if vim.fn.hlexists("FloatBorder") == 1 then
     winhl = winhl .. ",FloatBorder:WhichKeyBorder"
@@ -245,6 +247,24 @@ function M.open(keys, opts)
   M.on_keys(opts)
 end
 
+function M.is_enabled(buf)
+  local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
+  for _, bt in ipairs(config.options.disable.buftypes) do
+    if bt == buftype then
+      return false
+    end
+  end
+
+  local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
+  for _, bt in ipairs(config.options.disable.filetypes) do
+    if bt == filetype then
+      return false
+    end
+  end
+
+  return true
+end
+
 function M.on_keys(opts)
   local buf = vim.api.nvim_get_current_buf()
 
@@ -277,11 +297,13 @@ function M.on_keys(opts)
 
     local layout = Layout:new(results)
 
-    if not M.is_valid() then
-      M.show()
-    end
+    if M.is_enabled(buf) then
+      if not M.is_valid() then
+        M.show()
+      end
 
-    M.render(layout:layout(M.win))
+      M.render(layout:layout(M.win))
+    end
 
     if vim.opt.cmdheight:get() == 0 then
       vim.cmd([[mode]])
@@ -292,7 +314,7 @@ function M.on_keys(opts)
     local c = M.getchar()
 
     if c == Util.t("<esc>") then
-      M.on_close()
+      M.hide()
       break
     elseif c == Util.t(config.options.popup_mappings.scroll_down) then
       M.scroll(false)
