@@ -6,7 +6,7 @@ local links = {
   Group = "Keyword",
   Desc = "Identifier",
   Float = "NormalFloat",
-  Border = "NormalBorder",
+  Border = "FloatBorder",
   Value = "Comment",
 }
 
