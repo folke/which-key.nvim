@@ -7,6 +7,8 @@ the command you started typing. Heavily inspired by the original [emacs-which-ke
 
 ## ✨ Features
 
+* for Neovim 0.7 and higher, it uses the `desc` attributes of your mappings as the default label
+* for Neovim 0.7 and higher, new mappings will be created with a `desc` attribute
 * opens a popup with suggestions to complete a key binding
 * works with any setting for [timeoutlen](https://neovim.io/doc/user/options.html#'timeoutlen'), including instantly (`timeoutlen=0`)
 * works correctly with built-in key bindings
@@ -174,6 +176,8 @@ Default options for `opts`
 > ❕ When you specify a command in your mapping that starts with `<Plug>`, then we automatically set `noremap=false`, since you always want recursive keybindings in this case
 
 ### ⌨️ Mappings
+
+> ⌨ for **Neovim 0.7** and higher, which key will use the `desc` attribute of existing mappings as the default label
 
 Group names use the special `name` key in the tables. There's multiple ways to define the mappings. `wk.register` can be called multiple times from anywhere in your config files.
 
