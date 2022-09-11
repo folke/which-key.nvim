@@ -74,7 +74,7 @@ local defaults = {
   -- Disabled by deafult for Telescope
   disable = {
     buftypes = {},
-    filetypes = { "TelescopePrompt" },
+    filetypes = {},
   },
 }
 

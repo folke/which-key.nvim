@@ -46,6 +46,7 @@ function M.show()
       - vim.o.cmdheight,
     col = config.options.window.margin[2],
     style = "minimal",
+    noautocmd = true,
   }
   if config.options.window.position == "top" then
     opts.anchor = "NW"
@@ -64,8 +65,6 @@ function M.show()
   vim.api.nvim_win_set_option(M.win, "winhighlight", winhl)
   vim.api.nvim_win_set_option(M.win, "foldmethod", "manual")
   vim.api.nvim_win_set_option(M.win, "winblend", config.options.window.winblend)
-
-  vim.cmd([[autocmd! WinClosed <buffer> lua require("which-key.view").on_close()]])
 end
 
 function M.read_pending()
