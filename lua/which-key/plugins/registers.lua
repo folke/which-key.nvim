@@ -4,10 +4,10 @@ local M = {}
 M.name = "registers"
 
 M.actions = {
-  { trigger = '"', mode = "n" },
+  { trigger = '"', mode = "n", delay = true },
   { trigger = "@", mode = "n", delay = true },
-  { trigger = "<c-r>", mode = "i" },
-  { trigger = "<c-r>", mode = "c" },
+  { trigger = "<c-r>", mode = "i", delay = true },
+  { trigger = "<c-r>", mode = "c", delay = true },
 }
 
 function M.setup(_wk, _config, options)

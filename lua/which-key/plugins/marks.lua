@@ -3,15 +3,17 @@ local M = {}
 M.name = "marks"
 
 M.actions = {
-  { trigger = "`", mode = "n" },
-  { trigger = "'", mode = "n" },
-  { trigger = "g`", mode = "n" },
-  { trigger = "g'", mode = "n" },
+  { trigger = "`", mode = "n", delay = true },
+  { trigger = "'", mode = "n", delay = true },
+  { trigger = "g`", mode = "n", delay = true },
+  { trigger = "g'", mode = "n", delay = true },
 }
 
 function M.setup(_wk, _config, options)
   for _, action in ipairs(M.actions) do
-    table.insert(options.triggers_nowait, action.trigger)
+    if not action.delay then
+      table.insert(options.triggers_nowait, action.trigger)
+    end
   end
 end
 
