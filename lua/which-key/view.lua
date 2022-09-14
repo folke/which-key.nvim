@@ -134,7 +134,7 @@ function M.hide()
     M.buf = nil
   end
   if M.win and vim.api.nvim_win_is_valid(M.win) then
-    vim.api.nvim_win_close(M.win, { force = true })
+    vim.api.nvim_win_close(M.win, true)
     M.win = nil
   end
   if M.is_visual_multi_mod then
