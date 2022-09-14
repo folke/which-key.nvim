@@ -204,12 +204,12 @@ function M.execute(prefix_i, mode, buf)
   -- feed CTRL-O again if called from CTRL-O
   local full_mode = Util.get_mode()
   if full_mode == "nii" or full_mode == "nir" or full_mode == "niv" or full_mode == "vs" then
-    vim.api.nvim_feedkeys(Util.t("<C-O>"), "nt", false)
+    vim.api.nvim_feedkeys(Util.t("<C-O>"), "n", false)
   end
 
   -- handle registers that were passed when opening the popup
   if M.reg ~= '"' and M.mode ~= "i" and M.mode ~= "c" then
-    vim.api.nvim_feedkeys('"' .. M.reg, "nt", false)
+    vim.api.nvim_feedkeys('"' .. M.reg, "n", false)
   end
 
   if M.count and M.count ~= 0 then
@@ -217,7 +217,7 @@ function M.execute(prefix_i, mode, buf)
   end
 
   -- feed the keys with remap
-  vim.api.nvim_feedkeys(prefix_i, "mt", true)
+  vim.api.nvim_feedkeys(prefix_i, "m", true)
 
   -- defer hooking WK until after the keys were executed
   vim.defer_fn(function()
