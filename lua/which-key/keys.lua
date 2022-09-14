@@ -511,6 +511,10 @@ function M.check_health()
     vim.fn["health#report_info"](("old rhs: `%s`"):format(dup.other.rhs or ""))
     vim.fn["health#report_info"](("new rhs: `%s`"):format(dup.cmd or ""))
   end
+  if next(M.duplicates) == nil then
+    vim.fn["health#report_info"]("No duplicate keymaps found")
+  end
+
 end
 
 ---@param mode string
