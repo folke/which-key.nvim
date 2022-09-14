@@ -45,8 +45,11 @@ function M.invoke(mapping, context)
   local items = plugin.run(prefix, context.mode, context.buf)
 
   local ret = {}
-  for i, item in ipairs(items) do
-    ---@type VisualMapping
+  for i, item in
+    ipairs(
+      items --[[@as VisualMapping[] ]]
+    )
+  do
     item.order = i
     item.keys = Util.parse_keys(prefix .. item.key)
     item.prefix = prefix .. item.key

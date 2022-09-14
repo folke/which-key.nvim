@@ -1,3 +1,9 @@
+---@class Highlight
+---@field group string
+---@field line number
+---@field from number
+---@field to number
+
 ---@class Text
 ---@field lines string[]
 ---@field hl Highlight[]

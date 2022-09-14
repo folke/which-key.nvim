@@ -1,3 +1,4 @@
+---@type Plugin
 local M = {}
 
 M.name = "registers"

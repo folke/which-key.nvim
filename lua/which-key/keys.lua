@@ -86,14 +86,14 @@ function M.get_mappings(mode, prefix_i, buf)
   ---@field mode string
   ---@field prefix_i string
   ---@field buf number
-  ---@field mapping Mapping
+  ---@field mapping? Mapping
   ---@field mappings VisualMapping[]
   local ret
   ret = { mapping = nil, mappings = {}, mode = mode, buf = buf, prefix_i = prefix_i }
 
   local prefix_len = #Util.parse_internal(prefix_i)
 
-  ---@param node Node
+  ---@param node? Node
   local function add(node)
     if node then
       if node.mapping then
@@ -214,6 +214,7 @@ function M.parse_mappings(mappings, value, prefix_n)
       end
       if mapping.cmd and type(mapping.cmd) == "function" then
         if vim.fn.has("nvim-0.7.0") then
+          ---@diagnostic disable-next-line: assign-type-mismatch
           mapping.callback = mapping.cmd
           mapping.cmd = ""
         else
@@ -455,7 +456,8 @@ function M.dump()
   local todo = {}
   for _, tree in pairs(M.mappings) do
     M.update_keymaps(tree.mode, tree.buf)
-    tree.tree:walk( ---@param node Node
+    tree.tree:walk(
+      ---@param node Node
       function(node)
         if node.mapping then
           if node.mapping.label then
@@ -475,7 +477,8 @@ function M.check_health()
   vim.fn["health#report_start"]("WhichKey: checking conflicting keymaps")
   for _, tree in pairs(M.mappings) do
     M.update_keymaps(tree.mode, tree.buf)
-    tree.tree:walk( ---@param node Node
+    tree.tree:walk(
+      ---@param node Node
       function(node)
         local count = 0
         for _ in pairs(node.children) do
@@ -510,6 +513,8 @@ function M.check_health()
   end
 end
 
+---@param mode string
+---@param buf? buffer
 function M.get_tree(mode, buf)
   if mode == "s" or mode == "x" then
     mode = "v"
@@ -555,7 +560,8 @@ function M.update_keymaps(mode, buf)
       else
         Util.warn(
           string.format(
-            "Your <leader> key for %q mode in buf %d is currently mapped to %q. WhichKey automatically creates triggers, so please remove the mapping",
+            "Your <leader> key for %q mode in buf %d is currently mapped to %q. "
+              .. "WhichKey automatically creates triggers, so please remove the mapping",
             mode,
             buf or 0,
             keymap.rhs

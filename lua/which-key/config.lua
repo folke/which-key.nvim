@@ -81,7 +81,7 @@ local defaults = {
 ---@type Options
 M.options = {}
 
----@return Options
+---@param options? Options
 function M.setup(options)
   M.options = vim.tbl_deep_extend("force", {}, defaults, options or {})
 end

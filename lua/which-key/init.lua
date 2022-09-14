@@ -19,6 +19,7 @@ local function schedule_load()
   end
 end
 
+---@param options? Options
 function M.setup(options)
   require("which-key.config").setup(options)
   schedule_load()

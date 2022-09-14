@@ -13,7 +13,7 @@ local Layout = {}
 Layout.__index = Layout
 
 ---@param mappings MappingGroup
----@param options Options
+---@param options? Options
 function Layout:new(mappings, options)
   options = options or Config.options
   local this = {

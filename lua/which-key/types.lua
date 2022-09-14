@@ -1,3 +1,5 @@
+---@meta
+
 --# selene: allow(unused_variable)
 
 ---@class Keymap
@@ -15,20 +17,17 @@
 ---@field callback fun()|nil
 ---@field id string terminal keycodes for lhs
 ---@field desc string
-local Keymap
 
 ---@class KeyCodes
 ---@field keys string
 ---@field internal string[]
 ---@field notation string[]
-local KeyCodes
 
 ---@class MappingOptions
 ---@field noremap boolean
 ---@field silent boolean
 ---@field nowait boolean
 ---@field expr boolean
-local MappingOptions
 
 ---@class Mapping
 ---@field buf number
@@ -43,19 +42,16 @@ local MappingOptions
 ---@field preset boolean
 ---@field plugin string
 ---@field fn fun()
-local Mapping
 
 ---@class MappingTree
 ---@field mode string
----@field buf number
+---@field buf? number
 ---@field tree Tree
-local MappingTree
 
 ---@class VisualMapping : Mapping
 ---@field key string
 ---@field highlights table
 ---@field value string
-local VisualMapping
 
 ---@class PluginItem
 ---@field key string
@@ -63,11 +59,15 @@ local VisualMapping
 ---@field value string
 ---@field cmd string
 ---@field highlights table
-local PluginItem
+
+---@class PluginAction
+---@field trigger string
+---@field mode string
+---@field label? string
+---@field delay? boolean
 
 ---@class Plugin
 ---@field name string
----@field actions string[] | string[][]
+---@field actions PluginAction[]
 ---@field run fun(trigger:string, mode:string, buf:number):PluginItem[]
----@field setup fun()
-local Plugin
+---@field setup fun(wk, opts, Options)
