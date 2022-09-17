@@ -303,12 +303,7 @@ function M.on_keys(opts)
 
       M.render(layout:layout(M.win))
     end
-
-    if vim.opt.cmdheight:get() == 0 then
-      vim.cmd([[mode]])
-    else
-      vim.cmd([[redraw]])
-    end
+    vim.cmd([[redraw]])
 
     local c = M.getchar()
 

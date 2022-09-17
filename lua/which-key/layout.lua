@@ -87,6 +87,7 @@ function Layout:trail()
     end
   end
   vim.api.nvim_echo(cmd_line, false, {})
+  vim.cmd([[redraw]])
 end
 
 function Layout:layout(win)
