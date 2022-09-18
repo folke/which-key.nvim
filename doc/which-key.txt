@@ -1,4 +1,4 @@
-*which-key.txt*         For NVIM v0.5.0         Last change: 2022 September 17
+*which-key.txt*         For NVIM v0.5.0         Last change: 2022 September 18
 
 ==============================================================================
 Table of Contents                                *which-key-table-of-contents*
