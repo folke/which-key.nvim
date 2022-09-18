@@ -199,6 +199,8 @@ function M.parse_mappings(mappings, value, prefix_n)
           mapping.label = v
         elseif k == "noremap" then
           mapping.opts.noremap = v
+        elseif k == "remap" then
+          mapping.opts.noremap = not v
         elseif k == "silent" then
           mapping.opts.silent = v
         elseif k == "mode" then
