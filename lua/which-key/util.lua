@@ -139,20 +139,12 @@ function M.parse_internal(keystr)
   return keys
 end
 
-function M.log(msg, hl)
-  vim.api.nvim_echo({ { "WhichKey: ", hl }, { msg } }, true, {})
-end
-
 function M.warn(msg)
-  M.log(msg, "WarningMsg")
+  vim.notify(msg, vim.log.levels.WARN, { title = "WhichKey" })
 end
 
 function M.error(msg)
-  vim.api.nvim_echo({
-    { "WhichKey: ", "Error" },
-    { msg },
-    { " (please report this issue if it persists)", "Comment" },
-  }, true, {})
+  vim.notify(msg, vim.log.levels.ERROR, { title = "WhichKey" })
 end
 
 function M.check_mode(mode, buf)
