@@ -210,6 +210,8 @@ function M.parse_mappings(mappings, value, prefix_n)
         elseif k == "plugin" then
           mapping.group = true
           mapping.plugin = v
+        elseif k == "replace_keycodes" then
+          mapping.opts.replace_keycodes = v
         else
           error("Invalid key mapping: " .. vim.inspect(value))
         end
@@ -306,6 +308,7 @@ function M.register(mappings, opts)
         noremap = mapping.opts.noremap,
         nowait = mapping.opts.nowait or false,
         expr = mapping.opts.expr or false,
+        replace_keycodes = mapping.opts.replace_keycodes,
       }
       if vim.fn.has("nvim-0.7.0") == 1 then
         keymap_opts.desc = mapping.label

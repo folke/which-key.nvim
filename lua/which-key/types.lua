@@ -28,6 +28,7 @@
 ---@field silent boolean
 ---@field nowait boolean
 ---@field expr boolean
+---@field replace_keycodes? boolean
 
 ---@class Mapping
 ---@field buf number
