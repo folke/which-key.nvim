@@ -249,14 +249,14 @@ end
 function M.is_enabled(buf)
   local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
   for _, bt in ipairs(config.options.disable.buftypes) do
-    if bt == buftype then
+    if bt == buftype or bt == "*" then
       return false
     end
   end
 
   local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
   for _, bt in ipairs(config.options.disable.filetypes) do
-    if bt == filetype then
+    if bt == filetype or bt == "*" then
       return false
     end
   end
