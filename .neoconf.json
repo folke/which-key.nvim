@@ -1,0 +1,14 @@
+{
+  "lspconfig": {
+    "sumneko_lua": {
+      "Lua.format.defaultConfig": {
+        "indent_style": "space",
+        "indent_size": "2",
+        "continuation_indent_size": "2"
+      },
+      "Lua.diagnostics.neededFileStatus": {
+        // "codestyle-check": "Any"
+      }
+    }
+  }
+}

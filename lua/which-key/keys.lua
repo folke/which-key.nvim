@@ -166,94 +166,6 @@ function M.get_mappings(mode, prefix_i, buf)
   return ret
 end
 
----@param mappings Mapping[]
----@return Mapping[]
-function M.parse_mappings(mappings, value, prefix_n)
-  prefix_n = prefix_n or ""
-  if type(value) == "string" then
-    table.insert(mappings, { prefix = prefix_n, label = value })
-  elseif type(value) == "table" then
-    if #value == 0 then
-      -- key group
-      for k, v in pairs(value) do
-        if k ~= "name" then
-          M.parse_mappings(mappings, v, prefix_n .. k)
-        end
-      end
-      if prefix_n ~= "" then
-        if value.name then
-          value.name = value.name:gsub("^%+", "")
-        end
-        table.insert(mappings, { prefix = prefix_n, label = value.name, group = true })
-      end
-    else
-      -- key mapping
-      ---@type Mapping
-      local mapping
-      mapping = { prefix = prefix_n, opts = {}, buf = M.get_buf_option(value) }
-      for k, v in pairs(value) do
-        if k == 1 then
-          mapping.label = v
-        elseif k == 2 then
-          mapping.cmd = value[1]
-          mapping.label = v
-        elseif k == "noremap" then
-          mapping.opts.noremap = v
-        elseif k == "remap" then
-          mapping.opts.noremap = not v
-        elseif k == "silent" then
-          mapping.opts.silent = v
-        elseif k == "mode" then
-          mapping.mode = v
-        elseif k == "expr" then
-          mapping.opts.expr = v
-        elseif k == "plugin" then
-          mapping.group = true
-          mapping.plugin = v
-        else
-          error("Invalid key mapping: " .. vim.inspect(value))
-        end
-      end
-      if mapping.cmd and type(mapping.cmd) == "function" then
-        if vim.fn.has("nvim-0.7.0") == 1 then
-          ---@diagnostic disable-next-line: assign-type-mismatch
-          mapping.callback = mapping.cmd
-          mapping.cmd = ""
-        else
-          table.insert(M.functions, mapping.cmd)
-          if mapping.opts.expr then
-            mapping.cmd = string.format([[luaeval('require("which-key").execute(%d)')]], #M.functions)
-          else
-            mapping.cmd = string.format([[<cmd>lua require("which-key").execute(%d)<cr>]], #M.functions)
-          end
-        end
-      end
-      table.insert(mappings, mapping)
-    end
-  else
-    error("Invalid mapping " .. vim.inspect(value))
-  end
-  return mappings
-end
-
-function M.get_buf_option(opts)
-  for _, k in pairs({ "buffer", "bufnr", "buf" }) do
-    if opts[k] then
-      local v = opts[k]
-      if v == 0 then
-        v = vim.api.nvim_get_current_buf()
-      end
-      opts[k] = nil
-      if k == "buffer" then
-        return v
-      elseif k == "bufnr" or k == "buf" then
-        Util.warn(string.format([[please use "buffer" instead of %q for buffer mappings]], k))
-        return v
-      end
-    end
-  end
-end
-
 ---@type table<string, MappingTree>
 M.mappings = {}
 M.duplicates = {}
@@ -278,42 +190,19 @@ end
 function M.register(mappings, opts)
   opts = opts or {}
 
-  local prefix_n = opts.prefix or ""
-  local mode = opts.mode or "n"
-
-  opts.buffer = M.get_buf_option(opts)
-
-  mappings = M.parse_mappings({}, mappings, prefix_n)
+  mappings = require("which-key.mappings").parse(mappings, opts)
 
   -- always create the root node for the mode, even if there's no mappings,
   -- to ensure we have at least a trigger hooked for non documented keymaps
-  M.get_tree(mode)
+  local modes = {}
 
   for _, mapping in pairs(mappings) do
-    if opts.buffer and not mapping.buf then
-      mapping.buf = opts.buffer
+    if not modes[mapping.mode] then
+      modes[mapping.mode] = true
+      M.get_tree(mapping.mode)
     end
-    if opts.preset then
-      mapping.preset = true
-    end
-    mapping.keys = Util.parse_keys(mapping.prefix)
-    mapping.mode = mapping.mode or mode
-    if mapping.cmd or mapping.callback then
-      mapping.opts = vim.tbl_deep_extend("force", { silent = true, noremap = true }, opts, mapping.opts or {})
-      local keymap_opts = {
-        callback = mapping.callback,
-        silent = mapping.opts.silent,
-        noremap = mapping.opts.noremap,
-        nowait = mapping.opts.nowait or false,
-        expr = mapping.opts.expr or false,
-      }
-      if vim.fn.has("nvim-0.7.0") == 1 then
-        keymap_opts.desc = mapping.label
-      end
-      if mapping.cmd and mapping.cmd:lower():sub(1, #"<plug>") == "<plug>" then
-        keymap_opts.noremap = false
-      end
-      M.map(mapping.mode, mapping.prefix, mapping.cmd, mapping.buf, keymap_opts)
+    if mapping.cmd ~= nil then
+      M.map(mapping.mode, mapping.prefix, mapping.cmd, mapping.buf, mapping.opts)
     end
     M.get_tree(mapping.mode, mapping.buf).tree:add(mapping)
   end
