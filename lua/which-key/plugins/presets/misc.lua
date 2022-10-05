@@ -41,6 +41,7 @@ local misc = {
       x = "Update folds",
       z = "Center this line",
       t = "Top this line",
+      ["<CR>"] = "Top this line, 1st non-blank col",
       b = "Bottom this line",
       g = "Add word to spell list",
       w = "Mark word as bad/misspelling",
