@@ -55,14 +55,18 @@ function Layout:trail()
     if Config.options.key_labels[step] then
       step = Config.options.key_labels[step]
     end
-    table.insert(cmd_line, { step, "WhichKeyGroup" })
-    if i ~= #self.mapping.keys.notation then
-      table.insert(cmd_line, { " " .. self.options.icons.breadcrumb .. " ", "WhichKeySeparator" })
+    if Config.options.show_keys then
+      table.insert(cmd_line, { step, "WhichKeyGroup" })
+      if i ~= #self.mapping.keys.notation then
+        table.insert(cmd_line, { " " .. self.options.icons.breadcrumb .. " ", "WhichKeySeparator" })
+      end
     end
   end
   local width = 0
-  for _, line in pairs(cmd_line) do
-    width = width + Text.len(line[1])
+  if Config.options.show_keys then
+    for _, line in pairs(cmd_line) do
+      width = width + Text.len(line[1])
+    end
   end
   local help = { --
     ["<bs>"] = "go up one level",
@@ -79,7 +83,9 @@ function Layout:trail()
     table.insert(help_line, { key .. " ", "WhichKey" })
     table.insert(help_line, { label .. " ", "WhichKeySeparator" })
   end
-  table.insert(cmd_line, { string.rep(" ", math.floor(vim.o.columns / 2 - help_width / 2) - width) })
+  if Config.options.show_keys then
+    table.insert(cmd_line, { string.rep(" ", math.floor(vim.o.columns / 2 - help_width / 2) - width) })
+  end
 
   if self.options.show_help then
     for _, l in pairs(help_line) do
