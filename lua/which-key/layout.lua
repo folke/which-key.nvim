@@ -55,7 +55,7 @@ function Layout:trail()
     if Config.options.key_labels[step] then
       step = Config.options.key_labels[step]
     end
-    if Config.options.show_keypress then
+    if Config.options.show_keys then
       table.insert(cmd_line, { step, "WhichKeyGroup" })
       if i ~= #self.mapping.keys.notation then
         table.insert(cmd_line, { " " .. self.options.icons.breadcrumb .. " ", "WhichKeySeparator" })
@@ -63,7 +63,7 @@ function Layout:trail()
     end
   end
   local width = 0
-  if Config.options.show_keypress then
+  if Config.options.show_keys then
     for _, line in pairs(cmd_line) do
       width = width + Text.len(line[1])
     end
@@ -83,7 +83,7 @@ function Layout:trail()
     table.insert(help_line, { key .. " ", "WhichKey" })
     table.insert(help_line, { label .. " ", "WhichKeySeparator" })
   end
-  if Config.options.show_keypress then
+  if Config.options.show_keys then
     table.insert(cmd_line, { string.rep(" ", math.floor(vim.o.columns / 2 - help_width / 2) - width) })
   end
 
