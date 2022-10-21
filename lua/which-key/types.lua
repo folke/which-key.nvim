@@ -38,6 +38,7 @@
 ---@field cmd string
 ---@field opts MappingOptions
 ---@field keys KeyCodes
+---@field mode? string
 ---@field callback fun()|nil
 ---@field preset boolean
 ---@field plugin string
