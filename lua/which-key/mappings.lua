@@ -153,7 +153,15 @@ function M._parse(value, mappings, opts)
   end
 
   if opts.desc or opts.group then
-    table.insert(mappings, opts)
+    if type(opts.mode) == "table" then
+      for _, mode in pairs(opts.mode) do
+        local mode_opts = vim.deepcopy(opts)
+        mode_opts.mode = mode
+        table.insert(mappings, mode_opts)
+      end
+    else
+      table.insert(mappings, opts)
+    end
   end
 end
 
