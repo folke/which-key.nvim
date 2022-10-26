@@ -7,22 +7,22 @@ the command you started typing. Heavily inspired by the original [emacs-which-ke
 
 ## ✨ Features
 
-* for Neovim 0.7 and higher, it uses the `desc` attributes of your mappings as the default label
-* for Neovim 0.7 and higher, new mappings will be created with a `desc` attribute
-* opens a popup with suggestions to complete a key binding
-* works with any setting for [timeoutlen](https://neovim.io/doc/user/options.html#'timeoutlen'), including instantly (`timeoutlen=0`)
-* works correctly with built-in key bindings
-* works correctly with buffer-local mappings
-* extensible plugin architecture
-* built-in plugins:
-  + **marks:** shows your marks when you hit one of the jump keys.
-  + **registers:** shows the contents of your registers
-  + **presets:** built-in key binding help for `motions`, `text-objects`, `operators`, `windows`, `nav`, `z` and `g`
-  + **spelling:** spelling suggestions inside the which-key popup
+- for Neovim 0.7 and higher, it uses the `desc` attributes of your mappings as the default label
+- for Neovim 0.7 and higher, new mappings will be created with a `desc` attribute
+- opens a popup with suggestions to complete a key binding
+- works with any setting for [timeoutlen](https://neovim.io/doc/user/options.html#'timeoutlen'), including instantly (`timeoutlen=0`)
+- works correctly with built-in key bindings
+- works correctly with buffer-local mappings
+- extensible plugin architecture
+- built-in plugins:
+  - **marks:** shows your marks when you hit one of the jump keys.
+  - **registers:** shows the contents of your registers
+  - **presets:** built-in key binding help for `motions`, `text-objects`, `operators`, `windows`, `nav`, `z` and `g`
+  - **spelling:** spelling suggestions inside the which-key popup
 
 ## ⚡️ Requirements
 
-* Neovim >= 0.5.0
+- Neovim >= 0.5.0
 
 ## 📦 Installation
 
@@ -65,8 +65,8 @@ use {
 > Please refer to the documentation to properly set it up. Setting it to `0`, will effectively
 > always show **WhichKey** immediately, but a setting of `500` (500ms) is probably more appropriate.
 
-> ❗️ don't create any keymappings yourself to trigger WhichKey. Unlike with *vim-which-key*, we do this fully automatically.
-> Please remove any left-over triggers you might have from using *vim-which-key*.
+> ❗️ don't create any keymappings yourself to trigger WhichKey. Unlike with _vim-which-key_, we do this fully automatically.
+> Please remove any left-over triggers you might have from using _vim-which-key_.
 
 > 🚑 You can run `:checkhealth which_key` to see if there's any conflicting keymaps that will prevent triggering **WhichKey**
 
@@ -246,8 +246,7 @@ wk.register({
 </details>
 
 **Tips:** The default label is `keymap.desc` or `keymap.rhs` or `""`,
- `:h nvim_set_keymap()` to get more details about `desc` and `rhs`.
-
+`:h nvim_set_keymap()` to get more details about `desc` and `rhs`.
 
 ### 🚙 Operators, Motions and Text Objects
 
@@ -255,15 +254,15 @@ wk.register({
 
 > `[count]operator[count][text-object]`
 
-* operators can be configured with the `operators` option
-  + set `plugins.presets.operators` to `true` to automatically configure vim built-in operators
-  + set this to `false`, to only include the list you configured in the `operators` option.
-  + see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L5) for the full list part of the preset
-* text objects are automatically retrieved from **operator pending** key maps (`omap`)
-  + set `plugins.presets.text_objects` to `true` to configure built-in text objects
-  + see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L43)
-* motions are part of the preset `plugins.presets.motions` setting
-  + see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L20)
+- operators can be configured with the `operators` option
+  - set `plugins.presets.operators` to `true` to automatically configure vim built-in operators
+  - set this to `false`, to only include the list you configured in the `operators` option.
+  - see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L5) for the full list part of the preset
+- text objects are automatically retrieved from **operator pending** key maps (`omap`)
+  - set `plugins.presets.text_objects` to `true` to configure built-in text objects
+  - see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L43)
+- motions are part of the preset `plugins.presets.motions` setting
+  - see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L20)
 
 <details>
 <summary>How to disable some operators? (like v)</summary>
@@ -281,16 +280,16 @@ presets.operators["v"] = nil
 
 When the **WhichKey** popup is open, you can use the following key bindings (they are also displayed at the bottom of the screen):
 
-* hit one of the keys to open a group or execute a key binding
-* `<esc>` to cancel and close the popup
-* `<bs>` go up one level
-* `<c-d>` scroll down
-* `<c-u>` scroll up
+- hit one of the keys to open a group or execute a key binding
+- `<esc>` to cancel and close the popup
+- `<bs>` go up one level
+- `<c-d>` scroll down
+- `<c-u>` scroll up
 
-Apart from the automatic opening, you can also  manually open **WhichKey** for a certain `prefix`:
+Apart from the automatic opening, you can also manually open **WhichKey** for a certain `prefix`:
 
-> ❗️ don't create any keymappings yourself to trigger WhichKey. Unlike with *vim-which-key*, we do this fully automatically.
-> Please remove any left-over triggers you might have from using *vim-which-key*.
+> ❗️ don't create any keymappings yourself to trigger WhichKey. Unlike with _vim-which-key_, we do this fully automatically.
+> Please remove any left-over triggers you might have from using _vim-which-key_.
 
 ```vim
 :WhichKey " show all mappings
@@ -311,7 +310,7 @@ Shows a list of your buffer local and global marks when you hit \` or '
 
 ### Registers
 
-Shows a list of your buffer local and global registers when you hit " in *NORMAL* mode, or `<c-r>` in *INSERT* mode.
+Shows a list of your buffer local and global registers when you hit " in _NORMAL_ mode, or `<c-r>` in _INSERT_ mode.
 
 ![image](https://user-images.githubusercontent.com/292349/116439609-98b0ef00-a804-11eb-9385-97c7d5ff4113.png)
 
@@ -333,13 +332,13 @@ The table below shows all the highlight groups defined for **WhichKey** with the
 
 | Highlight Group     | Defaults to | Description                                 |
 | ------------------- | ----------- | ------------------------------------------- |
-| *WhichKey*          | Function    | the key                                     |
-| *WhichKeyGroup*     | Keyword     | a group                                     |
-| *WhichKeySeparator* | DiffAdd     | the separator between the key and its label |
-| *WhichKeyDesc*      | Identifier  | the label of the key                        |
-| *WhichKeyFloat*     | NormalFloat | Normal in the popup window                  |
-| *WhichKeyBorder*    | FloatBorder | Normal in the popup window                  |
-| *WhichKeyValue*     | Comment     | used by plugins that provide values         |
+| _WhichKey_          | Function    | the key                                     |
+| _WhichKeyGroup_     | Keyword     | a group                                     |
+| _WhichKeySeparator_ | DiffAdd     | the separator between the key and its label |
+| _WhichKeyDesc_      | Identifier  | the label of the key                        |
+| _WhichKeyFloat_     | NormalFloat | Normal in the popup window                  |
+| _WhichKeyBorder_    | FloatBorder | Normal in the popup window                  |
+| _WhichKeyValue_     | Comment     | used by plugins that provide values         |
 
 <!-- markdownlint-disable-file MD033 -->
 <!-- markdownlint-configure-file { "MD013": { "line_length": 120 } } -->
