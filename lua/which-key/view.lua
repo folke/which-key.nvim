@@ -43,6 +43,7 @@ function M.show()
     row = vim.o.lines
       - config.options.window.margin[3]
       - (vim.fn.has("nvim-0.6") == 0 and config.options.window.border ~= "none" and 2 or 0)
+      + ((vim.o.laststatus == 0 or vim.o.laststatus == 1 and vim.fn.winnr('$') == 1) and 1 or 0)
       - vim.o.cmdheight,
     col = config.options.window.margin[2],
     style = "minimal",
