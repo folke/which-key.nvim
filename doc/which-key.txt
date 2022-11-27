@@ -148,6 +148,9 @@ WhichKey comes with the following defaults:
         scroll_down = '<c-d>', -- binding to scroll down inside the popup
         scroll_up = '<c-u>', -- binding to scroll up inside the popup
       },
+      -- a table to binding key to function inside the popup. The user-defined function accepts two parameters
+      -- `(keys, mode)`, in which `keys` is the keys bring up the popup, `mode` is the current vim mode.
+      popup_user_mappings = {},
       window = {
         border = "none", -- none, single, double, shadow
         position = "bottom", -- bottom, top
