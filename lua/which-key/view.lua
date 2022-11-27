@@ -316,9 +316,17 @@ function M.on_keys(opts)
       M.scroll(true)
     elseif c == Util.t("<bs>") then
       M.back()
-    else
-      M.keys = M.keys .. c
     end
+
+    for k, fn in pairs(config.options.popup_user_mappings) do
+      if c == Util.t(k) then
+        fn(M.keys, opts.mode)
+        M.hide()
+        return
+      end
+    end
+
+    M.keys = M.keys .. c
   end
 end
 

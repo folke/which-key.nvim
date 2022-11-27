@@ -45,6 +45,7 @@ local defaults = {
     scroll_down = "<c-d>", -- binding to scroll down inside the popup
     scroll_up = "<c-u>", -- binding to scroll up inside the popup
   },
+  popup_user_mappings = {},
   window = {
     border = "none", -- none, single, double, shadow
     position = "bottom", -- bottom, top
@@ -53,7 +54,7 @@ local defaults = {
     winblend = 0, -- value between 0-100 0 for fully opaque and 100 for fully transparent
   },
   layout = {
-    height = { min = 4, max = 25 }, -- min and max height of the columns
+    height = { min = 4, max = 25 }, -- min and max height of the lines
     width = { min = 20, max = 50 }, -- min and max width of the columns
     spacing = 3, -- spacing between columns
     align = "left", -- align columns left, center or right
@@ -75,7 +76,7 @@ local defaults = {
   -- Disabled by deafult for Telescope
   disable = {
     buftypes = {},
-    filetypes = {},
+    filetypes = { "TelescopePrompt" },
   },
 }
 
