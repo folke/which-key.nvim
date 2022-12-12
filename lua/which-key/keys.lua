@@ -379,6 +379,10 @@ function M.check_health()
       end
     )
   end
+  if next(M.duplicates) == nil then
+    vim.fn["health#report_ok"]("No conflicting keymaps found")
+    return
+  end
   for _, dup in pairs(M.duplicates) do
     local msg = ""
     if dup.buf == dup.other.buffer then
