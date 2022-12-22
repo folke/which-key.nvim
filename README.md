@@ -50,6 +50,10 @@ EOF
 use {
   "folke/which-key.nvim",
   config = function()
+    vim.cmd([[
+    set timeout
+    set timeoutlen
+    ]])
     require("which-key").setup {
       -- your configuration comes here
       -- or leave it empty to use the default settings
