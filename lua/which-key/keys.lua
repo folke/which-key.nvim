@@ -358,7 +358,7 @@ function M.dump()
 end
 
 function M.check_health()
-  vim.fn["health#report_start"]("WhichKey: checking conflicting keymaps")
+  vim.health.report_start("WhichKey: checking conflicting keymaps")
   for _, tree in pairs(M.mappings) do
     M.update_keymaps(tree.mode, tree.buf)
     tree.tree:walk(
@@ -372,9 +372,9 @@ function M.check_health()
         local auto_prefix = not node.mapping or (node.mapping.group == true and not node.mapping.cmd)
         if node.prefix_i ~= "" and count > 0 and not auto_prefix then
           local msg = ("conflicting keymap exists for mode **%q**, lhs: **%q**"):format(tree.mode, node.mapping.prefix)
-          vim.fn["health#report_warn"](msg)
+          vim.health.report_warn(msg)
           local cmd = node.mapping.cmd or " "
-          vim.fn["health#report_info"](("rhs: `%s`"):format(cmd))
+          vim.health.report_info(("rhs: `%s`"):format(cmd))
         end
       end
     )
@@ -388,12 +388,12 @@ function M.check_health()
     end
     msg = (msg .. " for mode **%q**, buf: %d, lhs: **%q**"):format(dup.mode, dup.buf or 0, dup.prefix)
     if dup.buf == dup.other.buffer then
-      vim.fn["health#report_error"](msg)
+      vim.health.report_error(msg)
     else
-      vim.fn["health#report_warn"](msg)
+      vim.health.report_warn(msg)
     end
-    vim.fn["health#report_info"](("old rhs: `%s`"):format(dup.other.rhs or ""))
-    vim.fn["health#report_info"](("new rhs: `%s`"):format(dup.cmd or ""))
+    vim.health.report_info(("old rhs: `%s`"):format(dup.other.rhs or ""))
+    vim.health.report_info(("new rhs: `%s`"):format(dup.cmd or ""))
   end
 end
 
