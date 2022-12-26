@@ -11,7 +11,16 @@ M.actions = {
 
 function M.setup(_wk, _config, options)
   for _, action in ipairs(M.actions) do
-    table.insert(options.triggers_nowait, action.trigger)
+    local delay = false
+    for _, key in ipairs(options.plugins_wait.marks) do
+      if key == action.trigger then
+        delay = true
+        break
+      end
+    end
+    if not delay then
+      table.insert(options.triggers_nowait, action.trigger)
+    end
   end
 end
 

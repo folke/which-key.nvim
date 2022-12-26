@@ -131,6 +131,12 @@ WhichKey comes with the following defaults:
   show_keys = true, -- show the currently pressed key and its label as a message in the command line
   triggers = "auto", -- automatically setup triggers
   -- triggers = {"<leader>"} -- or specify a list manually
+  triggers_nowait = {}, -- list of triggers, where WhichKey should not wait for timeoutlen and show immediately
+  plugins_wait = { -- list of plugins and their character triggers where WhichKey should respect timeoutlen
+    marks = {},
+    registers = { "@" },
+    spelling = {},
+  },
   triggers_blacklist = {
     -- list of mode / prefixes that should never be hooked by WhichKey
     -- this is mostly relevant for key maps that start with a native binding

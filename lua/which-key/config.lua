@@ -65,6 +65,11 @@ local defaults = {
   triggers = "auto", -- automatically setup triggers
   -- triggers = {"<leader>"} -- or specifiy a list manually
   triggers_nowait = {}, -- list of triggers, where WhichKey should not wait for timeoutlen and show immediately
+  plugins_wait = { -- list of plugins and their character triggers where WhichKey should respect timeoutlen
+    marks = {},
+    registers = { "@" },
+    spelling = {},
+  },
   triggers_blacklist = {
     -- list of mode / prefixes that should never be hooked by WhichKey
     -- this is mostly relevant for keymaps that start with a native binding

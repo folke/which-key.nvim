@@ -7,7 +7,17 @@ M.actions = { { trigger = "z=", mode = "n" } }
 M.opts = {}
 
 function M.setup(_, config, options)
-  table.insert(options.triggers_nowait, "z=")
+  local delay = false
+
+  for _, key in ipairs(options.plugins_wait.spelling) do
+    if key == M.actions[0].trigger then
+      delay = true
+      break
+    end
+  end
+  if not delay then
+    table.insert(options.triggers_nowait, "z=")
+  end
   M.opts = config
 end
 

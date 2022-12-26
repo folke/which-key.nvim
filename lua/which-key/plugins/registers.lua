@@ -6,14 +6,21 @@ M.name = "registers"
 M.actions = {
   { trigger = '"', mode = "n" },
   { trigger = '"', mode = "v" },
-  { trigger = "@", mode = "n", delay = true },
+  { trigger = "@", mode = "n" },
   { trigger = "<c-r>", mode = "i" },
   { trigger = "<c-r>", mode = "c" },
 }
 
 function M.setup(_wk, _config, options)
   for _, action in ipairs(M.actions) do
-    if not action.delay then
+    local delay = false
+    for _, key in ipairs(options.plugins_wait.registers) do
+      if key == action.trigger then
+        delay = true
+        break
+      end
+    end
+    if not delay then
       table.insert(options.triggers_nowait, action.trigger)
     end
   end
