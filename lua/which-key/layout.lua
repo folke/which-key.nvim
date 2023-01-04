@@ -92,8 +92,18 @@ function Layout:trail()
       table.insert(cmd_line, l)
     end
   end
-  vim.api.nvim_echo(cmd_line, false, {})
-  vim.cmd([[redraw]])
+  if vim.o.cmdheight > 0 then
+    vim.api.nvim_echo(cmd_line, false, {})
+    vim.cmd([[redraw]])
+  else
+    local col = 1
+    self.text:nl()
+    local row = #self.text.lines
+    for _, text in ipairs(cmd_line) do
+      self.text:set(row, col, text[1], text[2] and text[2]:gsub("WhichKey", "") or nil)
+      col = col + vim.fn.strwidth(text[1])
+    end
+  end
 end
 
 function Layout:layout(win)
