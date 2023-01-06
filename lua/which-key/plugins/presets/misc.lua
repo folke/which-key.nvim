@@ -2,7 +2,7 @@ local M = {}
 
 M.name = "misc"
 
-local misc = {
+M.misc = {
   windows = {
     ["<c-w>"] = {
       name = "window",
@@ -82,7 +82,7 @@ local misc = {
 }
 
 function M.setup(wk, config)
-  for key, mappings in pairs(misc) do
+  for key, mappings in pairs(M.misc) do
     if config[key] ~= false then
       wk.register(mappings, { mode = "n", prefix = "", preset = true })
     end
