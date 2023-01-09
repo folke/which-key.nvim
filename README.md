@@ -28,19 +28,22 @@ the command you started typing. Heavily inspired by the original [emacs-which-ke
 
 Install the plugin with your preferred package manager:
 
-### [vim-plug](https://github.com/junegunn/vim-plug)
+### [lazy.nvim](https://github.com/folke/lazy.nvim)
 
-```vim
-" Vim Script
-Plug 'folke/which-key.nvim'
-
-lua << EOF
-  require("which-key").setup {
-    -- your configuration comes here
-    -- or leave it empty to use the default settings
-    -- refer to the configuration section below
-  }
-EOF
+```lua
+require("lazy").setup({
+  {
+    "folke/which-key",
+    config = function()
+      vim.o.timeoutlen = 300
+      require("which-key").setup({
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      })
+    end,
+  },
+})
 ```
 
 ### [packer](https://github.com/wbthomason/packer.nvim)
@@ -50,6 +53,7 @@ EOF
 use {
   "folke/which-key.nvim",
   config = function()
+    vim.o.timeoutlen = 300
     require("which-key").setup {
       -- your configuration comes here
       -- or leave it empty to use the default settings
