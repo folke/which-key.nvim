@@ -1,4 +1,4 @@
-*which-key.nvim.txt*      For Neovim >= 0.8.0     Last change: 2023 January 07
+*which-key.nvim.txt*      For Neovim >= 0.8.0     Last change: 2023 January 09
 
 ==============================================================================
 Table of Contents                           *which-key.nvim-table-of-contents*
@@ -53,19 +53,22 @@ INSTALLATION                                     *which-key.nvim-installation*
 
 Install the plugin with your preferred package manager:
 
-VIM-PLUG <HTTPS://GITHUB.COM/JUNEGUNN/VIM-PLUG> ~
+LAZY.NVIM <HTTPS://GITHUB.COM/FOLKE/LAZY.NVIM> ~
 
->vim
-    " Vim Script
-    Plug 'folke/which-key.nvim'
-    
-    lua << EOF
-      require("which-key").setup {
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
-      }
-    EOF
+>lua
+    require("lazy").setup({
+      {
+        "folke/which-key",
+        config = function()
+          vim.o.timeoutlen = 300
+          require("which-key").setup({
+            -- your configuration comes here
+            -- or leave it empty to use the default settings
+            -- refer to the configuration section below
+          })
+        end,
+      },
+    })
 <
 
 
@@ -76,6 +79,7 @@ PACKER <HTTPS://GITHUB.COM/WBTHOMASON/PACKER.NVIM> ~
     use {
       "folke/which-key.nvim",
       config = function()
+        vim.o.timeoutlen = 300
         require("which-key").setup {
           -- your configuration comes here
           -- or leave it empty to use the default settings
