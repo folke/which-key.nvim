@@ -35,6 +35,7 @@ require("lazy").setup({
   {
     "folke/which-key",
     config = function()
+      vim.o.timeout = true
       vim.o.timeoutlen = 300
       require("which-key").setup({
         -- your configuration comes here
@@ -53,6 +54,7 @@ require("lazy").setup({
 use {
   "folke/which-key.nvim",
   config = function()
+    vim.o.timeout = true
     vim.o.timeoutlen = 300
     require("which-key").setup {
       -- your configuration comes here
@@ -65,7 +67,7 @@ use {
 
 ## ⚙️ Configuration
 
-> ❗️ IMPORTANT: the timeout when **WhichKey** opens is controlled by the vim setting [timeoutlen](https://neovim.io/doc/user/options.html#'timeoutlen').
+> ❗️ IMPORTANT: the [timeout](https://neovim.io/doc/user/options.html#'timeout') when **WhichKey** opens is controlled by the vim setting [timeoutlen](https://neovim.io/doc/user/options.html#'timeoutlen').
 > Please refer to the documentation to properly set it up. Setting it to `0`, will effectively
 > always show **WhichKey** immediately, but a setting of `500` (500ms) is probably more appropriate.
 
