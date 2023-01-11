@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/folke/which-key.nvim/compare/v1.0.0...v1.1.0) (2023-01-10)
+
+
+### Features
+
+* Hide mapping when `desc = "which_key_ignore"` ([#391](https://github.com/folke/which-key.nvim/issues/391)) ([fd07b61](https://github.com/folke/which-key.nvim/commit/fd07b6137f1e362a66df04f7c7055b99319e3a4d))
+
+
+### Bug Fixes
+
+* visual-multi compatibility ([#389](https://github.com/folke/which-key.nvim/issues/389)) ([#385](https://github.com/folke/which-key.nvim/issues/385)) ([01334bb](https://github.com/folke/which-key.nvim/commit/01334bb48c53231fc8b2e2932215bfee05474904))
+
 ## 1.0.0 (2023-01-04)
 
 
