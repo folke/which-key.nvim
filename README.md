@@ -33,7 +33,7 @@ Install the plugin with your preferred package manager:
 ```lua
 require("lazy").setup({
   {
-    "folke/which-key",
+    "folke/which-key.nvim",
     config = function()
       vim.o.timeout = true
       vim.o.timeoutlen = 300
