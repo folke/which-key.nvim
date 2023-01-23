@@ -5,3 +5,4 @@ debug
 .repro
 foo.*
 *.log
+data
