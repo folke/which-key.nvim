@@ -121,6 +121,9 @@ function M.get_mappings(mode, prefix_i, buf)
     if Config.options.key_labels[value.key] then
       value.key = Config.options.key_labels[value.key]
     end
+    if not value.label and value.desc then
+      value.label = value.desc
+    end
     local skip = not value.label and Config.options.ignore_missing == true
     if Util.t(value.key) == Util.t("<esc>") then
       skip = true
