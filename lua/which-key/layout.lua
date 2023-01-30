@@ -107,9 +107,10 @@ function Layout:trail()
 end
 
 function Layout:layout(win)
+  local pad_top, pad_right, pad_bot, pad_left = unpack(self.options.window.padding)
   local window_width = vim.api.nvim_win_get_width(win)
   local width = window_width
-  width = width - self.options.window.padding[2] - self.options.window.padding[4]
+  width = width - pad_right - pad_left
 
   local max_key_width = self:max_width("key")
   local max_label_width = self:max_width("label")
@@ -146,8 +147,6 @@ function Layout:layout(win)
 
   local col = 1
   local row = 1
-  local pad_top = self.options.window.padding[3]
-  local pad_left = self.options.window.padding[4]
 
   local columns_used = math.min(columns, math.ceil(#self.items / height))
   local offset_x = 0
@@ -160,10 +159,7 @@ function Layout:layout(win)
   end
 
   for _, item in pairs(self.items) do
-    local start = (col - 1) * column_width + self.options.layout.spacing + offset_x
-    if col == 1 then
-      start = start + pad_left
-    end
+    local start = (col - 1) * column_width + self.options.layout.spacing + offset_x + pad_left
     local key = item.key or ""
     if key == "<lt>" then
       key = "<"
@@ -210,7 +206,7 @@ function Layout:layout(win)
     end
   end
 
-  for _ = 1, self.options.window.padding[3], 1 do
+  for _ = 1, pad_bot, 1 do
     self.text:nl()
   end
   self:trail()
