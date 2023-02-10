@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/folke/which-key.nvim/compare/v1.1.0...v1.1.1) (2023-02-10)
+
+
+### Bug Fixes
+
+* remove duplicate kaymap ([#361](https://github.com/folke/which-key.nvim/issues/361)) ([9a4680e](https://github.com/folke/which-key.nvim/commit/9a4680e95b7026c58f0a377de0f13ee2507ece7a))
+
 ## [1.1.0](https://github.com/folke/which-key.nvim/compare/v1.0.0...v1.1.0) (2023-01-10)
 
 
