@@ -139,7 +139,18 @@ function M.get_mappings(mode, prefix_i, buf)
       if value.value then
         value.value = vim.fn.strtrans(value.value)
       end
-      table.insert(tmp, value)
+      -- remove duplicated keymap
+      local exists = false
+      for k, v in pairs(tmp) do
+        if type(v) == "table" and v.key == value.key then
+            tmp[k] = value
+            exists = true
+            break
+        end
+      end
+      if not exists then
+        table.insert(tmp, value)
+      end
     end
   end
 
