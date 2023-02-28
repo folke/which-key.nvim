@@ -1,17 +1,17 @@
-*which-key.nvim.txt*     For Neovim >= 0.8.0     Last change: 2023 February 10
+*which-key.nvim.txt*     For Neovim >= 0.8.0     Last change: 2023 February 28
 
 ==============================================================================
 Table of Contents                           *which-key.nvim-table-of-contents*
 
 1. Which Key                                        |which-key.nvim-which-key|
-  - Features                                         |which-key.nvim-features|
-  - Requirements                                 |which-key.nvim-requirements|
-  - Installation                                 |which-key.nvim-installation|
-  - Configuration                               |which-key.nvim-configuration|
-  - 🪄 Setup                                     |which-key.nvim-🪄-setup|
-  - Usage                                               |which-key.nvim-usage|
-  - Plugins                                           |which-key.nvim-plugins|
-  - Colors                                             |which-key.nvim-colors|
+  - Features                               |which-key.nvim-which-key-features|
+  - Requirements                       |which-key.nvim-which-key-requirements|
+  - Installation                       |which-key.nvim-which-key-installation|
+  - Configuration                     |which-key.nvim-which-key-configuration|
+  - 🪄 Setup                           |which-key.nvim-which-key-🪄-setup|
+  - Usage                                     |which-key.nvim-which-key-usage|
+  - Plugins                                 |which-key.nvim-which-key-plugins|
+  - Colors                                   |which-key.nvim-which-key-colors|
 
 ==============================================================================
 1. Which Key                                        *which-key.nvim-which-key*
@@ -21,12 +21,8 @@ key bindings of the command you started typing. Heavily inspired by the
 original emacs-which-key <https://github.com/justbur/emacs-which-key> and
 vim-which-key <https://github.com/liuchengxu/vim-which-key>.
 
-<div class="figure">
-<img src="https://user-images.githubusercontent.com/292349/116439438-669f8d00-a804-11eb-9b5b-c7122bd9acac.png" title="fig:"/>
-<p class="caption">image</p>
-</div>
 
-FEATURES                                             *which-key.nvim-features*
+FEATURES                                   *which-key.nvim-which-key-features*
 
 
 - for Neovim 0.7 and higher, it uses the `desc` attributes of your mappings as the default label
@@ -43,17 +39,18 @@ FEATURES                                             *which-key.nvim-features*
     - **spelling:** spelling suggestions inside the which-key popup
 
 
-REQUIREMENTS                                     *which-key.nvim-requirements*
+REQUIREMENTS                           *which-key.nvim-which-key-requirements*
 
 
 - Neovim >= 0.5.0
 
 
-INSTALLATION                                     *which-key.nvim-installation*
+INSTALLATION                           *which-key.nvim-which-key-installation*
 
 Install the plugin with your preferred package manager:
 
-LAZY.NVIM <HTTPS://GITHUB.COM/FOLKE/LAZY.NVIM> ~
+
+LAZY.NVIM ~
 
 >lua
     require("lazy").setup({
@@ -73,7 +70,7 @@ LAZY.NVIM <HTTPS://GITHUB.COM/FOLKE/LAZY.NVIM> ~
 <
 
 
-PACKER <HTTPS://GITHUB.COM/WBTHOMASON/PACKER.NVIM> ~
+PACKER ~
 
 >lua
     -- Lua
@@ -92,7 +89,7 @@ PACKER <HTTPS://GITHUB.COM/WBTHOMASON/PACKER.NVIM> ~
 <
 
 
-CONFIGURATION                                   *which-key.nvim-configuration*
+CONFIGURATION                         *which-key.nvim-which-key-configuration*
 
 
   IMPORTANT: the |timeout| when **WhichKey** opens is controlled by the vim
@@ -100,18 +97,12 @@ CONFIGURATION                                   *which-key.nvim-configuration*
   Setting it to `0`, will effectively always show **WhichKey** immediately, but a
   setting of `500` (500ms) is probably more appropriate.
 
-
-
   don’t create any keymappings yourself to trigger WhichKey. Unlike with
   _vim-which-key_, we do this fully automatically. Please remove any left-over
   triggers you might have from using _vim-which-key_.
 
-
-
   You can run `:checkhealth which_key` to see if there’s any conflicting
   keymaps that will prevent triggering **WhichKey**
-
-
 WhichKey comes with the following defaults:
 
 >lua
@@ -119,14 +110,14 @@ WhichKey comes with the following defaults:
       plugins = {
         marks = true, -- shows a list of your marks on ' and `
         registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
+        -- the presets plugin, adds help for a bunch of default keybindings in Neovim
+        -- No actual key bindings are created
         spelling = {
           enabled = false, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
           suggestions = 20, -- how many suggestions should be shown in the list?
         },
-        -- the presets plugin, adds help for a bunch of default keybindings in Neovim
-        -- No actual key bindings are created
         presets = {
-          operators = true, -- adds help for operators like d, y, ... and registers them for motion / text object completion
+          operators = true, -- adds help for operators like d, y, ...
           motions = true, -- adds help for motions
           text_objects = true, -- help for text objects triggered after entering an operator
           windows = true, -- default bindings on <c-w>
@@ -145,21 +136,24 @@ WhichKey comes with the following defaults:
         -- ["<cr>"] = "RET",
         -- ["<tab>"] = "TAB",
       },
+      motions = {
+        count = true,
+      },
       icons = {
         breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
         separator = "", -- symbol used between a key and it's label
         group = "+", -- symbol prepended to a group
       },
       popup_mappings = {
-        scroll_down = '<c-d>', -- binding to scroll down inside the popup
-        scroll_up = '<c-u>', -- binding to scroll up inside the popup
+        scroll_down = "<c-d>", -- binding to scroll down inside the popup
+        scroll_up = "<c-u>", -- binding to scroll up inside the popup
       },
       window = {
         border = "none", -- none, single, double, shadow
         position = "bottom", -- bottom, top
         margin = { 1, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]
-        padding = { 2, 2, 2, 2 }, -- extra window padding [top, right, bottom, left]
-        winblend = 0
+        padding = { 1, 2, 1, 2 }, -- extra window padding [top, right, bottom, left]
+        winblend = 0, -- value between 0-100 0 for fully opaque and 100 for fully transparent
       },
       layout = {
         height = { min = 4, max = 25 }, -- min and max height of the columns
@@ -168,15 +162,27 @@ WhichKey comes with the following defaults:
         align = "left", -- align columns left, center or right
       },
       ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
-      hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ "}, -- hide mapping boilerplate
-      show_help = true, -- show help message on the command line when the popup is visible
+      hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "^:", "^ ", "^call ", "^lua " }, -- hide mapping boilerplate
+      show_help = true, -- show a help message in the command line for using WhichKey
       show_keys = true, -- show the currently pressed key and its label as a message in the command line
       triggers = "auto", -- automatically setup triggers
-      -- triggers = {"<leader>"} -- or specify a list manually
+      -- triggers = {"<leader>"} -- or specifiy a list manually
+      -- list of triggers, where WhichKey should not wait for timeoutlen and show immediately
+      triggers_nowait = {
+        -- marks
+        "`",
+        "'",
+        "g`",
+        "g'",
+        -- registers
+        '"',
+        "<c-r>",
+        -- spelling
+        "z=",
+      },
       triggers_blacklist = {
         -- list of mode / prefixes that should never be hooked by WhichKey
-        -- this is mostly relevant for key maps that start with a native binding
-        -- most people should not need to change this
+        -- this is mostly relevant for keymaps that start with a native binding
         i = { "j", "k" },
         v = { "j", "k" },
       },
@@ -184,13 +190,13 @@ WhichKey comes with the following defaults:
       -- Disabled by deafult for Telescope
       disable = {
         buftypes = {},
-        filetypes = { "TelescopePrompt" },
+        filetypes = {},
       },
     }
 <
 
 
-🪄 SETUP                                         *which-key.nvim-🪄-setup*
+🪄 SETUP                               *which-key.nvim-which-key-🪄-setup*
 
 With the default settings, **WhichKey** will work out of the box for most
 builtin keybindings, but the real power comes from documenting and organizing
@@ -203,7 +209,6 @@ method
     local wk = require("which-key")
     wk.register(mappings, opts)
 <
-
 
 Default options for `opts`
 
@@ -221,19 +226,15 @@ Default options for `opts`
 <
 
 
-
   When you specify a command in your mapping that starts with `<Plug>`, then we
   automatically set `noremap=false`, since you always want recursive keybindings
   in this case
-
 
 MAPPINGS ~
 
 
   for **Neovim 0.7** and higher, which key will use the `desc` attribute of
   existing mappings as the default label
-
-
 Group names use the special `name` key in the tables. There’s multiple ways
 to define the mappings. `wk.register` can be called multiple times from
 anywhere in your config files.
@@ -262,8 +263,7 @@ anywhere in your config files.
     }, { prefix = "<leader>" })
 <
 
-
-Click to see more examples
+Click to see more examples ~
 
 >lua
     -- all of the mappings below are equivalent
@@ -299,9 +299,9 @@ Click to see more examples
     })
 <
 
-
 **Tips:** The default label is `keymap.desc` or `keymap.rhs` or `""`, `:h
 nvim_set_keymap()` to get more details about `desc` and `rhs`.
+
 
 OPERATORS, MOTIONS AND TEXT OBJECTS ~
 
@@ -309,8 +309,6 @@ OPERATORS, MOTIONS AND TEXT OBJECTS ~
 
 
   `[count]operator[count][text-object]`
-
-
 
 - operators can be configured with the `operators` option
     - set `plugins.presets.operators` to `true` to automatically configure vim built-in operators
@@ -322,8 +320,7 @@ OPERATORS, MOTIONS AND TEXT OBJECTS ~
 - motions are part of the preset `plugins.presets.motions` setting
     - see here <https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L20>
 
-
-How to disable some operators? (like v)
+How to disable some operators? (like v) ~
 
 >lua
     -- make sure to run this code before calling setup()
@@ -333,7 +330,7 @@ How to disable some operators? (like v)
 <
 
 
-USAGE                                                   *which-key.nvim-usage*
+USAGE                                         *which-key.nvim-which-key-usage*
 
 When the **WhichKey** popup is open, you can use the following key bindings
 (they are also displayed at the bottom of the screen):
@@ -345,16 +342,13 @@ When the **WhichKey** popup is open, you can use the following key bindings
 - `<c-d>` scroll down
 - `<c-u>` scroll up
 
-
 Apart from the automatic opening, you can also manually open **WhichKey** for a
-certain `prefix`:
+certain `prefix`
 
 
   don’t create any keymappings yourself to trigger WhichKey. Unlike with
   _vim-which-key_, we do this fully automatically. Please remove any left-over
   triggers you might have from using _vim-which-key_.
-
-
 >vim
     :WhichKey " show all mappings
     :WhichKey <leader> " show all <leader> mappings
@@ -363,65 +357,65 @@ certain `prefix`:
 <
 
 
-PLUGINS                                               *which-key.nvim-plugins*
+PLUGINS                                     *which-key.nvim-which-key-plugins*
 
 Four built-in plugins are included with **WhichKey**.
+
 
 MARKS ~
 
 Shows a list of your buffer local and global marks when you hit ` or ’
 
-<div class="figure">
-<img src="https://user-images.githubusercontent.com/292349/116439573-8f278700-a804-11eb-80ca-bb9263e6d937.png" title="fig:"/>
-<p class="caption">image</p>
-</div>
 
 REGISTERS ~
 
 Shows a list of your buffer local and global registers when you hit ” in
 _NORMAL_ mode, or `<c-r>` in _INSERT_ mode.
 
-<div class="figure">
-<img src="https://user-images.githubusercontent.com/292349/116439609-98b0ef00-a804-11eb-9385-97c7d5ff4113.png" title="fig:"/>
-<p class="caption">image</p>
-</div>
 
 PRESETS ~
 
 Built-in key binding help for `motions`, `text-objects`, `operators`,
 `windows`, `nav`, `z` and `g`
 
-<div class="figure">
-<img src="https://user-images.githubusercontent.com/292349/116439871-df9ee480-a804-11eb-9529-800e167db65c.png" title="fig:"/>
-<p class="caption">image</p>
-</div>
 
 SPELLING ~
 
 When enabled, this plugin hooks into `z=` and replaces the full-screen spelling
 suggestions window by a list of suggestions within **WhichKey**.
 
-<div class="figure">
-<img src="https://user-images.githubusercontent.com/292349/118102022-1c361880-b38d-11eb-8e82-79ad266d9bb8.png" title="fig:"/>
-<p class="caption">image</p>
-</div>
 
-COLORS                                                 *which-key.nvim-colors*
+COLORS                                       *which-key.nvim-which-key-colors*
 
 The table below shows all the highlight groups defined for **WhichKey** with
 their default link.
 
-│  Highlight Group  │Defaults to│                Description                │
-│_WhichKey_         │Function   │the key                                    │
-│_WhichKeyGroup_    │Keyword    │a group                                    │
-│_WhichKeySeparator_│DiffAdd    │the separator between the key and its label│
-│_WhichKeyDesc_     │Identifier │the label of the key                       │
-│_WhichKeyFloat_    │NormalFloat│Normal in the popup window                 │
-│_WhichKeyBorder_   │FloatBorder│Normal in the popup window                 │
-│_WhichKeyValue_    │Comment    │used by plugins that provide values        │
+  ---------------------------------------------------------------------------
+  Highlight Group     Defaults to   Description
+  ------------------- ------------- -----------------------------------------
+  WhichKey            Function      the key
 
+  WhichKeyGroup       Keyword       a group
 
+  WhichKeySeparator   DiffAdd       the separator between the key and its
+                                    label
 
+  WhichKeyDesc        Identifier    the label of the key
+
+  WhichKeyFloat       NormalFloat   Normal in the popup window
+
+  WhichKeyBorder      FloatBorder   Normal in the popup window
+
+  WhichKeyValue       Comment       used by plugins that provide values
+  ---------------------------------------------------------------------------
+==============================================================================
+2. Links                                                *which-key.nvim-links*
+
+1. *image*: https://user-images.githubusercontent.com/292349/116439438-669f8d00-a804-11eb-9b5b-c7122bd9acac.png
+2. *image*: https://user-images.githubusercontent.com/292349/116439573-8f278700-a804-11eb-80ca-bb9263e6d937.png
+3. *image*: https://user-images.githubusercontent.com/292349/116439609-98b0ef00-a804-11eb-9385-97c7d5ff4113.png
+4. *image*: https://user-images.githubusercontent.com/292349/116439871-df9ee480-a804-11eb-9529-800e167db65c.png
+5. *image*: https://user-images.githubusercontent.com/292349/118102022-1c361880-b38d-11eb-8e82-79ad266d9bb8.png
 
 Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
 
