@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/folke/which-key.nvim/compare/v1.1.1...v1.2.0) (2023-03-01)
+
+
+### Features
+
+* enable spelling plugin by default ([6d886f4](https://github.com/folke/which-key.nvim/commit/6d886f4dcaa25d1fe20e332f779fe1edb726d063))
+* make delay configurable for marks/registers/spelling. Fixes [#379](https://github.com/folke/which-key.nvim/issues/379). Fixes [#152](https://github.com/folke/which-key.nvim/issues/152), Fixes [#220](https://github.com/folke/which-key.nvim/issues/220), Fixes [#334](https://github.com/folke/which-key.nvim/issues/334) ([5649320](https://github.com/folke/which-key.nvim/commit/56493205745597abdd8d3ceb22f502ffe74784f5))
+
 ## [1.1.1](https://github.com/folke/which-key.nvim/compare/v1.1.0...v1.1.1) (2023-02-10)
 
 
