@@ -1,4 +1,4 @@
-*which-key.nvim.txt*     For Neovim >= 0.8.0     Last change: 2023 February 28
+*which-key.nvim.txt*       For Neovim >= 0.8.0      Last change: 2023 March 01
 
 ==============================================================================
 Table of Contents                           *which-key.nvim-table-of-contents*
@@ -113,7 +113,7 @@ WhichKey comes with the following defaults:
         -- the presets plugin, adds help for a bunch of default keybindings in Neovim
         -- No actual key bindings are created
         spelling = {
-          enabled = false, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
+          enabled = true, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
           suggestions = 20, -- how many suggestions should be shown in the list?
         },
         presets = {
