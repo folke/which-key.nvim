@@ -316,6 +316,14 @@ function M.on_keys(opts)
     else
       M.keys = M.keys .. c
     end
+
+    for k, fn in pairs(config.options.popup_user_mappings) do
+      if c == Util.t(k) then
+        fn(M.keys:sub(1, -1 -#c), opts.mode)
+        M.hide()
+        return
+      end
+    end
   end
 end
 
