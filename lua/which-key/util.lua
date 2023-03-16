@@ -148,8 +148,8 @@ function M.error(msg)
 end
 
 function M.check_mode(mode, buf)
-  if not ("nvsxoiRct"):find(mode) then
-    M.error(string.format("Invalid mode %q for buf %d", mode, buf or 0))
+  if mode == "" or not ("nvsxoiRct"):find(mode) then
+    M.error(string.format("Invalid mode '%q' for buf %d", mode, buf or 0))
     return false
   end
   return true
