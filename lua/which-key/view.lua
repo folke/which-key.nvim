@@ -31,6 +31,12 @@ function M.show()
   if M.is_valid() then
     return
   end
+
+  -- non-floating windows
+  local wins = vim.tbl_filter(function(w)
+    return vim.api.nvim_win_is_valid(w) and vim.api.nvim_win_get_config(w).relative == ""
+  end, vim.api.nvim_list_wins())
+
   local opts = {
     relative = "editor",
     width = vim.o.columns
@@ -44,6 +50,7 @@ function M.show()
     row = vim.o.lines
       - config.options.window.margin[3]
       - (vim.fn.has("nvim-0.6") == 0 and config.options.window.border ~= "none" and 2 or 0)
+      + ((vim.o.laststatus == 0 or vim.o.laststatus == 1 and #wins == 1) and 1 or 0)
       - vim.o.cmdheight,
     col = config.options.window.margin[2],
     style = "minimal",
