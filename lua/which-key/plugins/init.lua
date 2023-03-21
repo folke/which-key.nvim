@@ -46,9 +46,7 @@ function M.invoke(mapping, context)
 
   local ret = {}
   for i, item in
-    ipairs(
-      items --[[@as VisualMapping[] ]]
-    )
+    ipairs(items --[[@as VisualMapping[] ]])
   do
     item.order = i
     item.keys = Util.parse_keys(prefix .. item.key)

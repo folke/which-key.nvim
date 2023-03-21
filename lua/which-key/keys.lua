@@ -143,9 +143,9 @@ function M.get_mappings(mode, prefix_i, buf)
       local exists = false
       for k, v in pairs(tmp) do
         if type(v) == "table" and v.key == value.key then
-            tmp[k] = value
-            exists = true
-            break
+          tmp[k] = value
+          exists = true
+          break
         end
       end
       if not exists then
