@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/folke/which-key.nvim/compare/v1.2.0...v1.2.1) (2023-03-26)
+
+
+### Bug Fixes
+
+* **icons:** fixed obsolete icons with nerdfix ([151f21d](https://github.com/folke/which-key.nvim/commit/151f21d34d50fc53506ddc9d8ec58234202df795))
+* **view:** wrong window position when statusline is not set ([#363](https://github.com/folke/which-key.nvim/issues/363)) ([e14f8dc](https://github.com/folke/which-key.nvim/commit/e14f8dc6304e774ce005d09f7feebbd191fe20f9))
+
 ## [1.2.0](https://github.com/folke/which-key.nvim/compare/v1.1.1...v1.2.0) (2023-03-01)
 
 
