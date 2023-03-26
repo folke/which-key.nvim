@@ -23,7 +23,7 @@ function Text:new()
 end
 
 function Text:fix_nl(line)
-  return line:gsub("[\n]", "﬋")
+  return line:gsub("[\n]", "")
 end
 
 function Text:nl()
