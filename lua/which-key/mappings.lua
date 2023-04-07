@@ -131,7 +131,9 @@ function M._parse(value, mappings, opts)
 
   -- { desc }
   if #list == 1 then
-    assert(type(list[1]) == "string", "Invalid mapping for " .. vim.inspect({ value = value, opts = opts }))
+    if type(list[1]) ~= "string" then
+      error("Invalid mapping for " .. vim.inspect({ value = value, opts = opts }))
+    end
     opts.desc = list[1]
   -- { cmd, desc }
   elseif #list == 2 then
