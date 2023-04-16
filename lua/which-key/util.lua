@@ -59,6 +59,7 @@ local Tokens = {
 function M.parse_keys(keystr)
   local keys = M.t(keystr)
   local internal = M.parse_internal(keys)
+  keystr = keystr:gsub("<lt>", "<")
   local notation = {}
   ---@alias ParseState
   --- | "Character"
@@ -93,7 +94,7 @@ function M.parse_keys(keystr)
   notation[1] = internal[1] == mapleader and "<leader>" or notation[1]
 
   if #notation ~= #internal then
-    error(vim.inspect({ internal = internal, notation = notation }))
+    error(vim.inspect({ keystr = keystr, internal = internal, notation = notation }))
   end
 
   return {
