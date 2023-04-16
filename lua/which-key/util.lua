@@ -1,5 +1,7 @@
 ---@class Util
 local M = {}
+local strbyte = string.byte
+local strsub = string.sub
 
 function M.count(tab)
   local ret = 0
@@ -48,61 +50,52 @@ local utf8len_tab = {
 }
 -- stylua: ignore end
 
+local Tokens = {
+  ["<"] = strbyte("<"),
+  [">"] = strbyte(">"),
+  ["-"] = strbyte("-"),
+}
 ---@return KeyCodes
 function M.parse_keys(keystr)
-  local keys = {}
-  local cur = ""
-  local todo = 1
-  local special = nil
-  for i = 1, #keystr, 1 do
-    local c = keystr:sub(i, i)
-    if special then
-      if todo == 0 then
-        if c == ">" then
-          table.insert(keys, special .. ">")
-          cur = ""
-          todo = 1
-          special = nil
-        elseif c == "-" then
-          -- When getting a special key notation:
-          --   todo = 0 means it can be ended by a ">" now.
-          --   todo = 1 means ">" should be treated as the modified character.
-          todo = 1
-        end
-      else
-        todo = 0
-      end
-      if special then
-        special = special .. c
-      end
-    elseif c == "<" then
-      special = "<"
-      todo = 0
+  local notation = {}
+  ---@alias ParseState
+  --- | "Character"
+  --- | "Special"
+  --- | "SpecialNoClose"
+  local start = 1
+  local i = start
+  ---@type ParseState
+  local state = "Character"
+  while i <= #keystr do
+    local c = strbyte(keystr, i, i)
+
+    if state == "Character" then
+      start = i
+      state = c == Tokens["<"] and "Special" or state
+    elseif state == "Special" then
+      state = (c == Tokens["-"] and "SpecialNoClose") or (c == Tokens[">"] and "Character") or state
     else
-      if todo == 1 then
-        todo = utf8len_tab[c:byte() + 1]
-      end
-      cur = cur .. c
-      todo = todo - 1
-      if todo == 0 then
-        table.insert(keys, cur)
-        cur = ""
-        todo = 1
-      end
+      state = "Special"
+    end
+
+    i = i + utf8len_tab[c + 1]
+    if state == "Character" then
+      local k = strsub(keystr, start, i - 1)
+      notation[#notation + 1] = k == " " and "<space>" or k
     end
   end
-  local ret = { keys = M.t(keystr), internal = {}, notation = {} }
-  for i, key in pairs(keys) do
-    if key == " " then
-      key = "<space>"
-    end
-    if i == 1 and vim.g.mapleader and M.t(key) == M.t(vim.g.mapleader) then
-      key = "<leader>"
-    end
-    table.insert(ret.internal, M.t(key))
-    table.insert(ret.notation, key)
-  end
-  return ret
+
+  local keys = M.t(keystr)
+  local internal = M.parse_internal(keys)
+  local mapleader = vim.g.mapleader
+  mapleader = mapleader and M.t(mapleader)
+  notation[1] = internal[1] == mapleader and "<leader>" or notation[1]
+
+  return {
+    keys = keys,
+    internal = internal,
+    notation = notation,
+  }
 end
 
 -- @return string[]
