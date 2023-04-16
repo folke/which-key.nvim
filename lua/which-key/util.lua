@@ -101,32 +101,36 @@ end
 -- @return string[]
 function M.parse_internal(keystr)
   local keys = {}
-  local cur = ""
-  local todo = 1
-  local utf8 = false
-  for i = 1, #keystr, 1 do
-    local c = keystr:sub(i, i)
-    if not utf8 then
-      if todo == 1 and c == "\128" then
-        -- K_SPECIAL: get 3 bytes
-        todo = 3
-      elseif cur == "\128" and c == "\252" then
-        -- K_SPECIAL KS_MODIFIER: repeat after getting 3 bytes
-        todo = todo + 1
-      elseif todo == 1 then
-        -- When the second byte of a K_SPECIAL sequence is not KS_MODIFIER,
-        -- the third byte is guaranteed to be between 0x02 and 0x7f.
-        todo = utf8len_tab[c:byte() + 1]
-        utf8 = todo > 1
+  ---@alias ParseInternalState
+  --- | "Character"
+  --- | "Special"
+  ---@type ParseInternalState
+  local state = "Character"
+  local start = 1
+  local i = 1
+  while i <= #keystr do
+    local c = strbyte(keystr, i, i)
+
+    if state == "Character" then
+      state = c == 128 and "Special" or state
+      i = i + utf8len_tab[c + 1]
+
+      if state == "Character" then
+        keys[#keys + 1] = strsub(keystr, start, i - 1)
+        start = i
       end
-    end
-    cur = cur .. c
-    todo = todo - 1
-    if todo == 0 then
-      table.insert(keys, cur)
-      cur = ""
-      todo = 1
-      utf8 = false
+    else
+      -- This state is entered on the second byte of K_SPECIAL sequence.
+      if c == 252 then
+        -- K_SPECIAL KS_MODIFIER: skip this byte and the next
+        i = i + 2
+      else
+        -- K_SPECIAL _: skip this byte
+        i = i + 1
+      end
+      -- The last byte of this sequence should be between 0x02 and 0x7f,
+      -- switch to Character state to collect.
+      state = "Character"
     end
   end
   return keys
