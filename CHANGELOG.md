@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/folke/which-key.nvim/compare/v1.2.1...v1.2.2) (2023-04-16)
+
+
+### Performance Improvements
+
+* **mappings:** avoid computing error string on hot path ([#429](https://github.com/folke/which-key.nvim/issues/429)) ([6892f16](https://github.com/folke/which-key.nvim/commit/6892f165bb984561f8cac298a6747da338d04668))
+
 ## [1.2.1](https://github.com/folke/which-key.nvim/compare/v1.2.0...v1.2.1) (2023-03-26)
 
 
