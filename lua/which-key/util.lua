@@ -57,6 +57,8 @@ local Tokens = {
 }
 ---@return KeyCodes
 function M.parse_keys(keystr)
+  local keys = M.t(keystr)
+  local internal = M.parse_internal(keys)
   local notation = {}
   ---@alias ParseState
   --- | "Character"
@@ -71,7 +73,8 @@ function M.parse_keys(keystr)
 
     if state == "Character" then
       start = i
-      state = c == Tokens["<"] and "Special" or state
+      -- Only interpret special tokens if neovim also replaces it
+      state = c == Tokens["<"] and internal[#notation + 1] ~= "<" and "Special" or state
     elseif state == "Special" then
       state = (c == Tokens["-"] and "SpecialNoClose") or (c == Tokens[">"] and "Character") or state
     else
@@ -85,13 +88,13 @@ function M.parse_keys(keystr)
     end
   end
 
-  local keys = M.t(keystr)
-  local internal = M.parse_internal(keys)
   local mapleader = vim.g.mapleader
   mapleader = mapleader and M.t(mapleader)
   notation[1] = internal[1] == mapleader and "<leader>" or notation[1]
 
-  assert(#notation == #internal, vim.inspect({ internal = internal, notation = notation }))
+  if #notation ~= #internal then
+    error(vim.inspect({ internal = internal, notation = notation }))
+  end
 
   return {
     keys = keys,
