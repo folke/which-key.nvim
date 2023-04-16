@@ -91,6 +91,8 @@ function M.parse_keys(keystr)
   mapleader = mapleader and M.t(mapleader)
   notation[1] = internal[1] == mapleader and "<leader>" or notation[1]
 
+  assert(#notation == #internal, vim.inspect({ internal = internal, notation = notation }))
+
   return {
     keys = keys,
     internal = internal,
