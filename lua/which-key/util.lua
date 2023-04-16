@@ -59,6 +59,11 @@ local Tokens = {
 function M.parse_keys(keystr)
   local keys = M.t(keystr)
   local internal = M.parse_internal(keys)
+
+  if #internal == 0 then
+    return { keys = keys, internal = internal, notation = {} }
+  end
+
   keystr = keystr:gsub("<lt>", "<")
   local notation = {}
   ---@alias ParseState
