@@ -6,6 +6,17 @@ local strsub = string.sub
 local cache = {}
 ---@type table<string,string>
 local tcache = {}
+local cache_leaders = ""
+
+function M.check_cache()
+  ---@type string
+  local leaders = vim.g.mapleader .. ":" .. vim.g.maplocalleader
+  if leaders ~= cache_leaders then
+    cache = {}
+    tcache = {}
+    cache_leaders = leaders
+  end
+end
 
 function M.count(tab)
   local ret = 0
@@ -27,6 +38,7 @@ function M.is_empty(tab)
 end
 
 function M.t(str)
+  M.check_cache()
   if not tcache[str] then
     -- https://github.com/neovim/neovim/issues/17369
     tcache[str] = vim.api.nvim_replace_termcodes(str, false, true, true):gsub("\128\254X", "\128")
@@ -63,6 +75,7 @@ local Tokens = {
 }
 ---@return KeyCodes
 function M.parse_keys(keystr)
+  M.check_cache()
   if cache[keystr] then
     return cache[keystr]
   end
