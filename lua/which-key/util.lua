@@ -10,7 +10,7 @@ local cache_leaders = ""
 
 function M.check_cache()
   ---@type string
-  local leaders = vim.g.mapleader .. ":" .. vim.g.maplocalleader
+  local leaders = (vim.g.mapleader or "") .. ":" .. (vim.g.maplocalleader or "")
   if leaders ~= cache_leaders then
     cache = {}
     tcache = {}
