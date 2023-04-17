@@ -38,7 +38,7 @@ function Tree:get(prefix_i, index, plugin_context)
       local children = require("which-key.plugins").invoke(node.mapping, plugin_context)
       node.children = {}
       for _, child in pairs(children) do
-        self:add(child)
+        self:add(child, { cache = false })
       end
     end
     if not node then
@@ -66,12 +66,16 @@ function Tree:path(prefix_i)
 end
 
 ---@param mapping Mapping
-function Tree:add(mapping)
+---@param opts? {cache?: boolean}
+function Tree:add(mapping, opts)
+  opts = opts or {}
+  opts.cache = opts.cache ~= false
   local node_key = mapping.keys.keys
-  if not self.nodes[node_key] then
+  local node = opts.cache and self.nodes[node_key]
+  if not node then
     local prefix_i = mapping.keys.internal
     local prefix_n = mapping.keys.notation
-    local node = self.root
+    node = self.root
     local path_i = ""
     local path_n = ""
     for i = 1, #prefix_i, 1 do
@@ -82,9 +86,10 @@ function Tree:add(mapping)
       end
       node = node.children[prefix_i[i]]
     end
-    self.nodes[node_key] = node
+    if opts.cache then
+      self.nodes[node_key] = node
+    end
   end
-  local node = self.nodes[node_key]
   node.mapping = vim.tbl_deep_extend("force", node.mapping or {}, mapping)
 end
 
