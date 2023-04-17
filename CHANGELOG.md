@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.3.0](https://github.com/folke/which-key.nvim/compare/v1.2.3...v1.3.0) (2023-04-17)
+
+
+### Features
+
+* **health:** move health check to separate health file ([b56c512](https://github.com/folke/which-key.nvim/commit/b56c5126752fcd498a81c6d8d1e7f51f251166eb))
+* **preset:** add `z&lt;CR&gt;` preset ([#346](https://github.com/folke/which-key.nvim/issues/346)) ([ed37330](https://github.com/folke/which-key.nvim/commit/ed3733059ffa281c8144e44f1b4819a771ddf4de))
+* **preset:** added `zi` and `CTRL-W_o` ([#378](https://github.com/folke/which-key.nvim/issues/378)) ([5e8e6b1](https://github.com/folke/which-key.nvim/commit/5e8e6b1c70d3fcbe2712453ef3ebbf07d0d2aff4))
+* **view:** allow percentages for margins. Fixes [#436](https://github.com/folke/which-key.nvim/issues/436) ([0b5a653](https://github.com/folke/which-key.nvim/commit/0b5a6537b66ee37d03c6c3f0e21fd147f817422d))
+
+
+### Bug Fixes
+
+* **health:** add OK output to check_health fn ([#375](https://github.com/folke/which-key.nvim/issues/375)) ([c9c430a](https://github.com/folke/which-key.nvim/commit/c9c430ab19a3bf8dd394dd9925a3a219063276b9))
+* **keys:** allow keymap desc to override preset labels. Fixes [#386](https://github.com/folke/which-key.nvim/issues/386) ([6aa1b2f](https://github.com/folke/which-key.nvim/commit/6aa1b2fa93a2a26a1bd752080ec6a51beb009e75))
+* **tree:** don't cache plugin nodes. Fixes [#441](https://github.com/folke/which-key.nvim/issues/441) ([20fcd7b](https://github.com/folke/which-key.nvim/commit/20fcd7b602a2c58d634eaa1f1d28b16a6acbfad3))
+* **util:** clear cache when leader changes ([df3597f](https://github.com/folke/which-key.nvim/commit/df3597f7dc0f379bda865e3c9dd6303fa6e4c959))
+* **util:** missing return statement ([f6bb21c](https://github.com/folke/which-key.nvim/commit/f6bb21c8c1d72008783466e80e0c993ef056a3a9))
+* **util:** nil check ([6ab25e2](https://github.com/folke/which-key.nvim/commit/6ab25e24ec2b2a8fb88f43eb13feb21e5042c280))
+
+
+### Performance Improvements
+
+* **keys:** optimized `update_keymaps` ([476d137](https://github.com/folke/which-key.nvim/commit/476d13754db0da7831fc3581fb243cd7f0d3e581))
+* **tree:** added fast nodes lookup ([8e5e012](https://github.com/folke/which-key.nvim/commit/8e5e0126aaff9bd73eb25a6d5568f6b5bdff58f0))
+* **util:** cache parse_keys ([8649bf5](https://github.com/folke/which-key.nvim/commit/8649bf5c66b8fa1fa6ee879b9af78e89f886d13c))
+* **util:** cache replace termcodes ([eaa8027](https://github.com/folke/which-key.nvim/commit/eaa80272ef488c68cd51698c64e795767c6e0624))
+
 ## [1.2.3](https://github.com/folke/which-key.nvim/compare/v1.2.2...v1.2.3) (2023-04-17)
 
 
