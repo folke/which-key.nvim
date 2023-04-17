@@ -37,28 +37,41 @@ function M.show()
     return vim.api.nvim_win_is_valid(w) and vim.api.nvim_win_get_config(w).relative == ""
   end, vim.api.nvim_list_wins())
 
+  ---@type number[]
+  local margins = {}
+  for i, m in ipairs(config.options.window.margin) do
+    if m > 0 and m < 1 then
+      if i % 2 == 0 then
+        m = math.floor(vim.o.columns * m)
+      else
+        m = math.floor(vim.o.lines * m)
+      end
+    end
+    margins[i] = m
+  end
+
   local opts = {
     relative = "editor",
     width = vim.o.columns
-      - config.options.window.margin[2]
-      - config.options.window.margin[4]
+      - margins[2]
+      - margins[4]
       - (vim.fn.has("nvim-0.6") == 0 and config.options.window.border ~= "none" and 2 or 0),
     height = config.options.layout.height.min,
     focusable = false,
     anchor = "SW",
     border = config.options.window.border,
     row = vim.o.lines
-      - config.options.window.margin[3]
+      - margins[3]
       - (vim.fn.has("nvim-0.6") == 0 and config.options.window.border ~= "none" and 2 or 0)
       + ((vim.o.laststatus == 0 or vim.o.laststatus == 1 and #wins == 1) and 1 or 0)
       - vim.o.cmdheight,
-    col = config.options.window.margin[2],
+    col = margins[4],
     style = "minimal",
     noautocmd = true,
   }
   if config.options.window.position == "top" then
     opts.anchor = "NW"
-    opts.row = config.options.window.margin[1]
+    opts.row = margins[1]
   end
   M.buf = vim.api.nvim_create_buf(false, true)
   M.win = vim.api.nvim_open_win(M.buf, false, opts)
