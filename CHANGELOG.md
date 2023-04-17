@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.3](https://github.com/folke/which-key.nvim/compare/v1.2.2...v1.2.3) (2023-04-17)
+
+
+### Bug Fixes
+
+* **util:** dont parse empty lhs ([8d5ab76](https://github.com/folke/which-key.nvim/commit/8d5ab76836d89be1c761a4ed61bf700d98c71e5d))
+* **util:** only collect valid &lt;&gt; keys ([#438](https://github.com/folke/which-key.nvim/issues/438)) ([4bd6dca](https://github.com/folke/which-key.nvim/commit/4bd6dcaa6d7e1650590303f0066d32aa6762d8f3))
+* **util:** replace `&lt;lt&gt;` by `<` before parsing ([789ac71](https://github.com/folke/which-key.nvim/commit/789ac718ee7a2b49dd82409e3d7cf45b52ea95ce))
+* **view:** allow deviating paddings per side ([#400](https://github.com/folke/which-key.nvim/issues/400)) ([3090eaf](https://github.com/folke/which-key.nvim/commit/3090eafb780da76eb4876986081551db80bf35cd))
+
+
+### Performance Improvements
+
+* **util:** simplify and optimize parsers ([#435](https://github.com/folke/which-key.nvim/issues/435)) ([b0ebb67](https://github.com/folke/which-key.nvim/commit/b0ebb6722c77dda1ab1e3ce13521fe7db20cbc79))
+
 ## [1.2.2](https://github.com/folke/which-key.nvim/compare/v1.2.1...v1.2.2) (2023-04-16)
 
 
