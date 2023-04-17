@@ -2,6 +2,7 @@ local Util = require("which-key.util")
 
 ---@class Tree
 ---@field root Node
+---@field nodes table<string, Node>
 local Tree = {}
 Tree.__index = Tree
 
@@ -15,7 +16,7 @@ local Node
 
 ---@return Tree
 function Tree:new()
-  local this = { root = { children = {}, prefix_i = "", prefix_n = "" } }
+  local this = { root = { children = {}, prefix_i = "", prefix_n = "" }, nodes = {} }
   setmetatable(this, self)
   return this
 end
@@ -66,19 +67,24 @@ end
 
 ---@param mapping Mapping
 function Tree:add(mapping)
-  local prefix_i = mapping.keys.internal
-  local prefix_n = mapping.keys.notation
-  local node = self.root
-  local path_i = ""
-  local path_n = ""
-  for i = 1, #prefix_i, 1 do
-    path_i = path_i .. prefix_i[i]
-    path_n = path_n .. prefix_n[i]
-    if not node.children[prefix_i[i]] then
-      node.children[prefix_i[i]] = { children = {}, prefix_i = path_i, prefix_n = path_n }
+  local node_key = mapping.keys.keys
+  if not self.nodes[node_key] then
+    local prefix_i = mapping.keys.internal
+    local prefix_n = mapping.keys.notation
+    local node = self.root
+    local path_i = ""
+    local path_n = ""
+    for i = 1, #prefix_i, 1 do
+      path_i = path_i .. prefix_i[i]
+      path_n = path_n .. prefix_n[i]
+      if not node.children[prefix_i[i]] then
+        node.children[prefix_i[i]] = { children = {}, prefix_i = path_i, prefix_n = path_n }
+      end
+      node = node.children[prefix_i[i]]
     end
-    node = node.children[prefix_i[i]]
+    self.nodes[node_key] = node
   end
+  local node = self.nodes[node_key]
   node.mapping = vim.tbl_deep_extend("force", node.mapping or {}, mapping)
 end
 
