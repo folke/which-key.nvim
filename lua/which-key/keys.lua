@@ -422,52 +422,37 @@ function M.get_tree(mode, buf)
   return M.mappings[idx]
 end
 
+---@param prefix string
+---@param cmd string?
 function M.is_hook(prefix, cmd)
   -- skip mappings with our secret nop command
-  local has_secret = prefix:find(secret)
+  if prefix:find(secret, 1, true) then
+    return true
+  end
   -- skip auto which-key mappings
-  local has_wk = cmd and cmd:find("which%-key") and cmd:find("auto") or false
-  return has_wk or has_secret
+  return cmd and cmd:find("which-key", 1, true) and cmd:find("auto", 1, true)
 end
 
 ---@param mode string
----@param buf number
+---@param buf? number
 function M.update_keymaps(mode, buf)
   ---@type Keymap[]
   local keymaps = buf and vim.api.nvim_buf_get_keymap(buf, mode) or vim.api.nvim_get_keymap(mode)
   local tree = M.get_tree(mode, buf).tree
 
-  local function is_no_op(keymap)
-    return not keymap.callback and Util.t(keymap.rhs) == ""
+  local function is_nop(keymap)
+    return not keymap.callback and (keymap.rhs == "" or keymap.rhs:lower() == "<nop>")
   end
 
   for _, keymap in pairs(keymaps) do
     local skip = M.is_hook(keymap.lhs, keymap.rhs)
 
-    if is_no_op(keymap) then
+    if is_nop(keymap) then
       skip = true
-    end
-
-    -- check if <leader> was remapped
-    if not skip and Util.t(keymap.lhs) == Util.t("<leader>") and mode == "n" then
-      if is_no_op(keymap) then
-        skip = true
-      else
-        Util.warn(
-          string.format(
-            "Your <leader> key for %q mode in buf %d is currently mapped to %q. "
-              .. "WhichKey automatically creates triggers, so please remove the mapping",
-            mode,
-            buf or 0,
-            keymap.rhs
-          )
-        )
-      end
     end
 
     if not skip then
       local mapping = {
-        id = Util.t(keymap.lhs),
         prefix = keymap.lhs,
         cmd = keymap.rhs,
         desc = keymap.desc,
