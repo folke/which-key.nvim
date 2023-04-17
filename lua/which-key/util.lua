@@ -73,6 +73,7 @@ function M.parse_keys(keystr)
   if #internal == 0 then
     local ret = { keys = keys, internal = {}, notation = {} }
     cache[keystr] = ret
+    return ret
   end
 
   local keystr_orig = keystr
