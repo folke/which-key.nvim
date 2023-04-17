@@ -67,6 +67,7 @@ end
 
 ---@param mapping Mapping
 ---@param opts? {cache?: boolean}
+---@return Node
 function Tree:add(mapping, opts)
   opts = opts or {}
   opts.cache = opts.cache ~= false
@@ -91,6 +92,7 @@ function Tree:add(mapping, opts)
     end
   end
   node.mapping = vim.tbl_deep_extend("force", node.mapping or {}, mapping)
+  return node
 end
 
 ---@param cb fun(node:Node)

@@ -460,7 +460,10 @@ function M.update_keymaps(mode, buf)
       }
       -- don't include Plug keymaps
       if mapping.keys.notation[1]:lower() ~= "<plug>" then
-        tree:add(mapping)
+        local node = tree:add(mapping)
+        if node.mapping and node.mapping.preset and mapping.desc then
+          node.mapping.label = mapping.desc
+        end
       end
     end
   end
