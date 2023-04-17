@@ -2,6 +2,8 @@
 local M = {}
 local strbyte = string.byte
 local strsub = string.sub
+---@type table<string,string>
+local tcache = {}
 
 function M.count(tab)
   local ret = 0
@@ -23,9 +25,11 @@ function M.is_empty(tab)
 end
 
 function M.t(str)
-  -- https://github.com/neovim/neovim/issues/17369
-  local ret = vim.api.nvim_replace_termcodes(str, false, true, true):gsub("\128\254X", "\128")
-  return ret
+  if not tcache[str] then
+    -- https://github.com/neovim/neovim/issues/17369
+    tcache[str] = vim.api.nvim_replace_termcodes(str, false, true, true):gsub("\128\254X", "\128")
+  end
+  return tcache[str]
 end
 
 -- stylua: ignore start
