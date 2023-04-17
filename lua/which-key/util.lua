@@ -2,6 +2,8 @@
 local M = {}
 local strbyte = string.byte
 local strsub = string.sub
+---@type table<string, KeyCodes>
+local cache = {}
 ---@type table<string,string>
 local tcache = {}
 
@@ -61,13 +63,19 @@ local Tokens = {
 }
 ---@return KeyCodes
 function M.parse_keys(keystr)
+  if cache[keystr] then
+    return cache[keystr]
+  end
+
   local keys = M.t(keystr)
   local internal = M.parse_internal(keys)
 
   if #internal == 0 then
-    return { keys = keys, internal = internal, notation = {} }
+    local ret = { keys = keys, internal = {}, notation = {} }
+    cache[keystr] = ret
   end
 
+  local keystr_orig = keystr
   keystr = keystr:gsub("<lt>", "<")
   local notation = {}
   ---@alias ParseState
@@ -106,11 +114,15 @@ function M.parse_keys(keystr)
     error(vim.inspect({ keystr = keystr, internal = internal, notation = notation }))
   end
 
-  return {
+  local ret = {
     keys = keys,
     internal = internal,
     notation = notation,
   }
+
+  cache[keystr_orig] = ret
+
+  return ret
 end
 
 -- @return string[]
