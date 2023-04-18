@@ -68,6 +68,7 @@ function M.show()
     col = margins[4],
     style = "minimal",
     noautocmd = true,
+    zindex = config.options.window.zindex
   }
   if config.options.window.position == "top" then
     opts.anchor = "NW"
