@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/folke/which-key.nvim/compare/v1.3.0...v1.4.0) (2023-04-18)
+
+
+### Features
+
+* **view:** ensure it's above other floating windows ([#442](https://github.com/folke/which-key.nvim/issues/442)) ([9443778](https://github.com/folke/which-key.nvim/commit/94437786a0d0fde61284f8476ac142896878c2d7))
+
 ## [1.3.0](https://github.com/folke/which-key.nvim/compare/v1.2.3...v1.3.0) (2023-04-17)
 
 
