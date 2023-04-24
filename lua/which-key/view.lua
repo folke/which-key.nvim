@@ -50,19 +50,26 @@ function M.show()
     margins[i] = m
   end
 
+  -- margin limit
+  local border_val = vim.fn.has("nvim-0.6") == 0 and config.options.window.border ~= "none" and 2 or 0
+  if margins[2] + margins[4] + border_val > vim.o.columns then
+    margins[2] = 0
+    margins[4] = 0
+  end
+
   local opts = {
     relative = "editor",
     width = vim.o.columns
       - margins[2]
       - margins[4]
-      - (vim.fn.has("nvim-0.6") == 0 and config.options.window.border ~= "none" and 2 or 0),
+      - border_val,
     height = config.options.layout.height.min,
     focusable = false,
     anchor = "SW",
     border = config.options.window.border,
     row = vim.o.lines
       - margins[3]
-      - (vim.fn.has("nvim-0.6") == 0 and config.options.window.border ~= "none" and 2 or 0)
+      - border_val
       + ((vim.o.laststatus == 0 or vim.o.laststatus == 1 and #wins == 1) and 1 or 0)
       - vim.o.cmdheight,
     col = margins[4],
