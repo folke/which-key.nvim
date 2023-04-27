@@ -1,4 +1,4 @@
-*which-key.nvim.txt*       For Neovim >= 0.8.0      Last change: 2023 April 18
+*which-key.nvim.txt*       For Neovim >= 0.8.0      Last change: 2023 April 27
 
 ==============================================================================
 Table of Contents                           *which-key.nvim-table-of-contents*
@@ -101,7 +101,7 @@ CONFIGURATION                         *which-key.nvim-which-key-configuration*
   _vim-which-key_, we do this fully automatically. Please remove any left-over
   triggers you might have from using _vim-which-key_.
 
-  You can run `:checkhealth which_key` to see if there’s any conflicting
+  You can run `:checkhealth which-key` to see if there’s any conflicting
   keymaps that will prevent triggering **WhichKey**
 WhichKey comes with the following defaults:
 
