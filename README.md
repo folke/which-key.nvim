@@ -74,7 +74,7 @@ use {
 > ❗️ don't create any keymappings yourself to trigger WhichKey. Unlike with _vim-which-key_, we do this fully automatically.
 > Please remove any left-over triggers you might have from using _vim-which-key_.
 
-> 🚑 You can run `:checkhealth which_key` to see if there's any conflicting keymaps that will prevent triggering **WhichKey**
+> 🚑 You can run `:checkhealth which-key` to see if there's any conflicting keymaps that will prevent triggering **WhichKey**
 
 WhichKey comes with the following defaults:
 
