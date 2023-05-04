@@ -68,7 +68,7 @@ function M.show()
     col = margins[4],
     style = "minimal",
     noautocmd = true,
-    zindex = config.options.window.zindex
+    zindex = config.options.window.zindex,
   }
   if config.options.window.position == "top" then
     opts.anchor = "NW"
@@ -178,16 +178,6 @@ function M.back()
   if node then
     M.keys = node.prefix_i
   end
-end
-
----@param path Node[]
-function M.has_cmd(path)
-  for _, node in pairs(path) do
-    if node.mapping and node.mapping.cmd then
-      return true
-    end
-  end
-  return false
 end
 
 function M.execute(prefix_i, mode, buf)

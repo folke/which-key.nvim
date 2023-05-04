@@ -270,7 +270,7 @@ function M.hook_add(prefix_n, mode, buf, secret_only)
     return
   end
   -- never hook into operators in visual mode
-  if (mode == "v" or mode == "x") and M.operators[prefix_n] then
+  if (mode == "v" or mode == "x") and (prefix_n == "a" or prefix_n == "i" or M.operators[prefix_n]) then
     return
   end
 
@@ -336,7 +336,7 @@ function M.add_hooks(mode, buf, node, secret_only)
   if not node.mapping then
     node.mapping = { prefix = node.prefix_n, group = true, keys = Util.parse_keys(node.prefix_n) }
   end
-  if node.prefix_n ~= "" and node.mapping.group == true and not node.mapping.cmd then
+  if node.prefix_n ~= "" and node.mapping.group == true and not (node.mapping.cmd or node.mapping.callback) then
     -- first non-cmd level, so create hook and make all decendents secret only
     M.hook_add(node.prefix_n, mode, buf, secret_only)
     secret_only = true
@@ -416,6 +416,7 @@ function M.update_keymaps(mode, buf)
         prefix = keymap.lhs,
         cmd = keymap.rhs,
         desc = keymap.desc,
+        callback = keymap.callback,
         keys = Util.parse_keys(keymap.lhs),
       }
       -- don't include Plug keymaps
