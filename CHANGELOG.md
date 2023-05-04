@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/folke/which-key.nvim/compare/v1.4.0...v1.4.1) (2023-05-04)
+
+
+### Bug Fixes
+
+* **keys:** dont overwrite existing keymaps with a callback. Fixes [#449](https://github.com/folke/which-key.nvim/issues/449) ([4db6bb0](https://github.com/folke/which-key.nvim/commit/4db6bb080b269ac155e5aa1696d26f2376c749ab))
+
 ## [1.4.0](https://github.com/folke/which-key.nvim/compare/v1.3.0...v1.4.0) (2023-04-18)
 
 
