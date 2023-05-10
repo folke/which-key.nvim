@@ -10,6 +10,7 @@ local info = vim.health.info or vim.health.report_info
 
 function M.check()
   start("WhichKey: checking conflicting keymaps")
+  local conflicts = 0
   for _, tree in pairs(Keys.mappings) do
     Keys.update_keymaps(tree.mode, tree.buf)
     tree.tree:walk(
@@ -22,6 +23,7 @@ function M.check()
 
         local auto_prefix = not node.mapping or (node.mapping.group == true and not node.mapping.cmd)
         if node.prefix_i ~= "" and count > 0 and not auto_prefix then
+          conflicts = conflicts + 1
           local msg = ("conflicting keymap exists for mode **%q**, lhs: **%q**"):format(tree.mode, node.mapping.prefix)
           warn(msg)
           local cmd = node.mapping.cmd or " "
@@ -30,11 +32,11 @@ function M.check()
       end
     )
   end
-  if next(Keys.duplicates) == nil then
+  if conflicts == 0 then
     ok("No conflicting keymaps found")
     return
   end
-  for _, dup in pairs(Keys.duplicates) do
+  for _, dup in ipairs(Keys.duplicates) do
     local msg = ""
     if dup.buf == dup.other.buffer then
       msg = "duplicate keymap"

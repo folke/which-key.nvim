@@ -187,7 +187,7 @@ function M.map(mode, prefix_n, cmd, buf, opts)
     ---@diagnostic disable-next-line: undefined-field
     return (ret and ret.lhs and ret.rhs and ret.rhs ~= cmd) and ret or nil
   end)
-  if other then
+  if other and other.buffer == buf then
     table.insert(M.duplicates, { mode = mode, prefix = prefix_n, cmd = cmd, buf = buf, other = other })
   end
   if buf ~= nil then
