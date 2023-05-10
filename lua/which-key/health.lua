@@ -3,7 +3,7 @@ local Keys = require("which-key.keys")
 local M = {}
 
 local start = vim.health.start or vim.health.report_start
--- local ok = vim.health.ok or vim.health.report_ok
+local ok = vim.health.ok or vim.health.report_ok
 local warn = vim.health.warn or vim.health.report_warn
 local error = vim.health.error or vim.health.report_error
 local info = vim.health.info or vim.health.report_info
@@ -31,7 +31,7 @@ function M.check()
     )
   end
   if next(Keys.duplicates) == nil then
-    vim.fn["health#report_ok"]("No conflicting keymaps found")
+    ok("No conflicting keymaps found")
     return
   end
   for _, dup in pairs(Keys.duplicates) do
