@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/folke/which-key.nvim/compare/v1.4.1...v1.4.2) (2023-05-10)
+
+
+### Bug Fixes
+
+* **health:** update the deprecated function ([#453](https://github.com/folke/which-key.nvim/issues/453)) ([12d3b11](https://github.com/folke/which-key.nvim/commit/12d3b11a67b94d65483f10c6ba0a47474039543a))
+
 ## [1.4.1](https://github.com/folke/which-key.nvim/compare/v1.4.0...v1.4.1) (2023-05-04)
 
 
