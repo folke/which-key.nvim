@@ -1,4 +1,4 @@
-*which-key.nvim.txt*        For Neovim >= 0.8.0       Last change: 2023 May 10
+*which-key.nvim.txt*        For Neovim >= 0.8.0       Last change: 2023 May 11
 
 ==============================================================================
 Table of Contents                           *which-key.nvim-table-of-contents*
@@ -24,7 +24,6 @@ vim-which-key <https://github.com/liuchengxu/vim-which-key>.
 
 FEATURES                                   *which-key.nvim-which-key-features*
 
-
 - for Neovim 0.7 and higher, it uses the `desc` attributes of your mappings as the default label
 - for Neovim 0.7 and higher, new mappings will be created with a `desc` attribute
 - opens a popup with suggestions to complete a key binding
@@ -40,7 +39,6 @@ FEATURES                                   *which-key.nvim-which-key-features*
 
 
 REQUIREMENTS                           *which-key.nvim-which-key-requirements*
-
 
 - Neovim >= 0.5.0
 
@@ -223,6 +221,7 @@ Default options for `opts`
       silent = true, -- use `silent` when creating keymaps
       noremap = true, -- use `noremap` when creating keymaps
       nowait = false, -- use `nowait` when creating keymaps
+      expr = false, -- use `expr` when creating keymaps
     }
 <
 
@@ -310,7 +309,6 @@ OPERATORS, MOTIONS AND TEXT OBJECTS ~
 
 
   `[count]operator[count][text-object]`
-
 - operators can be configured with the `operators` option
     - set `plugins.presets.operators` to `true` to automatically configure vim built-in operators
     - set this to `false`, to only include the list you configured in the `operators` option.
@@ -335,7 +333,6 @@ USAGE                                         *which-key.nvim-which-key-usage*
 
 When the **WhichKey** popup is open, you can use the following key bindings
 (they are also displayed at the bottom of the screen):
-
 
 - hit one of the keys to open a group or execute a key binding
 - `<esc>` to cancel and close the popup
