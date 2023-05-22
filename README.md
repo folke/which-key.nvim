@@ -31,20 +31,19 @@ Install the plugin with your preferred package manager:
 ### [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
-require("lazy").setup({
-  {
-    "folke/which-key.nvim",
-    config = function()
-      vim.o.timeout = true
-      vim.o.timeoutlen = 300
-      require("which-key").setup({
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
-      })
-    end,
-  },
-})
+{
+  "folke/which-key.nvim",
+  event = "VeryLazy",
+  init = function()
+    vim.o.timeout = true
+    vim.o.timeoutlen = 300
+  end,
+  opts = {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+}
 ```
 
 ### [packer](https://github.com/wbthomason/packer.nvim)
