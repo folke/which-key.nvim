@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/folke/which-key.nvim/compare/v1.4.2...v1.4.3) (2023-05-22)
+
+
+### Bug Fixes
+
+* **health:** dont show duplicates between global and buffer-local. It's too confusing ([015fdf3](https://github.com/folke/which-key.nvim/commit/015fdf3e3e052d4a9fee997ca0aa387c2dd3731c))
+
 ## [1.4.2](https://github.com/folke/which-key.nvim/compare/v1.4.1...v1.4.2) (2023-05-10)
 
 
