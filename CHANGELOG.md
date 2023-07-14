@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0](https://github.com/folke/which-key.nvim/compare/v1.4.3...v1.5.0) (2023-07-14)
+
+
+### Features
+
+* **marks:** show filename as label when no label ([25babc6](https://github.com/folke/which-key.nvim/commit/25babc6add21c17d6391a585302aee5632266622))
+
+
+### Bug Fixes
+
+* **keys:** don't show empty groups ([8503c0d](https://github.com/folke/which-key.nvim/commit/8503c0d725420b37ac31e44753657cde91435597))
+* never overwrite actual keymaps with group names ([f61da3a](https://github.com/folke/which-key.nvim/commit/f61da3a3a6143b7a42b4b16e983004856ec26bd1))
+* **registers:** dont trigger on @. Fixes [#466](https://github.com/folke/which-key.nvim/issues/466) ([65b36cc](https://github.com/folke/which-key.nvim/commit/65b36cc258e857dea92fc11cdc0d6e2bb01d3e87))
+
 ## [1.4.3](https://github.com/folke/which-key.nvim/compare/v1.4.2...v1.4.3) (2023-05-22)
 
 
