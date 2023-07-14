@@ -100,7 +100,12 @@ function M.get_mappings(mode, prefix_i, buf)
         ret.mapping = vim.tbl_deep_extend("force", {}, ret.mapping or {}, node.mapping)
       end
       for k, child in pairs(node.children) do
-        if child.mapping and child.mapping.label ~= "which_key_ignore" and child.mapping.desc ~= "which_key_ignore" then
+        if
+          child.mapping
+          and child.mapping.label ~= "which_key_ignore"
+          and child.mapping.desc ~= "which_key_ignore"
+          and not (child.mapping.group and vim.tbl_isempty(child.children))
+        then
           ret.mappings[k] = vim.tbl_deep_extend("force", {}, ret.mappings[k] or {}, child.mapping)
         end
       end
