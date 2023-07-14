@@ -91,7 +91,15 @@ function Tree:add(mapping, opts)
       self.nodes[node_key] = node
     end
   end
-  node.mapping = vim.tbl_deep_extend("force", node.mapping or {}, mapping)
+  if node.mapping and node.mapping.group and not mapping.group then
+    node.mapping = mapping
+    node.children = {}
+  elseif node.mapping and not node.mapping.group and mapping.group then
+    return node
+  else
+    node.mapping = vim.tbl_deep_extend("force", node.mapping or {}, mapping)
+  end
+
   return node
 end
 

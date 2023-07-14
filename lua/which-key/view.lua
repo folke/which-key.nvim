@@ -282,7 +282,7 @@ function M.on_keys(opts)
     local results = Keys.get_mappings(M.mode, M.keys, buf)
 
     --- Check for an exact match. Feedkeys with remap
-    if results.mapping and not results.mapping.group and #results.mappings == 0 then
+    if results.mapping and not results.mapping.group then
       M.hide()
       if results.mapping.fn then
         results.mapping.fn()
