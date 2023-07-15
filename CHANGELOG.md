@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/folke/which-key.nvim/compare/v1.5.0...v1.5.1) (2023-07-15)
+
+
+### Bug Fixes
+
+* revert: never overwrite actual keymaps with group names. Fixes [#478](https://github.com/folke/which-key.nvim/issues/478) Fixes [#479](https://github.com/folke/which-key.nvim/issues/479) Fixes [#480](https://github.com/folke/which-key.nvim/issues/480) ([fc25407](https://github.com/folke/which-key.nvim/commit/fc25407a360d27c36a30a90ff36861aa20ef2e54))
+
 ## [1.5.0](https://github.com/folke/which-key.nvim/compare/v1.4.3...v1.5.0) (2023-07-14)
 
 
