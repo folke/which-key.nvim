@@ -80,6 +80,29 @@ function M.process_motions(ret, mode, prefix_i, buf)
   end
 end
 
+function M.compare_by_keys(a, b)
+  local ak = (a.key or ""):lower()
+  local bk = (b.key or ""):lower()
+  local aw = ak:match("[a-z]") and 1 or 0
+  local bw = bk:match("[a-z]") and 1 or 0
+  if aw == bw then
+    return ak < bk
+  end
+  return aw < bw
+end
+
+function M.compare_by_desc(a, b)
+  local ad = a.desc or a.label
+  local bd = b.desc or b.label
+  if not ad then
+    return true
+  end
+  if not bd then
+    return false
+  end
+  return ad < bd
+end
+
 ---@return MappingGroup
 function M.get_mappings(mode, prefix_i, buf)
   ---@class MappingGroup
@@ -159,24 +182,23 @@ function M.get_mappings(mode, prefix_i, buf)
     end
   end
 
-  -- Sort items, but not for plugins
-  table.sort(tmp, function(a, b)
+  local comparator = function(a, b)
     if a.order and b.order then
       return a.order < b.order
     end
     if a.group == b.group then
-      local ak = (a.key or ""):lower()
-      local bk = (b.key or ""):lower()
-      local aw = ak:match("[a-z]") and 1 or 0
-      local bw = bk:match("[a-z]") and 1 or 0
-      if aw == bw then
-        return ak < bk
+      if Config.options.sort_by_description then
+        return M.compare_by_desc(a, b)
+      else
+        return M.compare_by_keys(a, b)
       end
-      return aw < bw
     else
       return (a.group and 1 or 0) < (b.group and 1 or 0)
     end
-  end)
+  end
+
+  -- Sort items, but not for plugins
+  table.sort(tmp, comparator)
   ret.mappings = tmp
 
   return ret

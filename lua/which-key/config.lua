@@ -64,6 +64,7 @@ local defaults = {
   show_help = true, -- show a help message in the command line for using WhichKey
   show_keys = true, -- show the currently pressed key and its label as a message in the command line
   triggers = "auto", -- automatically setup triggers
+  sort_by_description = false, -- sort menu by description instead of keymaps
   -- triggers = {"<leader>"} -- or specifiy a list manually
   -- list of triggers, where WhichKey should not wait for timeoutlen and show immediately
   triggers_nowait = {
