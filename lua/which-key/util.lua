@@ -7,6 +7,7 @@ local cache = {}
 ---@type table<string,string>
 local tcache = {}
 local cache_leaders = ""
+local cache_leader_details = {}
 
 function M.check_cache()
   ---@type string
@@ -15,6 +16,10 @@ function M.check_cache()
     cache = {}
     tcache = {}
     cache_leaders = leaders
+    cache_leader_details = {
+      ["<leader>"] = M.parse_internal(vim.g.mapleader or ""),
+      ["<localleader>"] = M.parse_internal(vim.g.maplocalleader or ""),
+    }
   end
 end
 
@@ -120,9 +125,29 @@ function M.parse_keys(keystr)
     end
   end
 
-  local mapleader = vim.g.mapleader
-  mapleader = mapleader and M.t(mapleader)
-  notation[1] = internal[1] == mapleader and "<leader>" or notation[1]
+  for leader, leader_sequence in pairs(cache_leader_details) do
+    local length = vim.tbl_count(leader_sequence)
+    if length > 1 then
+      local tmp = {}
+      for _, key in ipairs(notation) do
+        if key == leader then
+          for _, k in ipairs(leader_sequence) do
+            table.insert(tmp, k)
+          end
+        elseif key == " " then
+          table.insert(tmp, "<space>")
+        else
+          table.insert(tmp, key)
+        end
+      end
+      notation = tmp
+    elseif length == 1 then
+      local key = M.t(leader_sequence[1])
+      if internal[1] == key then
+        notation[1] = leader
+      end
+    end
+  end
 
   if #notation ~= #internal then
     error(vim.inspect({ keystr = keystr, internal = internal, notation = notation }))
