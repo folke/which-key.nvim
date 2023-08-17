@@ -81,6 +81,8 @@ local misc = {
     ["gn"] = "Search forwards and select",
     ["gN"] = "Search backwards and select",
     ["g%"] = "Cycle backwards through results",
+    ["gt"] = "Next tab page",
+    ["gT"] = "Previous tab page",
   },
 }
 
