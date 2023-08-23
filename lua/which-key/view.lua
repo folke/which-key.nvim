@@ -152,7 +152,12 @@ function M.hide()
   vim.api.nvim_echo({ { "" } }, false, {})
   M.hide_cursor()
   if M.buf and vim.api.nvim_buf_is_valid(M.buf) then
-    vim.api.nvim_buf_delete(M.buf, { force = true })
+    -- TODO: Remove in neovim 0.10 (https://github.com/neovim/neovim/issues/24452)
+    if vim.fn.getcmdwintype() ~= "" then
+      pcall(vim.api.nvim_buf_delete, M.buf, { force = true })
+    else
+      vim.api.nvim_buf_delete(M.buf, { force = true })
+    end
     M.buf = nil
   end
   if M.win and vim.api.nvim_win_is_valid(M.win) then
