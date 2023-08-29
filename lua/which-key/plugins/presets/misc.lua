@@ -93,6 +93,7 @@ function M.setup(wk, config)
       wk.register(mappings, { mode = "n", prefix = "", preset = true })
     end
   end
+  wk.register({ ["zf"] = "Create fold from selection" }, { mode = "x", prefix = "", preset = true })
 end
 
 return M
