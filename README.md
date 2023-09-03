@@ -196,7 +196,10 @@ Default options for `opts`
 }
 ```
 
-> ❕ When you specify a command in your mapping that starts with `<Plug>`, then we automatically set `noremap=false`, since you always want recursive keybindings in this case
+> ❕ When you specify a command in your mapping that starts with `<Plug>`, then we automatically set `noremap=false`, since you always want recursive keybindings in this case.
+
+> ❕ Replace_keycodes depends on your Neovim version and whether `expr` is true. For Neovim versions prior to 0.7, `replace_keycodes` will be unset. Else it will follow the
+> default behaviour of being true by default when `expr` is true.
 
 ### ⌨️ Mappings
 
