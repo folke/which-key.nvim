@@ -21,7 +21,7 @@ local mapargs = {
   "script",
   "unique",
   "callback",
-  "replace_keycodes", -- TODO: add config setting for default value
+  "replace_keycodes",
 }
 local wkargs = {
   "prefix",
@@ -205,6 +205,8 @@ function M.to_mapping(mapping)
       end
       opts.callback = nil
     end
+  elseif opts.expr and opts.replace_keycodes ~= false then
+    opts.replace_keycodes = true
   end
 
   mapping.opts = opts

@@ -7,6 +7,7 @@
 ---@field lhs string
 ---@field buffer number
 ---@field expr number
+---@field replace_keycodes boolean
 ---@field lnum number
 ---@field mode string
 ---@field noremap number
@@ -28,6 +29,7 @@
 ---@field silent boolean
 ---@field nowait boolean
 ---@field expr boolean
+---@field replace_keycodes boolean
 
 ---@class Mapping
 ---@field buf number
