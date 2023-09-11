@@ -332,6 +332,7 @@ end
 
 ---@param text Text
 function M.render(text)
+  local view = vim.api.nvim_win_call(M.win, vim.fn.winsaveview)
   vim.api.nvim_buf_set_lines(M.buf, 0, -1, false, text.lines)
   local height = #text.lines
   if height > config.options.layout.height.max then
@@ -344,6 +345,9 @@ function M.render(text)
   for _, data in ipairs(text.hl) do
     highlight(M.buf, config.namespace, data.group, data.line, data.from, data.to)
   end
+  vim.api.nvim_win_call(M.win, function()
+    vim.fn.winrestview(view)
+  end)
 end
 
 return M
