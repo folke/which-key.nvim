@@ -1,4 +1,4 @@
-*which-key.nvim.txt*       For Neovim >= 0.8.0       Last change: 2023 July 28
+*which-key.nvim.txt*      For Neovim >= 0.8.0     Last change: 2023 October 13
 
 ==============================================================================
 Table of Contents                           *which-key.nvim-table-of-contents*
@@ -8,7 +8,7 @@ Table of Contents                           *which-key.nvim-table-of-contents*
   - Requirements                       |which-key.nvim-which-key-requirements|
   - Installation                       |which-key.nvim-which-key-installation|
   - Configuration                     |which-key.nvim-which-key-configuration|
-  - 🪄 Setup                           |which-key.nvim-which-key-🪄-setup|
+  - Setup                                     |which-key.nvim-which-key-setup|
   - Usage                                     |which-key.nvim-which-key-usage|
   - Plugins                                 |which-key.nvim-which-key-plugins|
   - Colors                                   |which-key.nvim-which-key-colors|
@@ -138,7 +138,7 @@ WhichKey comes with the following defaults:
       },
       icons = {
         breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
-        separator = "", -- symbol used between a key and it's label
+        separator = "➜", -- symbol used between a key and it's label
         group = "+", -- symbol prepended to a group
       },
       popup_mappings = {
@@ -194,7 +194,7 @@ WhichKey comes with the following defaults:
 <
 
 
-🪄 SETUP                               *which-key.nvim-which-key-🪄-setup*
+SETUP                                         *which-key.nvim-which-key-setup*
 
 With the default settings, **WhichKey** will work out of the box for most
 builtin keybindings, but the real power comes from documenting and organizing
@@ -241,12 +241,12 @@ anywhere in your config files.
 >lua
     local wk = require("which-key")
     -- As an example, we will create the following mappings:
-    --   <leader>ff find files
-    --   <leader>fr show recent files
-    --   <leader>fb Foobar
+    --  * <leader>ff find files
+    --  * <leader>fr show recent files
+    --  * <leader>fb Foobar
     -- we'll document:
-    --   <leader>fn new file
-    --   <leader>fe edit file
+    --  * <leader>fn new file
+    --  * <leader>fe edit file
     -- and hide <leader>1
     
     wk.register({
@@ -298,8 +298,8 @@ Click to see more examples ~
     })
 <
 
-**Tips:** The default label is `keymap.desc` or `keymap.rhs` or `""`, `:h
-nvim_set_keymap()` to get more details about `desc` and `rhs`.
+**Tips:** The default label is `keymap.desc` or `keymap.rhs` or `""`,
+|nvim_set_keymap()| to get more details about `desc` and `rhs`.
 
 
 OPERATORS, MOTIONS AND TEXT OBJECTS ~
