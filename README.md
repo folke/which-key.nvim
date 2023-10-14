@@ -1,6 +1,6 @@
 # 💥 Which Key
 
-**WhichKey** is a lua plugin for Neovim 0.5 that displays a popup with possible key bindings of
+**WhichKey** is a Lua plugin for Neovim 0.5 that displays a popup with possible key bindings of
 the command you started typing. Heavily inspired by the original [emacs-which-key](https://github.com/justbur/emacs-which-key) and [vim-which-key](https://github.com/liuchengxu/vim-which-key).
 
 ![image](https://user-images.githubusercontent.com/292349/116439438-669f8d00-a804-11eb-9b5b-c7122bd9acac.png)
@@ -138,7 +138,7 @@ WhichKey comes with the following defaults:
   hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "^:", "^ ", "^call ", "^lua " }, -- hide mapping boilerplate
   show_help = true, -- show a help message in the command line for using WhichKey
   show_keys = true, -- show the currently pressed key and its label as a message in the command line
-  triggers = "auto", -- automatically setup triggers
+  triggers = "auto", -- automatically set up triggers
   -- triggers = {"<leader>"} -- or specifiy a list manually
   -- list of triggers, where WhichKey should not wait for timeoutlen and show immediately
   triggers_nowait = {
@@ -173,7 +173,7 @@ WhichKey comes with the following defaults:
 With the default settings, **WhichKey** will work out of the box for most builtin keybindings,
 but the real power comes from documenting and organizing your own keybindings.
 
-To document and/or setup your own mappings, you need to call the `register` method
+To document and/or set up your own mappings, you need to call the `register` method
 
 ```lua
 local wk = require("which-key")
@@ -202,7 +202,7 @@ Default options for `opts`
 
 > ⌨ for **Neovim 0.7** and higher, which key will use the `desc` attribute of existing mappings as the default label
 
-Group names use the special `name` key in the tables. There's multiple ways to define the mappings. `wk.register` can be called multiple times from anywhere in your config files.
+Group names use the special `name` key in the tables. There are multiple ways to define the mappings. `wk.register` can be called multiple times from anywhere in your config files.
 
 ```lua
 local wk = require("which-key")
