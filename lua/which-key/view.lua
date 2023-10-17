@@ -79,6 +79,7 @@ function M.show()
   vim.api.nvim_buf_set_option(M.buf, "filetype", "WhichKey")
   vim.api.nvim_buf_set_option(M.buf, "buftype", "nofile")
   vim.api.nvim_buf_set_option(M.buf, "bufhidden", "wipe")
+  vim.api.nvim_buf_set_option(M.buf, "modifiable", true)
 
   local winhl = "NormalFloat:WhichKeyFloat"
   if vim.fn.hlexists("FloatBorder") == 1 then
