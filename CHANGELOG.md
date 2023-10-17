@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.0](https://github.com/folke/which-key.nvim/compare/v1.5.1...v1.6.0) (2023-10-17)
+
+
+### Features
+
+* **presets:** added gt and gT. Fixes [#457](https://github.com/folke/which-key.nvim/issues/457) ([3ba77f0](https://github.com/folke/which-key.nvim/commit/3ba77f0b0961b3fe685397b8d8f34f231b9350a6))
+
+
+### Bug Fixes
+
+* call config in issue template ([#489](https://github.com/folke/which-key.nvim/issues/489)) ([09a8188](https://github.com/folke/which-key.nvim/commit/09a8188224dc890618dfbc961436b106d912c2c1))
+* **view:** set modifiable flag for view buffer ([#506](https://github.com/folke/which-key.nvim/issues/506)) ([1d17760](https://github.com/folke/which-key.nvim/commit/1d1776012eda4258985f6f1f0c02b78594a3f37b))
+
 ## [1.5.1](https://github.com/folke/which-key.nvim/compare/v1.5.0...v1.5.1) (2023-07-15)
 
 
