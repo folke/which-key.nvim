@@ -12,7 +12,7 @@ M.operators = {
   [">"] = "Indent right",
   ["<lt>"] = "Indent left",
   ["zf"] = "Create fold",
-  ["!"] = "Filter though external program",
+  ["!"] = "Filter through external program",
   ["v"] = "Visual Character Mode",
   -- ["V"] = "Visual Line Mode",
 }
