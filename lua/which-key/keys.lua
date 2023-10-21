@@ -132,7 +132,7 @@ function M.get_mappings(mode, prefix_i, buf)
     end
     if not skip then
       if value.group then
-        value.label = value.label or "+prefix"
+        value.label = value.label or value.desc or "+prefix"
         value.label = value.label:gsub("^%+", "")
         value.label = Config.options.icons.group .. value.label
       elseif not value.label then
@@ -413,7 +413,11 @@ function M.update_keymaps(mode, buf)
     local skip = M.is_hook(keymap.lhs, keymap.rhs)
 
     if is_nop(keymap) then
-      skip = true
+      if keymap.desc then
+        keymap.group = true
+      else
+        skip = true
+      end
     end
 
     if not skip then
@@ -421,6 +425,7 @@ function M.update_keymaps(mode, buf)
         prefix = keymap.lhs,
         cmd = keymap.rhs,
         desc = keymap.desc,
+        group = keymap.group,
         callback = keymap.callback,
         keys = Util.parse_keys(keymap.lhs),
       }

@@ -204,7 +204,7 @@ function M.execute(prefix_i, mode, buf)
   end
 
   -- make sure we remove all WK hooks before executing the sequence
-  -- this is to make existing keybindongs work and prevent recursion
+  -- this is to make existing keybindings work and prevent recursion
   unhook(Keys.get_tree(mode).tree:path(prefix_i))
   if buf then
     unhook(Keys.get_tree(mode, buf).tree:path(prefix_i), buf)
