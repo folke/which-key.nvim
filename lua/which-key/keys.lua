@@ -342,7 +342,7 @@ function M.add_hooks(mode, buf, node, secret_only)
     node.mapping = { prefix = node.prefix_n, group = true, keys = Util.parse_keys(node.prefix_n) }
   end
   if node.prefix_n ~= "" and node.mapping.group == true and not (node.mapping.cmd or node.mapping.callback) then
-    -- first non-cmd level, so create hook and make all decendents secret only
+    -- first non-cmd level, so create hook and make all descendents secret only
     M.hook_add(node.prefix_n, mode, buf, secret_only)
     secret_only = true
   end
