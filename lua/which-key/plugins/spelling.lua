@@ -21,7 +21,7 @@ function M.run()
 
   ---@diagnostic disable-next-line: missing-parameter
   local cursor_word = vim.fn.expand("<cword>")
-  -- get a misspellled word from under the cursor, if not found, then use the cursor_word instead
+  -- get a misspelled word from under the cursor, if not found, then use the cursor_word instead
   ---@diagnostic disable-next-line: redundant-parameter
   local bad = vim.fn.spellbadword(cursor_word)
   local word = bad[1]
