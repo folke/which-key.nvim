@@ -64,6 +64,23 @@ use {
 }
 ```
 
+### [vim-plug](https://github.com/junegunn/vim-plug)
+
+```lua
+vim.cmd([[
+  call plug#begin()
+  Plug 'folke/which-key.nvim', { 'do': ':set timeout timeoutlen=300' }
+  call plug#end()
+]])
+require("which-key").setup {
+  -- your configuration comes here
+  -- or leave it empty to use the default settings
+  -- refer to the configuration section below
+}
+```
+  
+
+
 ## ⚙️ Configuration
 
 > ❗️ IMPORTANT: the [timeout](https://neovim.io/doc/user/options.html#'timeout') when **WhichKey** opens is controlled by the vim setting [timeoutlen](https://neovim.io/doc/user/options.html#'timeoutlen').
