@@ -4,6 +4,8 @@ local Config = require("which-key.config")
 
 -- secret character that will be used to create <nop> mappings
 local secret = "Þ"
+-- magic description string prefix for nvim-native keybindings to display as groups
+local secret_group = "^WhichKeyGroup:"
 
 ---@class Keys
 local M = {}
@@ -410,13 +412,22 @@ function M.update_keymaps(mode, buf)
   end
 
   for _, keymap in pairs(keymaps) do
+    local is_group = false
     local skip = M.is_hook(keymap.lhs, keymap.rhs)
 
     if is_nop(keymap) then
       skip = true
     end
 
+    -- Magic identifier for keygroups in regular keybindings
+    if keymap.desc and keymap.desc:find(secret_group) then
+      keymap.desc = keymap.desc:gsub(secret_group, "")
+      is_group = true
+      skip = false
+    end
+
     if not skip then
+      ---@type Mapping
       local mapping = {
         prefix = keymap.lhs,
         cmd = keymap.rhs,
@@ -424,6 +435,13 @@ function M.update_keymaps(mode, buf)
         callback = keymap.callback,
         keys = Util.parse_keys(keymap.lhs),
       }
+      if is_group then
+        mapping = vim.tbl_extend("error", mapping, {
+          group = true,
+          label = mapping.desc,
+          name = mapping.desc,
+        })
+      end
       -- don't include Plug keymaps
       if mapping.keys.notation[1]:lower() ~= "<plug>" then
         local node = tree:add(mapping)
