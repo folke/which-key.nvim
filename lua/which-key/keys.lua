@@ -4,8 +4,6 @@ local Config = require("which-key.config")
 
 -- secret character that will be used to create <nop> mappings
 local secret = "Þ"
--- magic description string prefix for nvim-native keybindings to display as groups
-local secret_group = "^WhichKeyGroup:"
 
 ---@class Keys
 local M = {}
@@ -135,7 +133,7 @@ function M.get_mappings(mode, prefix_i, buf)
     if not skip then
       if value.group then
         value.label = value.label or "+prefix"
-        value.label = value.label:gsub("^%+", "")
+        value.label = value.label:gsub(Util.group_pattern, "")
         value.label = Config.options.icons.group .. value.label
       elseif not value.label then
         value.label = value.desc or value.cmd or ""
@@ -420,8 +418,8 @@ function M.update_keymaps(mode, buf)
     end
 
     -- Magic identifier for keygroups in regular keybindings
-    if keymap.desc and keymap.desc:find(secret_group) then
-      keymap.desc = keymap.desc:gsub(secret_group, "")
+    if keymap.desc and keymap.desc:find(Util.group_pattern) then
+      keymap.desc = keymap.desc:gsub(Util.group_pattern, "")
       is_group = true
       skip = false
     end

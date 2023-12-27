@@ -95,7 +95,7 @@ function M._parse(value, mappings, opts)
   end
   if opts.name then
     -- remove + from group names
-    opts.name = opts.name and opts.name:gsub("^%+", "")
+    opts.name = opts.name and opts.name:gsub(Util.group_pattern, "")
     opts.group = true
   end
 
