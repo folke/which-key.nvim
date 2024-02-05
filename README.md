@@ -67,10 +67,10 @@ use {
 ## ⚙️ Configuration
 
 > ❗️ IMPORTANT: the [timeout](https://neovim.io/doc/user/options.html#'timeout') when **WhichKey** opens is controlled by the vim setting [timeoutlen](https://neovim.io/doc/user/options.html#'timeoutlen').
-> Please refer to the documentation to properly set it up. Setting it to `0`, will effectively
+> Please refer to the documentation to properly set it up. Setting it to `0` will effectively
 > always show **WhichKey** immediately, but a setting of `500` (500ms) is probably more appropriate.
 
-> ❗️ don't create any keymappings yourself to trigger WhichKey. Unlike with _vim-which-key_, we do this fully automatically.
+> ❗️ Don't create any keymappings yourself to trigger WhichKey. Unlike with _vim-which-key_, we do this fully automatically.
 > Please remove any left-over triggers you might have from using _vim-which-key_.
 
 > 🚑 You can run `:checkhealth which-key` to see if there's any conflicting keymaps that will prevent triggering **WhichKey**
@@ -113,7 +113,7 @@ WhichKey comes with the following defaults:
   },
   icons = {
     breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
-    separator = "➜", -- symbol used between a key and it's label
+    separator = "➜", -- symbol used between a key and its label
     group = "+", -- symbol prepended to a group
   },
   popup_mappings = {
@@ -140,7 +140,7 @@ WhichKey comes with the following defaults:
   show_keys = true, -- show the currently pressed key and its label as a message in the command line
   triggers = "auto", -- automatically setup triggers
   -- triggers = {"<leader>"} -- or specifiy a list manually
-  -- list of triggers, where WhichKey should not wait for timeoutlen and show immediately
+  -- list of triggers where WhichKey should not wait for timeoutlen and show immediately
   triggers_nowait = {
     -- marks
     "`",
