@@ -133,7 +133,7 @@ function M.get_mappings(mode, prefix_i, buf)
     if not skip then
       if value.group then
         value.label = value.label or "+prefix"
-        value.label = value.label:gsub("^%+", "")
+        value.label = value.label:gsub(Util.group_pattern, "")
         value.label = Config.options.icons.group .. value.label
       elseif not value.label then
         value.label = value.desc or value.cmd or ""
@@ -410,13 +410,22 @@ function M.update_keymaps(mode, buf)
   end
 
   for _, keymap in pairs(keymaps) do
+    local is_group = false
     local skip = M.is_hook(keymap.lhs, keymap.rhs)
 
     if is_nop(keymap) then
       skip = true
     end
 
+    -- Magic identifier for keygroups in regular keybindings
+    if keymap.desc and keymap.desc:find(Util.group_pattern) then
+      keymap.desc = keymap.desc:gsub(Util.group_pattern, "")
+      is_group = true
+      skip = false
+    end
+
     if not skip then
+      ---@type Mapping
       local mapping = {
         prefix = keymap.lhs,
         cmd = keymap.rhs,
@@ -424,6 +433,13 @@ function M.update_keymaps(mode, buf)
         callback = keymap.callback,
         keys = Util.parse_keys(keymap.lhs),
       }
+      if is_group then
+        mapping = vim.tbl_extend("error", mapping, {
+          group = true,
+          label = mapping.desc,
+          name = mapping.desc,
+        })
+      end
       -- don't include Plug keymaps
       if mapping.keys.notation[1]:lower() ~= "<plug>" then
         local node = tree:add(mapping)

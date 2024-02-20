@@ -1,5 +1,8 @@
 ---@class Util
-local M = {}
+local M = {
+  -- prefix for key group identifiers.
+  group_pattern = "^%+",
+}
 local strbyte = string.byte
 local strsub = string.sub
 ---@type table<string, KeyCodes>
