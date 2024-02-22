@@ -325,11 +325,13 @@ function M.update(buf)
     if tree.buf and not vim.api.nvim_buf_is_valid(tree.buf) then
       -- remove group for invalid buffers
       M.mappings[k] = nil
-    elseif not buf or not tree.buf or buf == tree.buf then
+    elseif not buf or not tree.buf or buf == tree.buf and
+      require("which-key.view").is_enabled(buf) then
       -- only update buffer maps, if:
       -- 1. we dont pass a buffer
       -- 2. this is a global node
       -- 3. this is a local buffer node for the passed buffer
+      -- 4. which-key is enabled for the buffer.
       M.update_keymaps(tree.mode, tree.buf)
       M.add_hooks(tree.mode, tree.buf, tree.tree.root)
     end
