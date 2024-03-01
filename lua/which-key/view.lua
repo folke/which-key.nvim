@@ -269,6 +269,10 @@ function M.is_enabled(buf)
       return false
     end
   end
+  
+  if vim.fn.getcmdwintype() ~= "" then
+    return false
+  end
 
   return true
 end
