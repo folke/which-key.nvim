@@ -134,7 +134,7 @@ function M._parse(value, mappings, opts)
     if type(list[1]) ~= "string" then
       error("Invalid mapping for " .. vim.inspect({ value = value, opts = opts }))
     end
-    opts.desc = list[1]
+    opts.desc = opts.desc or list[1]
   -- { cmd, desc }
   elseif #list == 2 then
     -- desc
