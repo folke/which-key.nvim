@@ -13,6 +13,50 @@ M.operators = {}
 M.nowait = {}
 M.blacklist = {}
 
+function M.get_mappings_with_comments()
+  local output = vim.api.nvim_exec('verbose nmap', true)
+  local lines = {}
+  for s in output:gmatch("[^\r\n]+") do
+    table.insert(lines, s)
+  end
+  local mappings = {}
+  for i, line in ipairs(lines) do
+    if line:find('^n  .*') then
+      -- This line is a mapping
+      local lhs = line:match('^n  (.-)%s+.*')
+      if lhs then
+        -- Get the source file and line number from the next line
+        local source_line = lines[i + 1]
+        local source_file = source_line:match('Last set from (.-) line')
+        local line_number = tonumber(source_line:match('line (%d+)'))
+        if source_file and line_number then
+          -- Check if the source file exists
+          local f = io.open(vim.fn.expand(source_file), "r")
+          if f ~= nil and line_number>1 then
+            local line_from_file
+            for count = 1, line_number-1 do
+              line_from_file = f:read()
+            end
+            -- If the line from file starts with a comment then extract it
+            local comment = line_from_file:match('^"(.*)')
+            if line_from_file and comment then
+              mappings[lhs] = {comment}
+            end
+            f:close()
+          else
+            --print("Warning: Source file " .. source_file .. " does not exist")
+          end
+        else
+          --print("Warning: Could not extract source file and line number for mapping " .. lhs)
+        end
+      end
+    end
+  end
+  return mappings
+end
+
+
+
 function M.setup()
   local builtin_ops = require("which-key.plugins.presets").operators
   for op, _ in pairs(builtin_ops) do
@@ -36,6 +80,8 @@ function M.setup()
       M.blacklist[mode][prefix_n] = true
     end
   end
+  M.register( M.get_mappings_with_comments())
+
 end
 
 function M.get_operator(prefix_i)
