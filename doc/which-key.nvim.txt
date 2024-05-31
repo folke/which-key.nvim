@@ -1,4 +1,4 @@
-*which-key.nvim.txt*      For Neovim >= 0.8.0     Last change: 2023 October 20
+*which-key.nvim.txt*        For Neovim >= 0.8.0       Last change: 2024 May 31
 
 ==============================================================================
 Table of Contents                           *which-key.nvim-table-of-contents*
@@ -12,6 +12,7 @@ Table of Contents                           *which-key.nvim-table-of-contents*
   - Usage                                     |which-key.nvim-which-key-usage|
   - Plugins                                 |which-key.nvim-which-key-plugins|
   - Colors                                   |which-key.nvim-which-key-colors|
+2. Links                                                |which-key.nvim-links|
 
 ==============================================================================
 1. Which Key                                        *which-key.nvim-which-key*
