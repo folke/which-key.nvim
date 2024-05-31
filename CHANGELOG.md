@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.1](https://github.com/folke/which-key.nvim/compare/v1.6.0...v1.6.1) (2024-05-31)
+
+
+### Bug Fixes
+
+* **reg:** Added check for OSC 52 to disable related register previews ([#604](https://github.com/folke/which-key.nvim/issues/604)) ([8063a7f](https://github.com/folke/which-key.nvim/commit/8063a7f33bfea6a6387907c93a30a5877aa02633))
+* small typo in operator description ([#528](https://github.com/folke/which-key.nvim/issues/528)) ([d65087b](https://github.com/folke/which-key.nvim/commit/d65087b892c45d3722b6511c83a029671d6290e5))
+
 ## [1.6.0](https://github.com/folke/which-key.nvim/compare/v1.5.1...v1.6.0) (2023-10-17)
 
 
