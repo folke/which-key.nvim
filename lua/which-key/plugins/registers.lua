@@ -30,16 +30,40 @@ local labels = {
   ["/"] = "last search pattern",
 }
 
+-- This function makes the assumption that OSC 52 is set up per :help osc-52
+M.osc52_active = function()
+  -- If no clipboard set, can't be OSC 52
+  if not vim.g.clipboard then
+    return false
+  end
+
+  -- Per the docs, OSC 52 should be set up with a name field in the table
+  if vim.g.clipboard.name == "OSC 52" then
+    return true
+  end
+
+  return false
+end
+
 ---@type Plugin
 ---@return PluginItem[]
 function M.run(_trigger, _mode, _buf)
   local items = {}
 
+  local osc52_skip_keys = { "+", "*" }
+
   for i = 1, #M.registers, 1 do
     local key = M.registers:sub(i, i)
-    local ok, value = pcall(vim.fn.getreg, key, 1)
-    if not ok then
-      value = ""
+
+    local value = "";
+
+    if M.osc52_active() and vim.tbl_contains(osc52_skip_keys, key) then
+      value = "OSC 52 detected, register not checked to maintain compatibility"
+    else
+      local ok, reg_value = pcall(vim.fn.getreg, key, 1)
+      if ok then
+        value = reg_value
+      end
     end
 
     if value ~= "" then
