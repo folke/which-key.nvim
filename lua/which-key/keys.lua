@@ -412,7 +412,7 @@ function M.update_keymaps(mode, buf)
     local skip = M.is_hook(keymap.lhs, keymap.rhs)
     local is_group = false
 
-    if is_nop(keymap) then
+    if not skip and is_nop(keymap) then
       if keymap.desc then
         is_group = true
       else
