@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.1.0](https://github.com/folke/which-key.nvim/compare/v2.0.1...v2.1.0) (2024-06-06)
+
+
+### Features
+
+* **presets:** add descriptions for fold deletion ([#504](https://github.com/folke/which-key.nvim/issues/504)) ([53b6085](https://github.com/folke/which-key.nvim/commit/53b6085367a92740664783330583facd958dbceb))
+
+
+### Bug Fixes
+
+* black hole z= replacements ([#602](https://github.com/folke/which-key.nvim/issues/602)) ([f5b9124](https://github.com/folke/which-key.nvim/commit/f5b912451f33fd19e52230e73617ad099ffd3ab1))
+* **keys:** fix nested operators. See [#600](https://github.com/folke/which-key.nvim/issues/600). Fixes [#609](https://github.com/folke/which-key.nvim/issues/609) ([25d5b9e](https://github.com/folke/which-key.nvim/commit/25d5b9e9b5775525248b8d5c95271ba28f75d326))
+* restore win view after rendering buffer ([#516](https://github.com/folke/which-key.nvim/issues/516)) ([ea4a17d](https://github.com/folke/which-key.nvim/commit/ea4a17d63571c81f529669a373d20c855b9b351d)), closes [#515](https://github.com/folke/which-key.nvim/issues/515)
+* support nested operators ([#600](https://github.com/folke/which-key.nvim/issues/600)) ([476f4ca](https://github.com/folke/which-key.nvim/commit/476f4cacb15da81dcebe68ea45333e660409612d))
+
 ## [2.0.1](https://github.com/folke/which-key.nvim/compare/v2.0.0...v2.0.1) (2024-06-06)
 
 
