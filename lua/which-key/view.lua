@@ -52,17 +52,13 @@ function M.show()
 
   local opts = {
     relative = "editor",
-    width = vim.o.columns
-      - margins[2]
-      - margins[4]
-      - (vim.fn.has("nvim-0.6") == 0 and config.options.window.border ~= "none" and 2 or 0),
+    width = vim.o.columns - margins[2] - margins[4],
     height = config.options.layout.height.min,
     focusable = false,
     anchor = "SW",
     border = config.options.window.border,
     row = vim.o.lines
       - margins[3]
-      - (vim.fn.has("nvim-0.6") == 0 and config.options.window.border ~= "none" and 2 or 0)
       + ((vim.o.laststatus == 0 or vim.o.laststatus == 1 and #wins == 1) and 1 or 0)
       - vim.o.cmdheight,
     col = margins[4],
@@ -76,18 +72,13 @@ function M.show()
   end
   M.buf = vim.api.nvim_create_buf(false, true)
   M.win = vim.api.nvim_open_win(M.buf, false, opts)
-  vim.api.nvim_buf_set_option(M.buf, "filetype", "WhichKey")
-  vim.api.nvim_buf_set_option(M.buf, "buftype", "nofile")
-  vim.api.nvim_buf_set_option(M.buf, "bufhidden", "wipe")
-  vim.api.nvim_buf_set_option(M.buf, "modifiable", true)
-
-  local winhl = "NormalFloat:WhichKeyFloat"
-  if vim.fn.hlexists("FloatBorder") == 1 then
-    winhl = winhl .. ",FloatBorder:WhichKeyBorder"
-  end
-  vim.api.nvim_win_set_option(M.win, "winhighlight", winhl)
-  vim.api.nvim_win_set_option(M.win, "foldmethod", "manual")
-  vim.api.nvim_win_set_option(M.win, "winblend", config.options.window.winblend)
+  vim.bo[M.buf].filetype = "WhichKey"
+  vim.bo[M.buf].buftype = "nofile"
+  vim.bo[M.buf].bufhidden = "wipe"
+  vim.bo[M.buf].modifiable = true
+  vim.wo[M.win].winhighlight = "NormalFloat:WhichKeyFloat,FloatBorder:WhichKeyBorder"
+  vim.wo[M.win].foldmethod = "manual"
+  vim.wo[M.win].winblend = config.options.window.winblend
 end
 
 function M.read_pending()
@@ -256,20 +247,20 @@ function M.open(keys, opts)
 end
 
 function M.is_enabled(buf)
-  local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
+  local buftype = vim.bo[buf].buftype
   for _, bt in ipairs(config.options.disable.buftypes) do
     if bt == buftype then
       return false
     end
   end
 
-  local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
+  local filetype = vim.bo[buf].filetype
   for _, bt in ipairs(config.options.disable.filetypes) do
     if bt == filetype then
       return false
     end
   end
-  
+
   if vim.fn.getcmdwintype() ~= "" then
     return false
   end

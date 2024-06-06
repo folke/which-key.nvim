@@ -8,10 +8,9 @@ local secret = "Þ"
 ---@class Keys
 local M = {}
 
-M.functions = {}
-M.operators = {}
-M.nowait = {}
-M.blacklist = {}
+M.operators = {} ---@type table<string, boolean>
+M.nowait = {} ---@type table<string, boolean>
+M.blacklist = {} ---@type table<string, table<string, boolean>>
 
 function M.setup()
   local builtin_ops = require("which-key.plugins.presets").operators
@@ -377,7 +376,7 @@ function M.dump()
 end
 
 ---@param mode string
----@param buf? buffer
+---@param buf? number
 function M.get_tree(mode, buf)
   if mode == "s" or mode == "x" then
     mode = "v"

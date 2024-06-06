@@ -97,6 +97,9 @@ M.options = {}
 
 ---@param options? Options
 function M.setup(options)
+  if vim.fn.has("nvim-0.9") == 0 then
+    return vim.notify("WhichKey.nvim requires Neovim 0.9 or higher", vim.log.levels.ERROR)
+  end
   M.options = vim.tbl_deep_extend("force", {}, defaults, options or {})
 end
 

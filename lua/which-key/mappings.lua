@@ -188,25 +188,6 @@ function M.to_mapping(mapping)
     mapping[o] = nil
   end
 
-  if vim.fn.has("nvim-0.7.0") == 0 then
-    opts.replace_keycodes = nil
-
-    -- Neovim < 0.7.0 doesn't support descriptions
-    opts.desc = nil
-
-    -- use lua functions proxy for Neovim < 0.7.0
-    if opts.callback then
-      local functions = require("which-key.keys").functions
-      table.insert(functions, opts.callback)
-      if opts.expr then
-        opts.cmd = string.format([[luaeval('require("which-key").execute(%d)')]], #functions)
-      else
-        opts.cmd = string.format([[<cmd>lua require("which-key").execute(%d)<cr>]], #functions)
-      end
-      opts.callback = nil
-    end
-  end
-
   mapping.opts = opts
   return mapping
 end

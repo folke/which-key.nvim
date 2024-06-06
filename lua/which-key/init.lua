@@ -25,11 +25,6 @@ function M.setup(options)
   schedule_load()
 end
 
-function M.execute(id)
-  local func = Keys.functions[id]
-  return func()
-end
-
 function M.show(keys, opts)
   opts = opts or {}
   if type(opts) == "string" then
@@ -96,13 +91,6 @@ function M.load()
   Keys.update()
   queue = {}
   loaded = true
-end
-
-function M.reset()
-  -- local mappings = Keys.mappings
-  require("plenary.reload").reload_module("which-key")
-  -- require("which-key.Keys").mappings = mappings
-  require("which-key").setup()
 end
 
 return M
