@@ -38,12 +38,14 @@ function M.setup()
 end
 
 function M.get_operator(prefix_i)
+  local ret = { i = nil, n = nil, len = nil }
   for op_n, _ in pairs(Config.options.operators) do
     local op_i = Util.t(op_n)
-    if prefix_i:sub(1, #op_i) == op_i then
-      return op_i, op_n
+    if prefix_i:sub(1, #op_i) == op_i and (ret.len == nil or #op_i > ret.len) then
+      ret = { i = op_i, n = op_n, len = #op_i }
     end
   end
+  return ret.i, ret.n
 end
 
 function M.process_motions(ret, mode, prefix_i, buf)
