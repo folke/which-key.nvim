@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/folke/which-key.nvim/compare/v2.0.0...v2.0.1) (2024-06-06)
+
+
+### Bug Fixes
+
+* label -&gt; desc ([b8eb534](https://github.com/folke/which-key.nvim/commit/b8eb5348a749e214dfd08d38654a736d91191918))
+
 ## [2.0.0](https://github.com/folke/which-key.nvim/compare/v1.6.1...v2.0.0) (2024-06-06)
 
 
