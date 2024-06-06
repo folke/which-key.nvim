@@ -416,6 +416,7 @@ function M.update_keymaps(mode, buf)
 
     if not skip and is_nop(keymap) then
       if keymap.desc then
+        vim.keymap.del({ mode }, keymap.lhs, { buffer = buf })
         is_group = true
       else
         skip = true
