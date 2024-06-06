@@ -32,6 +32,9 @@ local misc = {
       O = "Open all folds under cursor",
       c = "Close fold under cursor",
       C = "Close all folds under cursor",
+      d = "Delete fold under cursor",
+      D = "Delete all folds under cursor",
+      E = "Delete all folds in file",
       a = "Toggle fold under cursor",
       A = "Toggle all folds under cursor",
       v = "Show cursor line",
@@ -92,6 +95,7 @@ function M.setup(wk, config)
       wk.register(mappings, { mode = "n", prefix = "", preset = true })
     end
   end
+  wk.register({ ["zf"] = "Create fold from selection" }, { mode = "x", prefix = "", preset = true })
 end
 
 return M
