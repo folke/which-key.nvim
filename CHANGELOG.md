@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.0.0](https://github.com/folke/which-key.nvim/compare/v1.6.1...v2.0.0) (2024-06-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* which-key now requires Neovim >= 0.9
+
+### Features
+
+* **keys:** `desc` in `"&lt;nop&gt;"` or `""` keymaps can now become prefix label ([#522](https://github.com/folke/which-key.nvim/issues/522)) ([c1958e2](https://github.com/folke/which-key.nvim/commit/c1958e2529433ef096e924c72315733790ca7f88))
+* **mappings:** check if desc exists when parsing mappings ([#589](https://github.com/folke/which-key.nvim/issues/589)) ([a7ced9f](https://github.com/folke/which-key.nvim/commit/a7ced9f00a309418865ec2e3c272113147d167fe))
+* which-key now requires Neovim &gt;= 0.9 ([53ba0ac](https://github.com/folke/which-key.nvim/commit/53ba0accc2d607ef3f2b4f6e40aa9ac75e611dee))
+
+
+### Bug Fixes
+
+* **ignore_missing:** not showing key maps with desc field ([#577](https://github.com/folke/which-key.nvim/issues/577)) ([928c6c8](https://github.com/folke/which-key.nvim/commit/928c6c8fb62df55fa640399b7d76410c037b5f55))
+* **is_enabled:** disable whichkey in cmdline-window ([#581](https://github.com/folke/which-key.nvim/issues/581)) ([26ff0e6](https://github.com/folke/which-key.nvim/commit/26ff0e6084a4e957fc13ffe00bafd7c0c5ab81cc))
+* **keys:** fix buffer-local mapping groups ([d87c01c](https://github.com/folke/which-key.nvim/commit/d87c01c9bbcc7c1c2d248dca1b11285259d66be8))
+* **mappings:** dont remove desc ([4a7d732](https://github.com/folke/which-key.nvim/commit/4a7d7328b26d3f3355a43af4d8dc5ffd33cbd793))
+
 ## [1.6.1](https://github.com/folke/which-key.nvim/compare/v1.6.0...v1.6.1) (2024-05-31)
 
 
