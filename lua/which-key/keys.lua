@@ -38,15 +38,22 @@ function M.setup()
 end
 
 function M.get_operator(prefix_i)
+  local curr_op_n, curr_op_i = nil, ""
   for op_n, _ in pairs(Config.options.operators) do
     local op_i = Util.t(op_n)
-    if prefix_i:sub(1, #op_i) == op_i then
-      return op_i, op_n
+    if prefix_i == op_i then -- fast path if fully matched
+      return op_n, op_i
+    elseif -- select the longest one if partially matched
+      #op_i > #curr_op_i and prefix_i:sub(1, #op_i) == op_i
+    then
+      curr_op_n, curr_op_i = op_n, op_i
     end
   end
+  return curr_op_n, curr_op_n and curr_op_i
 end
 
 function M.process_motions(ret, mode, prefix_i, buf)
+  ---@type string|nil, string|nil
   local op_i, op_n = "", ""
   if mode ~= "v" then
     op_i, op_n = M.get_operator(prefix_i)
