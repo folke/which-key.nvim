@@ -187,6 +187,8 @@ function M.to_mapping(mapping)
     opts[o] = mapping[o]
     mapping[o] = nil
   end
+  -- restore desc
+  mapping.desc = opts.desc
 
   mapping.opts = opts
   return mapping
