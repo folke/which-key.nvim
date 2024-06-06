@@ -41,7 +41,7 @@ function M.run()
       key = key,
       desc = label,
       fn = function()
-        vim.cmd("norm! ciw" .. label)
+        vim.cmd('norm! "_ciw' .. label)
       end,
     })
   end
