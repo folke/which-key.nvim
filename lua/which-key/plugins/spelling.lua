@@ -39,7 +39,7 @@ function M.run()
 
     table.insert(items, {
       key = key,
-      label = label,
+      desc = label,
       fn = function()
         vim.cmd("norm! ciw" .. label)
       end,

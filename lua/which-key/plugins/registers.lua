@@ -55,7 +55,7 @@ function M.run(_trigger, _mode, _buf)
   for i = 1, #M.registers, 1 do
     local key = M.registers:sub(i, i)
 
-    local value = "";
+    local value = ""
 
     if M.osc52_active() and vim.tbl_contains(osc52_skip_keys, key) then
       value = "OSC 52 detected, register not checked to maintain compatibility"
@@ -67,7 +67,7 @@ function M.run(_trigger, _mode, _buf)
     end
 
     if value ~= "" then
-      table.insert(items, { key = key, label = labels[key] or "", value = value })
+      table.insert(items, { key = key, desc = labels[key] or "", value = value })
     end
   end
   return items

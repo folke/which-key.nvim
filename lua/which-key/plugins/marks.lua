@@ -55,7 +55,7 @@ function M.run(_trigger, _mode, buf)
 
     table.insert(items, {
       key = key,
-      label = labels[key] or file and ("file: " .. file) or "",
+      desc = labels[key] or file and ("file: " .. file) or "",
       value = value,
       highlights = { { 1, 5, "Number" } },
     })
