@@ -83,7 +83,11 @@ function Tree:add(mapping, opts)
       path_i = path_i .. prefix_i[i]
       path_n = path_n .. prefix_n[i]
       if not node.children[prefix_i[i]] then
-        node.children[prefix_i[i]] = { children = {}, prefix_i = path_i, prefix_n = path_n }
+        node.children[prefix_i[i]] = {
+          children = {},
+          prefix_i = path_i,
+          prefix_n = path_n,
+        }
       end
       node = node.children[prefix_i[i]]
     end

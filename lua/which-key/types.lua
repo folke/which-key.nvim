@@ -32,7 +32,6 @@
 ---@class Mapping
 ---@field buf number
 ---@field group boolean
----@field label string
 ---@field desc string
 ---@field prefix string
 ---@field cmd string

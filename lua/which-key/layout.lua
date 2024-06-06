@@ -45,12 +45,12 @@ function Layout:trail()
   local cmd_line = { { " " } }
   for i = 1, len, 1 do
     local node = buf_path[i]
-    if not (node and node.mapping and node.mapping.label) then
+    if not (node and node.mapping and node.mapping.desc) then
       node = path[i]
     end
     local step = self.mapping.keys.notation[i]
-    if node and node.mapping and node.mapping.label then
-      step = self.options.icons.group .. node.mapping.label
+    if node and node.mapping and node.mapping.desc then
+      step = self.options.icons.group .. node.mapping.desc
     end
     if Config.options.key_labels[step] then
       step = Config.options.key_labels[step]
@@ -113,7 +113,7 @@ function Layout:layout(win)
   width = width - pad_right - pad_left
 
   local max_key_width = self:max_width("key")
-  local max_label_width = self:max_width("label")
+  local max_label_width = self:max_width("desc")
   local max_value_width = self:max_width("value")
 
   local intro_width = max_key_width + 2 + Text.len(self.options.icons.separator) + self.options.layout.spacing
@@ -192,7 +192,7 @@ function Layout:layout(win)
       start = start + max_value_width + 2
     end
 
-    local label = item.label
+    local label = item.desc
     if Text.len(label) > max_label_width then
       label = vim.fn.strcharpart(label, 0, max_label_width - 2) .. " …"
     end

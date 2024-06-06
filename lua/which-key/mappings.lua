@@ -179,7 +179,8 @@ function M.to_mapping(mapping)
   mapping.buffer = nil
 
   mapping.mode = mapping.mode or "n"
-  mapping.label = mapping.desc or mapping.name
+  mapping.desc = mapping.desc or mapping.name
+  mapping.name = nil
   mapping.keys = Util.parse_keys(mapping.prefix or "")
 
   local opts = {}

@@ -101,11 +101,11 @@ function M.get_mappings(mode, prefix_i, buf)
       for k, child in pairs(node.children) do
         if
           child.mapping
-          and child.mapping.label ~= "which_key_ignore"
           and child.mapping.desc ~= "which_key_ignore"
           and not (child.mapping.group and vim.tbl_isempty(child.children))
         then
-          ret.mappings[k] = vim.tbl_deep_extend("force", {}, ret.mappings[k] or {}, child.mapping)
+          local child_mapping = vim.deepcopy(child.mapping)
+          ret.mappings[k] = vim.tbl_deep_extend("force", ret.mappings[k] or {}, child_mapping)
         end
       end
     end
@@ -125,22 +125,19 @@ function M.get_mappings(mode, prefix_i, buf)
     if Config.options.key_labels[value.key] then
       value.key = Config.options.key_labels[value.key]
     end
-    if not value.label and value.desc then
-      value.label = value.desc
-    end
-    local skip = not value.label and Config.options.ignore_missing == true
+    local skip = not value.desc and Config.options.ignore_missing == true
     if Util.t(value.key) == Util.t("<esc>") then
       skip = true
     end
     if not skip then
       if value.group then
-        value.label = value.label or value.desc or "+prefix"
-        value.label = value.label:gsub("^%+", "")
-        value.label = Config.options.icons.group .. value.label
-      elseif not value.label then
-        value.label = value.desc or value.cmd or ""
+        value.desc = value.desc or "+prefix"
+        value.desc = value.desc:gsub("^%+", "")
+        value.desc = Config.options.icons.group .. value.desc
+      elseif not value.desc then
+        value.desc = value.cmd or ""
         for _, v in ipairs(Config.options.hidden) do
-          value.label = value.label:gsub(v, "")
+          value.desc = value.desc:gsub(v, "")
         end
       end
       if value.value then
@@ -362,7 +359,7 @@ function M.dump()
       ---@param node Node
       function(node)
         if node.mapping then
-          if node.mapping.label then
+          if node.mapping.desc then
             ok[node.mapping.prefix] = true
             todo[node.mapping.prefix] = nil
           elseif not ok[node.mapping.prefix] then
@@ -413,29 +410,33 @@ function M.update_keymaps(mode, buf)
 
   for _, keymap in pairs(keymaps) do
     local skip = M.is_hook(keymap.lhs, keymap.rhs)
+    local is_group = false
 
     if is_nop(keymap) then
       if keymap.desc then
-        keymap.group = true
+        is_group = true
       else
         skip = true
       end
     end
 
     if not skip then
+      ---@type Mapping
       local mapping = {
         prefix = keymap.lhs,
-        cmd = keymap.rhs,
+        cmd = not is_group and keymap.rhs or nil,
         desc = keymap.desc,
-        group = keymap.group,
+        group = is_group,
         callback = keymap.callback,
         keys = Util.parse_keys(keymap.lhs),
+        buf = buf,
+        mode = mode,
       }
       -- don't include Plug keymaps
       if mapping.keys.notation[1]:lower() ~= "<plug>" then
         local node = tree:add(mapping)
         if node.mapping and node.mapping.preset and mapping.desc then
-          node.mapping.label = mapping.desc
+          node.mapping.desc = mapping.desc
         end
       end
     end
