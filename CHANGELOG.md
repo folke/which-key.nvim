@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.1](https://github.com/folke/which-key.nvim/compare/v2.1.0...v2.1.1) (2024-06-07)
+
+
+### Bug Fixes
+
+* **keys:** delete nop keymaps with a description ([ccf0276](https://github.com/folke/which-key.nvim/commit/ccf027625df6c4e22febfdd786c5e1f7521c2ccb))
+* pcall keymap.del ([e47ee13](https://github.com/folke/which-key.nvim/commit/e47ee139b6a082deab16e436cbd2711923e01625))
+
 ## [2.1.0](https://github.com/folke/which-key.nvim/compare/v2.0.1...v2.1.0) (2024-06-06)
 
 
