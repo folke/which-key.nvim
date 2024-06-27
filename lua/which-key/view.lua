@@ -84,8 +84,8 @@ end
 function M.read_pending()
   local esc = ""
   while true do
-    local n = vim.fn.getchar(0)
-    if n == 0 then
+    local ok, n = pcall(vim.fn.getchar, 0)
+    if not ok or n == 0 then
       break
     end
     local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
