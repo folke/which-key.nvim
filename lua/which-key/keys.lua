@@ -404,6 +404,20 @@ end
 function M.update_keymaps(mode, buf)
   ---@type Keymap[]
   local keymaps = buf and vim.api.nvim_buf_get_keymap(buf, mode) or vim.api.nvim_get_keymap(mode)
+
+  -- Clearing up previous tree entries and hooks.
+  -- Forgetting to do this will break which-key for users that register and de register
+  -- keymaps in different contexts
+  do
+    local function unhook(node)
+      if node.mapping and M.is_hooked(node.mapping.prefix, mode, buf) then
+        M.hook_del(node.mapping.prefix, mode, buf)
+      end
+    end
+    M.get_tree(mode, buf).tree:walk(unhook)
+    M.get_tree(mode, buf).tree = Tree:new()
+  end
+
   local tree = M.get_tree(mode, buf).tree
 
   local function is_nop(keymap)
