@@ -1,6 +1,6 @@
 local Config = require("which-key.config")
-local Text = require("which-key.text")
 local Keys = require("which-key.keys")
+local Text = require("which-key.text")
 local Util = require("which-key.util")
 
 ---@class Layout

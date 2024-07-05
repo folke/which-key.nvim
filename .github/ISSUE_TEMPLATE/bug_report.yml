@@ -75,7 +75,7 @@ body:
         -- install plugins
         local plugins = {
           "folke/tokyonight.nvim",
-          { "folke/which-key.nvim", config = true },
+          { "folke/which-key.nvim", opts = {} },
           -- add any other plugins here
         }
         require("lazy").setup(plugins, {
