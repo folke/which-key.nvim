@@ -12,4 +12,3 @@ jobs:
     with:
       plugin: which-key.nvim
       repo: folke/which-key.nvim
-      tests: false
