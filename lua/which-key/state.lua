@@ -22,6 +22,13 @@ function M.setup()
     end
   end)
 
+  vim.api.nvim_create_autocmd("CursorMoved", {
+    group = group,
+    callback = function(ev)
+      M.set()
+    end,
+  })
+
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
     callback = function(ev)
