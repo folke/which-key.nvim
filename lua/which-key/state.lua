@@ -1,31 +1,25 @@
 local Buf = require("which-key.buf")
+local Config = require("which-key.config")
+local Util = require("which-key.util")
 
 local M = {}
 
 ---@class wk.State
----@field buf? number
----@field node? wk.Node
+---@field mode wk.Mode
+---@field node wk.Node
+---@field trigger wk.Node
 ---@field debug? string
-M.state = {}
+
+---@type wk.State?
+M.state = nil
 
 function M.setup()
   local group = vim.api.nvim_create_augroup("wk", { clear = true })
 
-  local in_op = false
-  vim.on_key(function(_, key)
-    if not key then
-      return
-    end
-    if in_op and key:find("\27") then
-      in_op = false
-      M.set()
-    end
-  end)
-
   vim.api.nvim_create_autocmd("CursorMoved", {
     group = group,
-    callback = function(ev)
-      M.set()
+    callback = function()
+      M.stop()
     end,
   })
 
@@ -33,17 +27,10 @@ function M.setup()
     group = group,
     callback = function(ev)
       local mode = Buf.get({ buf = ev.buf, update = true })
-      if mode then
-        if mode.mode:find("[xo]") then
-          M.set(mode.tree.root, "mode_1")
-          local char = vim.fn.getcharstr()
-          M.set(mode.tree:find(char), "mode_2")
-          in_op = true
-          vim.api.nvim_feedkeys(char, "mit", false)
-          return
-        end
+      if mode and mode.mode:find("[xo]") then
+        return M.start()
       end
-      M.set()
+      M.stop()
     end,
   })
 
@@ -59,26 +46,73 @@ function M.setup()
   end
 end
 
----@param node? wk.Node
----@param debug? string
-function M.set(node, debug)
-  if not node then
-    M.state = {}
-    require("which-key.view").hide()
-    return
-  end
-  M.state.buf = vim.api.nvim_get_current_buf()
-  M.state.node = node
-  M.state.debug = debug
-  require("which-key.view").show()
+function M.stop()
+  M.state = nil
+  vim.schedule(function()
+    if not M.state then
+      require("which-key.view").hide()
+    end
+  end)
 end
 
----@return wk.State?
-function M.get()
-  if M.state.buf and M.state.buf == vim.api.nvim_get_current_buf() then
-    return M.state
+---@param state wk.State
+---@return wk.Node?
+function M.step(state)
+  local key = vim.fn.keytrans(vim.fn.getcharstr())
+  local node = (state.node.children or {})[key] ---@type wk.Node?
+
+  if (key == "<Esc>" or key == "<C-C>") and not node then
+    return
   end
-  M.state = {}
+
+  if key == "<BS>" then
+    return state.node.parent or state.mode.tree.root
+  end
+
+  if node and (not node.keymap or node.children) then
+    return node
+  end
+
+  if state.mode:_detach(state.trigger) then
+    vim.schedule(function()
+      state.mode:_attach(state.trigger)
+    end)
+  end
+
+  local keys = vim.deepcopy(state.node.path)
+  keys[#keys + 1] = key
+
+  local keystr = table.concat(keys)
+  local feed = vim.api.nvim_replace_termcodes(keystr, true, true, true)
+  vim.api.nvim_feedkeys(feed, "mit", false)
+end
+
+---@param node? wk.Node
+function M.start(node)
+  local mode = Buf.get({ update = true })
+  if not mode then
+    return
+  end
+
+  local View = require("which-key.view")
+
+  M.state = {
+    mode = mode,
+    node = node or mode.tree.root,
+    trigger = node or mode.tree.root,
+  }
+
+  while M.state do -- and Buf.get() == mode do
+    View.update()
+    local child = M.step(M.state)
+    if child and M.state then
+      M.state.node = child
+    else
+      break
+    end
+  end
+  M.state = nil
+  View.hide()
 end
 
 return M
