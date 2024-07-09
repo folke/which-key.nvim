@@ -1,8 +1,9 @@
+---@class wk.Config: wk.Opts
 local M = {}
 
-M.namespace = vim.api.nvim_create_namespace("WhichKey")
+M.ns = vim.api.nvim_create_namespace("wk")
 
----@class Options
+---@class wk.Opts
 local defaults = {
   plugins = {
     marks = true, -- shows a list of your marks on ' and `
@@ -92,17 +93,62 @@ local defaults = {
   },
 }
 
----@type Options
-M.options = {}
+M.loaded = false
 
----@param options? Options
-function M.setup(options)
+---@type wk.Keymap[]
+M.mappings = {}
+
+---@type wk.Opts
+local options
+
+---@param opts? wk.Opts
+function M.setup(opts)
   if vim.fn.has("nvim-0.9") == 0 then
-    return vim.notify("WhichKey.nvim requires Neovim 0.9 or higher", vim.log.levels.ERROR)
+    return vim.notify("whichkey.nvim requires Neovim >= 0.9", vim.log.levels.ERROR)
   end
-  M.options = vim.tbl_deep_extend("force", {}, defaults, options or {})
+  options = vim.tbl_deep_extend("force", {}, defaults, opts or {})
+
+  local function load()
+    local wk = require("which-key")
+    wk.register = M.register
+    for _, v in ipairs(wk._queue) do
+      M.register(v.mappings, v.opts)
+    end
+    wk._queue = {}
+    require("which-key.colors").setup()
+    require("which-key.state").setup()
+    M.loaded = true
+  end
+  load = vim.schedule_wrap(load)
+
+  if vim.v.vim_did_enter == 1 then
+    load()
+  else
+    vim.api.nvim_create_autocmd("VimEnter", { once = true, callback = load })
+  end
 end
 
-M.setup()
+function M.register(mappings, opts)
+  local Mappings = require("which-key.mappings")
+  local ret = Mappings.parse(mappings, opts)
+  for _, km in ipairs(ret) do
+    if km.rhs or km.callback then
+      vim.keymap.set(km.mode, km.lhs, km.callback or km.rhs or "", Mappings.opts(km))
+    end
+  end
+  vim.list_extend(M.mappings, ret)
+  if M.loaded then
+    require("which-key.buf").reset()
+  end
+end
+
+setmetatable(M, {
+  __index = function(_, k)
+    if not options then
+      M.setup()
+    end
+    return options[k]
+  end,
+})
 
 return M

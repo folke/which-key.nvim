@@ -1,20 +1,16 @@
----@class WhichKey
 local M = {}
 
 function M.show(keys, opts) end
 
----@type wk.Keymap[]
-M.mappings = {}
+---@type {mappings:table, opts?:table}
+M._queue = {}
 
--- Defer registering keymaps until VimEnter
 function M.register(mappings, opts)
-  local ret = require("which-key.mappings").parse(mappings, opts)
-  vim.list_extend(M.mappings, ret)
+  table.insert(M._queue, { mappings = mappings, opts = opts })
 end
 
-function M.setup()
-  require("which-key.colors").setup()
-  require("which-key.state").setup()
+function M.setup(opts)
+  require("which-key.config").setup(opts)
 end
 
 return M

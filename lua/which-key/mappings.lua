@@ -14,14 +14,12 @@ end
 
 local mapargs = {
   "noremap",
-  "remap",
   "desc",
   "expr",
   "silent",
   "nowait",
   "script",
   "unique",
-  "callback",
   "replace_keycodes", -- TODO: add config setting for default value
 }
 local wkargs = {
@@ -102,9 +100,9 @@ function M._parse(value, mappings, opts)
   end
 
   -- fix remap
-  if opts.noremap ~= nil then
-    opts.remap = not opts.noremap
-    opts.noremap = nil
+  if opts.remap ~= nil then
+    opts.noremap = not opts.remap
+    opts.remap = nil
   end
 
   -- fix buffer
@@ -169,10 +167,12 @@ function M._parse(value, mappings, opts)
   end
 end
 
----@return Mapping
+---@return wk.Keymap
 function M.to_mapping(mapping)
+  ---@cast mapping Mapping | wk.Keymap
   mapping.silent = mapping.silent ~= false
-  if mapping.cmd and mapping.cmd:lower():find("^<plug>") then
+  mapping.rhs = mapping.cmd
+  if mapping.rhs and mapping.rhs:lower():find("^<plug>") then
     mapping.remap = true
   end
 
@@ -197,7 +197,18 @@ function M._try_parse(value, mappings, opts)
   end
 end
 
----@return Mapping[]
+---@param map wk.Keymap
+function M.opts(map)
+  local ret = {}
+  for _, k in ipairs(mapargs) do
+    if map[k] ~= nil then
+      ret[k] = map[k]
+    end
+  end
+  return ret
+end
+
+---@return wk.Keymap[]
 function M.parse(mappings, opts)
   opts = opts or {}
   local ret = {}
