@@ -10,6 +10,20 @@ local Util = require("which-key.util")
 local Mode = {}
 Mode.__index = Mode
 
+---@param node wk.Node
+local function needs_trigger(node)
+  if node.keymap or not node.children then
+    return false
+  end
+  if #node.path == 1 then
+    local key = node.path[1]
+    if key:match("^[a-z]$") and not key:match("^[gz]$") then
+      return false
+    end
+  end
+  return true
+end
+
 ---@param buf wk.Buffer
 ---@param mode string
 function Mode.new(buf, mode)
@@ -28,7 +42,7 @@ function Mode:attach()
     return
   end
   self.tree:walk(function(node)
-    if not node.keymap and node.children then
+    if needs_trigger(node) then
       self:_attach(node)
       return false
     end
@@ -178,10 +192,11 @@ function M.reset()
   end
 end
 
----@param buf number
+---@param buf? number
 function Buf.new(buf)
   local self = setmetatable({}, Buf)
-  self.buf = buf
+  buf = buf or 0
+  self.buf = buf == 0 and vim.api.nvim_get_current_buf() or buf
   self.modes = {}
   -- self.update = Util.debounce(300, function()
   --   M.update(self)
