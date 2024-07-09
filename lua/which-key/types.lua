@@ -2,26 +2,13 @@
 
 --# selene: allow(unused_variable)
 
----@class Keymap
----@field rhs string
+---@class Keymap: vim.api.keyset.keymap
 ---@field lhs string
----@field buffer number
----@field expr number
----@field lnum number
 ---@field mode string
----@field noremap number
----@field nowait number
----@field script number
----@field sid number
----@field silent number
----@field callback fun()|nil
----@field id string terminal keycodes for lhs
----@field desc string
-
----@class KeyCodes
----@field keys string
----@field internal string[]
----@field notation string[]
+---@field rhs? string
+---@field lhsraw? string
+---@field buffer? number
+---@field group? boolean
 
 ---@class MappingOptions
 ---@field noremap boolean

@@ -1,72 +1,166 @@
----@class Highlight
----@field group string
----@field line number
----@field from number
----@field to number
+local Util = require("which-key.util")
 
----@class Text
----@field lines string[]
----@field hl Highlight[]
----@field lineNr number
----@field current string
-local Text = {}
-Text.__index = Text
+---@class wk.Segment
+---@field str string Text
+---@field hl? string Extmark hl group
+---@field line? number line number in a multiline segment
+---@field width? number
 
-function Text.len(str)
-  return vim.fn.strwidth(str)
+---@class wk.Text.opts
+---@field padding? number
+---@field multiline? boolean
+---@field indent? boolean
+
+---@class wk.Text
+---@field _lines wk.Segment[][]
+---@field _col number
+---@field _indents string[]
+---@field _opts wk.Text.opts
+local M = {}
+M.__index = M
+
+M.ns = vim.api.nvim_create_namespace("wk.text")
+
+---@param opts? wk.Text.opts
+function M.new(opts)
+  local self = setmetatable({}, M)
+  self._lines = {}
+  self._col = 0
+  self._opts = opts or {}
+  self._opts.padding = self._opts.padding or 0
+  self._indents = {}
+  for i = 0, 100, 1 do
+    self._indents[i] = (" "):rep(i)
+  end
+  return self
 end
 
-function Text:new()
-  local this = { lines = {}, hl = {}, lineNr = 0, current = "" }
-  setmetatable(this, self)
-  return this
+function M:height()
+  return #self._lines
 end
 
-function Text:fix_nl(line)
-  return line:gsub("[\n]", "")
+function M:width()
+  local width = 0
+  for _, line in ipairs(self._lines) do
+    local w = 0
+    for _, segment in ipairs(line) do
+      w = w + vim.fn.strdisplaywidth(segment.str)
+    end
+    width = math.max(width, w)
+  end
+  return width + ((self._opts.padding or 0) * 2)
 end
 
-function Text:nl()
-  local line = self:fix_nl(self.current)
-  table.insert(self.lines, line)
-  self.current = ""
-  self.lineNr = self.lineNr + 1
+---@param text string|wk.Segment[]
+---@param opts? string|{hl?:string, line?:number}
+function M:append(text, opts)
+  opts = opts or {}
+  if #self._lines == 0 then
+    self:nl()
+  end
+
+  if type(text) == "table" then
+    for _, s in ipairs(text) do
+      s.width = s.width or #s.str
+      self._col = self._col + s.width
+      table.insert(self._lines[#self._lines], s)
+    end
+    return self
+  end
+
+  opts = type(opts) == "string" and { hl = opts } or opts
+
+  for l, line in ipairs(vim.split(text, "\n", { plain = true })) do
+    local width = #line
+    self._col = self._col + width
+    table.insert(self._lines[#self._lines], {
+      str = line,
+      width = width,
+      hl = opts.hl,
+      line = opts.line or l,
+    })
+  end
+  return self
 end
 
-function Text:set(row, col, str, group)
-  str = self:fix_nl(str)
+function M:nl()
+  table.insert(self._lines, {})
+  self._col = 0
+  return self
+end
 
-  -- extend lines if needed
-  for i = 1, row, 1 do
-    if not self.lines[i] then
-      self.lines[i] = ""
+---@param opts? {sep?:string}
+function M:statusline(opts)
+  local sep = opts and opts.sep or " "
+  local lines = {} ---@type string[]
+  for _, line in ipairs(self._lines) do
+    local parts = {}
+    for _, segment in ipairs(line) do
+      local str = segment.str:gsub("%%", "%%%%")
+      if segment.hl then
+        str = ("%%#%s#%s%%*"):format(segment.hl, str)
+      end
+      parts[#parts + 1] = str
+    end
+    table.insert(lines, table.concat(parts, ""))
+  end
+  return table.concat(lines, sep)
+end
+
+function M:render(buf)
+  local lines = {}
+
+  local padding = (" "):rep(self._opts.padding)
+  for _, line in ipairs(self._lines) do
+    local parts = { padding }
+    for _, segment in ipairs(line) do
+      parts[#parts + 1] = segment.str
+    end
+    table.insert(lines, table.concat(parts, ""))
+  end
+
+  vim.bo[buf].modifiable = true
+  vim.api.nvim_buf_clear_namespace(buf, M.ns, 0, -1)
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+
+  for l, line in ipairs(self._lines) do
+    local col = self._opts.padding or 0
+    local row = l - 1
+
+    for _, segment in ipairs(line) do
+      local width = segment.width
+      if segment.hl then
+        Util.set_extmark(buf, M.ns, row, col, {
+          hl_group = segment.hl,
+          end_col = col + width,
+        })
+      end
+      col = col + width
     end
   end
-
-  -- extend columns when needed
-  local width = Text.len(self.lines[row])
-  if width < col then
-    self.lines[row] = self.lines[row] .. string.rep(" ", col - width)
-  end
-
-  local before = vim.fn.strcharpart(self.lines[row], 0, col)
-  local after = vim.fn.strcharpart(self.lines[row], col)
-  self.lines[row] = before .. str .. after
-
-  if not group then
-    return
-  end
-  -- set highlights
-  self:highlight(row, col, col + Text.len(str), "WhichKey" .. group)
+  vim.bo[buf].modifiable = false
 end
 
-function Text:highlight(row, from, to, group)
-  local line = self.lines[row]
-  local before = vim.fn.strcharpart(line, 0, from)
-  local str = vim.fn.strcharpart(line, 0, to)
-  from = vim.fn.strlen(before)
-  to = vim.fn.strlen(str)
-  table.insert(self.hl, { line = row - 1, from = from, to = to, group = group })
+function M:trim()
+  while #self._lines > 0 and #self._lines[#self._lines] == 0 do
+    table.remove(self._lines)
+  end
 end
 
-return Text
+function M:row()
+  return #self._lines == 0 and 1 or #self._lines
+end
+
+---@param opts? {display:boolean}
+function M:col(opts)
+  if opts and opts.display then
+    local ret = 0
+    for _, segment in ipairs(self._lines[#self._lines] or {}) do
+      ret = ret + vim.fn.strdisplaywidth(segment.str)
+    end
+    return ret
+  end
+  return self._col
+end
+
+return M

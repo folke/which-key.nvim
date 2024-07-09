@@ -1,112 +1,83 @@
 local Util = require("which-key.util")
 
----@class Tree
----@field root Node
----@field nodes table<string, Node>
-local Tree = {}
-Tree.__index = Tree
+---@class wk.Node
+---@field key string
+---@field desc? string
+---@field keymap? Keymap
+---@field children? table<string, wk.Node>
 
----@class Node
----@field mapping Mapping
----@field prefix_i string
----@field prefix_n string
----@field children table<string, Node>
--- selene: allow(unused_variable)
-local Node
+---@alias wk.Path {node:wk.Node, keys:string[]}
 
----@return Tree
-function Tree:new()
-  local this = { root = { children = {}, prefix_i = "", prefix_n = "" }, nodes = {} }
-  setmetatable(this, self)
-  return this
+---@class wk.Tree
+---@field root wk.Node
+local M = {}
+M.__index = M
+
+function M.new()
+  local self = setmetatable({}, M)
+  self.root = { key = "" }
+  return self
 end
 
----@param prefix_i string
----@param index? number defaults to last. If < 0, then offset from last
----@param plugin_context? any
----@return Node?
-function Tree:get(prefix_i, index, plugin_context)
-  local prefix = Util.parse_internal(prefix_i)
+---@param keymap Keymap
+function M:_add(keymap)
+  local keys = Util.keys(keymap.lhs, { norm = true })
   local node = self.root
-  index = index or #prefix
-  if index < 0 then
-    index = #prefix + index
+  for _, key in ipairs(keys) do
+    node.children = node.children or {}
+    node.children[key] = node.children[key] or { key = key }
+    node = node.children[key]
   end
-  for i = 1, index, 1 do
-    node = node.children[prefix[i]]
-    if node and plugin_context and node.mapping and node.mapping.plugin then
-      local children = require("which-key.plugins").invoke(node.mapping, plugin_context)
-      node.children = {}
-      for _, child in pairs(children) do
-        self:add(child, { cache = false })
-      end
-    end
-    if not node then
-      return nil
-    end
+  node.desc = keymap.desc
+  if not keymap.group then
+    node.keymap = keymap
   end
-  return node
 end
 
--- Returns the path (possibly incomplete) for the prefix
----@param prefix_i string
----@return Node[]
-function Tree:path(prefix_i)
-  local prefix = Util.parse_internal(prefix_i)
+---@param keymaps Keymap[]
+function M:add(keymaps)
+  for _, keymap in ipairs(keymaps) do
+    if keymap.lhs:sub(1, 6) ~= "<Plug>" then
+      self:_add(keymap)
+    end
+  end
+end
+
+---@param keys string|string[]
+---@return wk.Path?
+function M:find(keys)
+  keys = type(keys) == "string" and Util.keys(keys) or keys
+  ---@cast keys string[]
   local node = self.root
-  local path = {}
-  for i = 1, #prefix, 1 do
-    node = node.children[prefix[i]]
-    table.insert(path, node)
+  for _, key in ipairs(keys) do
+    node = (node.children or {})[key] ---@type wk.Node?
     if not node then
-      break
+      return
     end
   end
-  return path
+  return { node = node, keys = keys }
 end
 
----@param mapping Mapping
----@param opts? {cache?: boolean}
----@return Node
-function Tree:add(mapping, opts)
-  opts = opts or {}
-  opts.cache = opts.cache ~= false
-  local node_key = mapping.keys.keys
-  local node = opts.cache and self.nodes[node_key]
-  if not node then
-    local prefix_i = mapping.keys.internal
-    local prefix_n = mapping.keys.notation
-    node = self.root
-    local path_i = ""
-    local path_n = ""
-    for i = 1, #prefix_i, 1 do
-      path_i = path_i .. prefix_i[i]
-      path_n = path_n .. prefix_n[i]
-      if not node.children[prefix_i[i]] then
-        node.children[prefix_i[i]] = {
-          children = {},
-          prefix_i = path_i,
-          prefix_n = path_n,
+---@param fn fun(path: wk.Path):boolean?
+function M:walk(fn)
+  ---@type wk.Path[]
+  local queue = {
+    { node = self.root, keys = {} },
+  }
+  while #queue > 0 do
+    local path = table.remove(queue, 1) ---@type wk.Path
+    if path.node == self.root or fn(path) ~= false then
+      for _, child in pairs(path.node.children or {}) do
+        local keys = {} ---@type string[]
+        vim.list_extend(keys, path.keys)
+        keys[#keys + 1] = child.key
+        queue[#queue + 1] = {
+          node = child,
+          keys = keys,
         }
       end
-      node = node.children[prefix_i[i]]
     end
-    if opts.cache then
-      self.nodes[node_key] = node
-    end
-  end
-  node.mapping = vim.tbl_deep_extend("force", node.mapping or {}, mapping)
-  return node
-end
-
----@param cb fun(node:Node)
----@param node? Node
-function Tree:walk(cb, node)
-  node = node or self.root
-  cb(node)
-  for _, child in pairs(node.children) do
-    self:walk(cb, child)
   end
 end
 
-return Tree
+return M
