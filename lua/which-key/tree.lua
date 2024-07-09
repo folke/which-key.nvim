@@ -41,11 +41,12 @@ function M:_add(keymap)
     end
     node = node.children[key]
   end
-  node.desc = keymap.desc
-  node.plugin = keymap.plugin
+  node.desc = keymap.desc or node.desc
+  node.plugin = node.plugin or keymap.plugin
   if not keymap.group then
     node.keymap = keymap
   end
+  -- node.keymap = not keymap.group and keymap or nil
   if node.plugin then
     setmetatable(node, require("which-key.plugins").PluginNode)
   end
@@ -81,7 +82,7 @@ function M:walk(fn)
   local queue = { self.root }
   while #queue > 0 do
     local node = table.remove(queue, 1) ---@type wk.Node
-    if node == self.root or fn(node) ~= false then
+    if node == self.root or fn(node) ~= false and not node.plugin then
       for _, child in pairs(node.children or {}) do
         queue[#queue + 1] = child
       end

@@ -58,6 +58,7 @@ end
 ---@param state wk.State
 ---@return wk.Node?
 function M.step(state)
+  vim.cmd.redraw()
   local key = vim.fn.keytrans(vim.fn.getcharstr())
   local node = (state.node.children or {})[key] ---@type wk.Node?
 
@@ -73,11 +74,7 @@ function M.step(state)
     return node
   end
 
-  if state.mode:_detach(state.trigger) then
-    vim.schedule(function()
-      state.mode:_attach(state.trigger)
-    end)
-  end
+  state.mode:reattach(node or state.node)
 
   local keys = vim.deepcopy(state.node.path)
   keys[#keys + 1] = key
@@ -102,7 +99,7 @@ function M.start(node)
     trigger = node or mode.tree.root,
   }
 
-  while M.state do -- and Buf.get() == mode do
+  while M.state and Buf.get() == mode do
     View.update()
     local child = M.step(M.state)
     if child and M.state then

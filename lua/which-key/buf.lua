@@ -12,6 +12,9 @@ Mode.__index = Mode
 
 ---@param node wk.Node
 local function needs_trigger(node)
+  if node and node.plugin then
+    return false
+  end
   if node.keymap or not node.children then
     return false
   end
@@ -37,6 +40,15 @@ function Mode.new(buf, mode)
 end
 
 function Mode:attach()
+  -- NOTE: order is important for nowait to work!
+  -- * first add plugin mappings
+  -- * then add triggers
+  self.tree:walk(function(node)
+    if node.plugin then
+      self:_attach(node)
+      return false
+    end
+  end)
   self.tree:walk(function(node)
     if needs_trigger(node) then
       self:_attach(node)
@@ -48,6 +60,21 @@ end
 function Mode:detach()
   for _, node in pairs(self.triggers) do
     self:_detach(node)
+  end
+end
+
+---@param node wk.Node
+function Mode:reattach(node)
+  while node do
+    local lhs = table.concat(node.path)
+    if self:is_trigger(lhs) then
+      local trigger = node
+      self:_detach(trigger)
+      vim.schedule(function()
+        self:_attach(trigger)
+      end)
+    end
+    node = node.parent
   end
 end
 
