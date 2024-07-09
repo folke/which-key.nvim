@@ -1,13 +1,24 @@
+local Config = require("which-key.config")
+local State = require("which-key.state")
 local Util = require("which-key.util")
 
 local M = {}
 M.buf = nil ---@type number
 M.win = nil ---@type number
+M.timer = vim.uv.new_timer()
 
 local dw = vim.fn.strdisplaywidth
 
 function M.valid()
   return M.buf and vim.api.nvim_buf_is_valid(M.buf) and M.win and vim.api.nvim_win_is_valid(M.win)
+end
+
+function M.update()
+  if M.valid() then
+    M.show()
+  else
+    M.timer:start(Config.ui.delay, 0, vim.schedule_wrap(M.show))
+  end
 end
 
 function M.hide()
@@ -65,8 +76,8 @@ function M.mount()
 end
 
 function M.show()
-  local state = require("which-key.state").get()
-  if not (state and state.node.children) then
+  local state = State.state
+  if not state or not state.node.children then
     M.hide()
     return
   end

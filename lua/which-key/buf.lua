@@ -37,10 +37,6 @@ function Mode.new(buf, mode)
 end
 
 function Mode:attach()
-  -- FIXME:
-  if self.mode:find("[xo]") then
-    return
-  end
   self.tree:walk(function(node)
     if needs_trigger(node) then
       self:_attach(node)
@@ -60,7 +56,7 @@ function Mode:_attach(node)
   local lhs = table.concat(node.path)
   self.triggers[lhs] = node
   vim.keymap.set(self.mode, lhs, function()
-    self:on_trigger(node)
+    require("which-key.state").start(node)
   end, { buffer = self.buf.buf, nowait = true })
   return lhs
 end
@@ -68,40 +64,12 @@ end
 ---@param node wk.Node
 function Mode:_detach(node)
   local lhs = table.concat(node.path)
+  if not self:is_trigger(lhs) then
+    return false
+  end
   self.triggers[lhs] = nil
   pcall(vim.keymap.del, self.mode, lhs, { buffer = self.buf.buf })
-end
-
----@param node wk.Node
-function Mode:on_trigger(node)
-  local trigger_node = node
-  require("which-key.state").set(node, "on_trigger")
-  local keys = vim.deepcopy(node.path)
-  while true do
-    local key = vim.fn.keytrans(vim.fn.getcharstr())
-
-    node = (node.children or {})[key] ---@type wk.Node?
-
-    if key == "<Esc>" and not node then
-      require("which-key.state").set()
-      break
-    end
-    keys[#keys + 1] = key
-
-    if not node or node.keymap then
-      require("which-key.state").set()
-      self:_detach(trigger_node)
-      vim.schedule(function()
-        self:_attach(trigger_node)
-      end)
-      local keystr = table.concat(keys)
-      local feed = vim.api.nvim_replace_termcodes(keystr, true, true, true)
-      vim.api.nvim_feedkeys(feed, "mit", false)
-      break
-    else
-      require("which-key.state").set(node, "on_trigger")
-    end
-  end
+  return true
 end
 
 function Mode:is_trigger(lhs)

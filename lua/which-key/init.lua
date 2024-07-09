@@ -13,7 +13,10 @@ function M.show(lhs, opts)
   if not mode then
     return
   end
-  State.set(mode.tree:find(lhs or {}))
+  local node = mode.tree:find(lhs or {})
+  if node then
+    State.start(node)
+  end
 end
 
 ---@type {mappings:table, opts?:table}
