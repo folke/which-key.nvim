@@ -27,28 +27,12 @@ function M.hide()
   M.buf, M.win = nil, nil
 
   local function try_close()
-    win = win and vim.api.nvim_win_is_valid(win) and win or nil
-    buf = buf and vim.api.nvim_buf_is_valid(buf) and buf or nil
-    if not (win and buf) then
-      return
-    end
-    local ok, err
-    ok, err = pcall(vim.api.nvim_win_close, win, true)
-    if not ok then
-      Util.debug(err)
-    end
-    ok, err = pcall(vim.api.nvim_buf_delete, buf, { force = true })
-    if not ok then
-      Util.debug(err)
-    end
+    pcall(vim.api.nvim_win_close, win, true)
+    pcall(vim.api.nvim_buf_delete, buf, { force = true })
     win = win and vim.api.nvim_win_is_valid(win) and win or nil
     buf = buf and vim.api.nvim_buf_is_valid(buf) and buf or nil
     if win or buf then
-      Util.debug("Failed to close which-key window")
       vim.schedule(try_close)
-    else
-      Util.debug("Closed which-key window")
-      vim.cmd.redraw()
     end
   end
 
