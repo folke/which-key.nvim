@@ -9,6 +9,7 @@
 ---@field lhsraw? string
 ---@field buffer? number
 ---@field group? boolean
+---@field plugin? string
 
 ---@class MappingOptions
 ---@field noremap boolean
@@ -41,8 +42,8 @@
 
 ---@class PluginItem
 ---@field key string
----@field label string
 ---@field value string
+---@field desc string
 ---@field cmd string
 ---@field highlights table
 
@@ -55,5 +56,5 @@
 ---@class Plugin
 ---@field name string
 ---@field actions PluginAction[]
----@field run fun(trigger:string, mode:string, buf:number):PluginItem[]
----@field setup fun(wk, opts, Options)
+---@field expand fun():PluginItem[]
+---@field setup fun(opts: table<string, any>)

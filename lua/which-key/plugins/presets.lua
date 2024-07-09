@@ -172,8 +172,9 @@ M.g = {
   ["gT"] = "Go to previous tab page",
 }
 
----@param config wk.Opts
-function M.setup(wk, opts, config)
+function M.setup(opts)
+  local wk = require("which-key")
+
   -- Operators
   if opts.operators then
     wk.register(M.operators, { mode = { "n", "x" }, preset = true })
@@ -192,7 +193,7 @@ function M.setup(wk, opts, config)
 
   -- Misc
   for _, preset in pairs({ "windows", "nav", "z", "g" }) do
-    if config[preset] ~= false then
+    if opts[preset] ~= false then
       wk.register(M[preset], { mode = "n", preset = true })
     end
   end
