@@ -1,6 +1,4 @@
 local Buf = require("which-key.buf")
-local UI = require("which-key.ui")
-local Util = require("which-key.util")
 
 local M = {}
 
@@ -59,13 +57,13 @@ end
 function M.set(node, debug)
   if not node then
     M.state = {}
-    require("which-key.ui").hide()
+    require("which-key.view").hide()
     return
   end
   M.state.buf = vim.api.nvim_get_current_buf()
   M.state.node = node
   M.state.debug = debug
-  require("which-key.ui").show()
+  require("which-key.view").show()
 end
 
 ---@return wk.State?

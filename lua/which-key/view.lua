@@ -1,349 +1,142 @@
-local Keys = require("which-key.keys")
-local Layout = require("which-key.layout")
 local Util = require("which-key.util")
-local config = require("which-key.config")
 
-local highlight = vim.api.nvim_buf_add_highlight
-
----@class View
 local M = {}
+M.buf = nil ---@type number
+M.win = nil ---@type number
 
-M.keys = ""
-M.mode = "n"
-M.reg = nil
-M.auto = false
-M.count = 0
-M.buf = nil
-M.win = nil
+local dw = vim.fn.strdisplaywidth
 
-function M.is_valid()
-  return M.buf
-    and M.win
-    and vim.api.nvim_buf_is_valid(M.buf)
-    and vim.api.nvim_buf_is_loaded(M.buf)
-    and vim.api.nvim_win_is_valid(M.win)
-end
-
-function M.show()
-  if vim.b.visual_multi then
-    vim.b.VM_skip_reset_once_on_bufleave = true
-  end
-  if M.is_valid() then
-    return
-  end
-
-  -- non-floating windows
-  local wins = vim.tbl_filter(function(w)
-    return vim.api.nvim_win_is_valid(w) and vim.api.nvim_win_get_config(w).relative == ""
-  end, vim.api.nvim_list_wins())
-
-  ---@type number[]
-  local margins = {}
-  for i, m in ipairs(config.options.window.margin) do
-    if m > 0 and m < 1 then
-      if i % 2 == 0 then
-        m = math.floor(vim.o.columns * m)
-      else
-        m = math.floor(vim.o.lines * m)
-      end
-    end
-    margins[i] = m
-  end
-
-  local opts = {
-    relative = "editor",
-    width = vim.o.columns - margins[2] - margins[4],
-    height = config.options.layout.height.min,
-    focusable = false,
-    anchor = "SW",
-    border = config.options.window.border,
-    row = vim.o.lines
-      - margins[3]
-      + ((vim.o.laststatus == 0 or vim.o.laststatus == 1 and #wins == 1) and 1 or 0)
-      - vim.o.cmdheight,
-    col = margins[4],
-    style = "minimal",
-    noautocmd = true,
-    zindex = config.options.window.zindex,
-  }
-  if config.options.window.position == "top" then
-    opts.anchor = "NW"
-    opts.row = margins[1]
-  end
-  M.buf = vim.api.nvim_create_buf(false, true)
-  M.win = vim.api.nvim_open_win(M.buf, false, opts)
-  vim.bo[M.buf].filetype = "WhichKey"
-  vim.bo[M.buf].buftype = "nofile"
-  vim.bo[M.buf].bufhidden = "wipe"
-  vim.bo[M.buf].modifiable = true
-  vim.wo[M.win].winhighlight = "NormalFloat:WhichKeyFloat,FloatBorder:WhichKeyBorder"
-  vim.wo[M.win].foldmethod = "manual"
-  vim.wo[M.win].winblend = config.options.window.winblend
-end
-
-function M.read_pending()
-  local esc = ""
-  while true do
-    local n = vim.fn.getchar(0)
-    if n == 0 then
-      break
-    end
-    local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
-
-    -- HACK: for some reason, when executing a :norm command,
-    -- vim keeps feeding <esc> at the end
-    if c == Util.t("<esc>") then
-      esc = esc .. c
-      -- more than 10 <esc> in a row? most likely the norm bug
-      if #esc > 10 then
-        return
-      end
-    else
-      -- we have <esc> characters, so add them to keys
-      if esc ~= "" then
-        M.keys = M.keys .. esc
-        esc = ""
-      end
-      M.keys = M.keys .. c
-    end
-  end
-  if esc ~= "" then
-    M.keys = M.keys .. esc
-    esc = ""
-  end
-end
-
-function M.getchar()
-  local ok, n = pcall(vim.fn.getchar)
-
-  -- bail out on keyboard interrupt
-  if not ok then
-    return Util.t("<esc>")
-  end
-
-  local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
-  return c
-end
-
-function M.scroll(up)
-  local height = vim.api.nvim_win_get_height(M.win)
-  local cursor = vim.api.nvim_win_get_cursor(M.win)
-  if up then
-    cursor[1] = math.max(cursor[1] - height, 1)
-  else
-    cursor[1] = math.min(cursor[1] + height, vim.api.nvim_buf_line_count(M.buf))
-  end
-  vim.api.nvim_win_set_cursor(M.win, cursor)
-end
-
-function M.on_close()
-  M.hide()
+function M.valid()
+  return M.buf and vim.api.nvim_buf_is_valid(M.buf) and M.win and vim.api.nvim_win_is_valid(M.win)
 end
 
 function M.hide()
-  vim.api.nvim_echo({ { "" } }, false, {})
-  M.hide_cursor()
-  if M.buf and vim.api.nvim_buf_is_valid(M.buf) then
-    vim.api.nvim_buf_delete(M.buf, { force = true })
-    M.buf = nil
-  end
-  if M.win and vim.api.nvim_win_is_valid(M.win) then
-    vim.api.nvim_win_close(M.win, true)
-    M.win = nil
-  end
-  vim.cmd("redraw")
-end
+  ---@type number?, number?
+  local buf, win = M.buf, M.win
+  M.buf, M.win = nil, nil
 
-function M.show_cursor()
-  local buf = vim.api.nvim_get_current_buf()
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  vim.api.nvim_buf_add_highlight(buf, config.namespace, "Cursor", cursor[1] - 1, cursor[2], cursor[2] + 1)
-end
-
-function M.hide_cursor()
-  local buf = vim.api.nvim_get_current_buf()
-  vim.api.nvim_buf_clear_namespace(buf, config.namespace, 0, -1)
-end
-
-function M.back()
-  local node = Keys.get_tree(M.mode, M.buf).tree:get(M.keys, -1) or Keys.get_tree(M.mode).tree:get(M.keys, -1)
-  if node then
-    M.keys = node.prefix_i
-  end
-end
-
-function M.execute(prefix_i, mode, buf)
-  local global_node = Keys.get_tree(mode).tree:get(prefix_i)
-  local buf_node = buf and Keys.get_tree(mode, buf).tree:get(prefix_i) or nil
-
-  if global_node and global_node.mapping and Keys.is_hook(prefix_i, global_node.mapping.cmd) then
-    return
-  end
-  if buf_node and buf_node.mapping and Keys.is_hook(prefix_i, buf_node.mapping.cmd) then
-    return
-  end
-
-  local hooks = {}
-
-  local function unhook(nodes, nodes_buf)
-    for _, node in pairs(nodes) do
-      if Keys.is_hooked(node.mapping.prefix, mode, nodes_buf) then
-        table.insert(hooks, { node.mapping.prefix, nodes_buf })
-        Keys.hook_del(node.mapping.prefix, mode, nodes_buf)
-      end
-    end
-  end
-
-  -- make sure we remove all WK hooks before executing the sequence
-  -- this is to make existing keybindings work and prevent recursion
-  unhook(Keys.get_tree(mode).tree:path(prefix_i))
-  if buf then
-    unhook(Keys.get_tree(mode, buf).tree:path(prefix_i), buf)
-  end
-
-  -- feed CTRL-O again if called from CTRL-O
-  local full_mode = Util.get_mode()
-  if full_mode == "nii" or full_mode == "nir" or full_mode == "niv" or full_mode == "vs" then
-    vim.api.nvim_feedkeys(Util.t("<C-O>"), "n", false)
-  end
-
-  -- handle registers that were passed when opening the popup
-  if M.reg ~= '"' and M.mode ~= "i" and M.mode ~= "c" then
-    vim.api.nvim_feedkeys('"' .. M.reg, "n", false)
-  end
-
-  if M.count and M.count ~= 0 then
-    prefix_i = M.count .. prefix_i
-  end
-
-  -- feed the keys with remap
-  vim.api.nvim_feedkeys(prefix_i, "m", true)
-
-  -- defer hooking WK until after the keys were executed
-  vim.defer_fn(function()
-    for _, hook in pairs(hooks) do
-      Keys.hook_add(hook[1], mode, hook[2])
-    end
-  end, 0)
-end
-
-function M.open(keys, opts)
-  opts = opts or {}
-  M.keys = keys or ""
-  M.mode = opts.mode or Util.get_mode()
-  M.count = vim.api.nvim_get_vvar("count")
-  M.reg = vim.api.nvim_get_vvar("register")
-
-  if string.find(vim.o.clipboard, "unnamedplus") and M.reg == "+" then
-    M.reg = '"'
-  end
-
-  if string.find(vim.o.clipboard, "unnamed") and M.reg == "*" then
-    M.reg = '"'
-  end
-
-  M.show_cursor()
-  M.on_keys(opts)
-end
-
-function M.is_enabled(buf)
-  local buftype = vim.bo[buf].buftype
-  for _, bt in ipairs(config.options.disable.buftypes) do
-    if bt == buftype then
-      return false
-    end
-  end
-
-  local filetype = vim.bo[buf].filetype
-  for _, bt in ipairs(config.options.disable.filetypes) do
-    if bt == filetype then
-      return false
-    end
-  end
-
-  if vim.fn.getcmdwintype() ~= "" then
-    return false
-  end
-
-  return true
-end
-
-function M.on_keys(opts)
-  local buf = vim.api.nvim_get_current_buf()
-
-  while true do
-    -- loop
-    M.read_pending()
-
-    local results = Keys.get_mappings(M.mode, M.keys, buf)
-
-    --- Check for an exact match. Feedkeys with remap
-    if results.mapping and not results.mapping.group and #results.mappings == 0 then
-      M.hide()
-      if results.mapping.fn then
-        results.mapping.fn()
-      else
-        M.execute(M.keys, M.mode, buf)
-      end
+  local function try_close()
+    win = win and vim.api.nvim_win_is_valid(win) and win or nil
+    buf = buf and vim.api.nvim_buf_is_valid(buf) and buf or nil
+    if not (win and buf) then
       return
     end
-
-    -- Check for no mappings found. Feedkeys without remap
-    if #results.mappings == 0 then
-      M.hide()
-      -- only execute if an actual key was typed while WK was open
-      if opts.auto then
-        M.execute(M.keys, M.mode, buf)
-      end
-      return
+    local ok, err
+    ok, err = pcall(vim.api.nvim_win_close, win, true)
+    if not ok then
+      Util.debug(err)
     end
-
-    local layout = Layout:new(results)
-
-    if M.is_enabled(buf) then
-      if not M.is_valid() then
-        M.show()
-      end
-
-      M.render(layout:layout(M.win))
+    ok, err = pcall(vim.api.nvim_buf_delete, buf, { force = true })
+    if not ok then
+      Util.debug(err)
     end
-    vim.cmd([[redraw]])
-
-    local c = M.getchar()
-
-    if c == Util.t("<esc>") then
-      M.hide()
-      break
-    elseif c == Util.t(config.options.popup_mappings.scroll_down) then
-      M.scroll(false)
-    elseif c == Util.t(config.options.popup_mappings.scroll_up) then
-      M.scroll(true)
-    elseif c == Util.t("<bs>") then
-      M.back()
+    win = win and vim.api.nvim_win_is_valid(win) and win or nil
+    buf = buf and vim.api.nvim_buf_is_valid(buf) and buf or nil
+    if win or buf then
+      Util.debug("Failed to close which-key window")
+      vim.schedule(try_close)
     else
-      M.keys = M.keys .. c
+      Util.debug("Closed which-key window")
+      vim.cmd.redraw()
     end
   end
+
+  try_close()
 end
 
----@param text Text
-function M.render(text)
-  local view = vim.api.nvim_win_call(M.win, vim.fn.winsaveview)
-  vim.api.nvim_buf_set_lines(M.buf, 0, -1, false, text.lines)
-  local height = #text.lines
-  if height > config.options.layout.height.max then
-    height = config.options.layout.height.max
+function M.mount()
+  if M.valid() then
+    return
   end
-  vim.api.nvim_win_set_height(M.win, height)
-  if vim.api.nvim_buf_is_valid(M.buf) then
-    vim.api.nvim_buf_clear_namespace(M.buf, config.namespace, 0, -1)
+  M.buf = vim.api.nvim_create_buf(false, true)
+  vim.bo[M.buf].buftype = "nofile"
+  vim.bo[M.buf].bufhidden = "wipe"
+  vim.bo[M.buf].filetype = "wk"
+  M.win = vim.api.nvim_open_win(M.buf, false, {
+    relative = "editor",
+    focusable = false,
+    width = 40,
+    height = 30,
+    row = vim.o.lines - 20,
+    col = vim.o.columns - 40,
+    style = "minimal",
+    border = "single",
+  })
+end
+
+function M.show()
+  local state = require("which-key.state").get()
+  if not (state and state.node.children) then
+    M.hide()
+    return
   end
-  for _, data in ipairs(text.hl) do
-    highlight(M.buf, config.namespace, data.group, data.line, data.from, data.to)
-  end
-  vim.api.nvim_win_call(M.win, function()
-    vim.fn.winrestview(view)
+  M.mount()
+  local text = require("which-key.text").new({
+    padding = 1,
+  })
+
+  ---@type wk.Node[]
+  local children = vim.tbl_values(state.node.children or {})
+
+  table.sort(children, function(a, b)
+    local ag = a.keymap and 0 or 1
+    local bg = b.keymap and 0 or 1
+    if ag ~= bg then
+      return ag < bg
+    end
+    local al = a.key:lower()
+    local bl = b.key:lower()
+    if al ~= bl then
+      return al < bl
+    end
+    return a.key > b.key
   end)
+
+  local width = 0
+  for _, node in ipairs(children) do
+    width = math.max(width, dw(node.key))
+  end
+
+  for _, node in ipairs(children) do
+    local desc = node.desc
+    if not desc and node.keymap then
+      desc = node.keymap.rhs and tostring(node.keymap.rhs) or nil
+    end
+    desc = desc or ""
+    desc = desc:gsub("^%++", "")
+    text:append(string.rep(" ", width - dw(node.key)) .. node.key, "WhichKey")
+    text:append(" ➜ ", "WhichKeySeparator")
+    if desc then
+      if not node.keymap then
+        desc = "+" .. desc
+      end
+      text:append(desc, node.keymap and "WhichKeyDesc" or "WhichKeyGroup")
+    end
+    text:nl()
+  end
+  local title = {
+    { " " .. table.concat(state.node.path) .. " ", "FloatTitle" },
+  }
+  if state.debug then
+    table.insert(title, { " " .. state.debug .. " ", "FloatTitle" })
+  end
+  if state.node.desc then
+    local desc = state.node.desc or ""
+    desc = desc:gsub("^%++", "")
+    desc = "+" .. desc
+    table.insert(title, { " " .. desc .. " ", "FloatTitle" })
+  end
+
+  local height = text:height() - 1
+  vim.api.nvim_win_set_config(M.win, {
+    title = title,
+    relative = "editor",
+    height = height,
+    row = vim.o.lines - height - 3,
+    col = vim.o.columns - 40,
+  })
+  text:render(M.buf)
+  vim.cmd.redraw()
 end
 
 return M

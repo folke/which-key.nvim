@@ -1,6 +1,3 @@
-local Keys = require("which-key.keys")
-local Util = require("which-key.util")
-
 ---@class WhichKey
 local M = {}
 
