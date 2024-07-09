@@ -1,3 +1,5 @@
+---@diagnostic disable: missing-fields, inject-field
+---@type Plugin
 local M = {}
 
 M.name = "marks"
@@ -8,8 +10,6 @@ M.actions = {
   { trigger = "g`", mode = "n" },
   { trigger = "g'", mode = "n" },
 }
-
-function M.setup(_wk, _config, options) end
 
 local labels = {
   ["^"] = "Last position of cursor in insert mode",
@@ -24,28 +24,21 @@ local labels = {
   [">"] = "To end of last visual selection",
 }
 
----@type Plugin
----@return PluginItem[]
-function M.run(_trigger, _mode, buf)
-  local items = {}
+function M.expand()
+  local buf = vim.api.nvim_get_current_buf()
+  local items = {} ---@type PluginItem[]
 
-  local marks = {}
+  local marks = {} ---@type vim.fn.getmarklist.ret.item[]
   vim.list_extend(marks, vim.fn.getmarklist(buf))
   vim.list_extend(marks, vim.fn.getmarklist())
 
   for _, mark in pairs(marks) do
     local key = mark.mark:sub(2, 2)
-    if key == "<" then
-      key = "<lt>"
-    end
     local lnum = mark.pos[2]
 
-    local line
+    local line ---@type string?
     if mark.pos[1] and mark.pos[1] ~= 0 then
-      local lines = vim.fn.getbufline(mark.pos[1], lnum)
-      if lines and lines[1] then
-        line = lines[1]
-      end
+      line = vim.fn.getbufline(mark.pos[1], lnum)[1] --[[@as string?]]
     end
 
     local file = mark.file and vim.fn.fnamemodify(mark.file, ":p:~:.")
@@ -60,6 +53,7 @@ function M.run(_trigger, _mode, buf)
       highlights = { { 1, 5, "Number" } },
     })
   end
+
   return items
 end
 

@@ -128,10 +128,17 @@ end
 
 function M.register(mappings, opts)
   local Mappings = require("which-key.mappings")
-  local ret = Mappings.parse(mappings, opts)
-  for _, km in ipairs(ret) do
+  local ret = {} ---@type wk.Keymap[]
+  for _, km in ipairs(Mappings.parse(mappings, opts)) do
     if km.rhs or km.callback then
       vim.keymap.set(km.mode, km.lhs, km.callback or km.rhs or "", Mappings.opts(km))
+    elseif km.plugin then
+      vim.keymap.set(km.mode, km.lhs, function()
+        require("which-key").show(km.lhs)
+      end, Mappings.opts(km))
+      ret[#ret + 1] = km
+    else
+      ret[#ret + 1] = km
     end
   end
   vim.list_extend(M.mappings, ret)

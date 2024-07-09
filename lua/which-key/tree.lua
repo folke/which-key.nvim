@@ -5,6 +5,7 @@ local Util = require("which-key.util")
 ---@field path string[]
 ---@field parent? wk.Node
 ---@field desc? string
+---@field plugin? string
 ---@field keymap? wk.Keymap
 ---@field children? table<string, wk.Node>
 
@@ -41,8 +42,12 @@ function M:_add(keymap)
     node = node.children[key]
   end
   node.desc = keymap.desc
+  node.plugin = keymap.plugin
   if not keymap.group then
     node.keymap = keymap
+  end
+  if node.plugin then
+    setmetatable(node, require("which-key.plugins").PluginNode)
   end
 end
 

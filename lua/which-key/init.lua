@@ -1,6 +1,20 @@
 local M = {}
 
-function M.show(keys, opts) end
+---@param lhs? string
+---@param opts? {buf?: number, mode?:string, update?:boolean}
+function M.show(lhs, opts)
+  opts = opts or {}
+  if opts.update == nil then
+    opts.update = true
+  end
+  local Buf = require("which-key.buf")
+  local State = require("which-key.state")
+  local mode = Buf.get(opts)
+  if not mode then
+    return
+  end
+  State.set(mode.tree:find(lhs or {}))
+end
 
 ---@type {mappings:table, opts?:table}
 M._queue = {}
