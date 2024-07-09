@@ -6,7 +6,7 @@ local M = {}
 
 ---@class wk.State
 ---@field buf? number
----@field path? wk.Path
+---@field node? wk.Node
 ---@field debug? string
 M.state = {}
 
@@ -27,18 +27,15 @@ function M.setup()
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
     callback = function(ev)
-      local buf = Buf.attach(ev.buf)
-      if buf and buf:valid() then
-        local mode = buf:update()
-        if mode then
-          if mode.mode:find("[xo]") then
-            M.set({ node = mode.tree.root, keys = {} }, "mode_1")
-            local char = vim.fn.getcharstr()
-            M.set(mode.tree:find(char), "mode_2")
-            in_op = true
-            vim.api.nvim_feedkeys(char, "mit", false)
-            return
-          end
+      local mode = Buf.get({ buf = ev.buf, update = true })
+      if mode then
+        if mode.mode:find("[xo]") then
+          M.set(mode.tree.root, "mode_1")
+          local char = vim.fn.getcharstr()
+          M.set(mode.tree:find(char), "mode_2")
+          in_op = true
+          vim.api.nvim_feedkeys(char, "mit", false)
+          return
         end
       end
       M.set()
@@ -48,28 +45,25 @@ function M.setup()
   vim.api.nvim_create_autocmd({ "BufReadPost", "LspAttach" }, {
     group = group,
     callback = function(ev)
-      local buf = Buf.attach(ev.buf)
-      if buf and buf:valid() then
-        buf:update()
-      end
+      Buf.get({ buf = ev.buf, update = true })
     end,
   })
 
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    Buf.attach(buf)
+    Buf.get({ buf = buf, update = true })
   end
 end
 
----@param path? wk.Path
+---@param node? wk.Node
 ---@param debug? string
-function M.set(path, debug)
-  if not path then
+function M.set(node, debug)
+  if not node then
     M.state = {}
     require("which-key.ui").hide()
     return
   end
   M.state.buf = vim.api.nvim_get_current_buf()
-  M.state.path = path
+  M.state.node = node
   M.state.debug = debug
   require("which-key.ui").show()
 end

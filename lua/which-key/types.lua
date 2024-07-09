@@ -2,7 +2,7 @@
 
 --# selene: allow(unused_variable)
 
----@class Keymap: vim.api.keyset.keymap
+---@class wk.Keymap: vim.api.keyset.keymap
 ---@field lhs string
 ---@field mode string
 ---@field rhs? string
@@ -23,7 +23,6 @@
 ---@field prefix string
 ---@field cmd string
 ---@field opts MappingOptions
----@field keys KeyCodes
 ---@field mode? string
 ---@field callback fun()|nil
 ---@field preset boolean

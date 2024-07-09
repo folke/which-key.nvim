@@ -66,7 +66,7 @@ end
 
 function M.show()
   local state = require("which-key.state").get()
-  if not (state and state.path.node.children) then
+  if not (state and state.node.children) then
     M.hide()
     return
   end
@@ -76,7 +76,7 @@ function M.show()
   })
 
   ---@type wk.Node[]
-  local children = vim.tbl_values(state.path.node.children or {})
+  local children = vim.tbl_values(state.node.children or {})
 
   table.sort(children, function(a, b)
     local ag = a.keymap and 0 or 1
@@ -98,7 +98,11 @@ function M.show()
   end
 
   for _, node in ipairs(children) do
-    local desc = node.desc or ""
+    local desc = node.desc
+    if not desc and node.keymap then
+      desc = node.keymap.rhs and tostring(node.keymap.rhs) or nil
+    end
+    desc = desc or ""
     desc = desc:gsub("^%++", "")
     text:append(string.rep(" ", width - dw(node.key)) .. node.key, "WhichKey")
     text:append(" ➜ ", "WhichKeySeparator")
@@ -111,13 +115,13 @@ function M.show()
     text:nl()
   end
   local title = {
-    { " " .. table.concat(state.path.keys) .. " ", "FloatTitle" },
+    { " " .. table.concat(state.node.path) .. " ", "FloatTitle" },
   }
   if state.debug then
     table.insert(title, { " " .. state.debug .. " ", "FloatTitle" })
   end
-  if state.path.node.desc then
-    local desc = state.path.node.desc or ""
+  if state.node.desc then
+    local desc = state.node.desc or ""
     desc = desc:gsub("^%++", "")
     desc = "+" .. desc
     table.insert(title, { " " .. desc .. " ", "FloatTitle" })

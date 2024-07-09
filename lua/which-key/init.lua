@@ -6,7 +6,7 @@ local M = {}
 
 function M.show(keys, opts) end
 
----@type Keymap[]
+---@type wk.Keymap[]
 M.mappings = {}
 
 -- Defer registering keymaps until VimEnter
