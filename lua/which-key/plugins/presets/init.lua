@@ -81,7 +81,7 @@ M.objects = {
   ["i}"] = [[same as iB]],
 }
 
----@param config Options
+---@param config wk.Opts
 function M.setup(wk, opts, config)
   require("which-key.plugins.presets.misc").setup(wk, opts)
 

@@ -1,3 +1,4 @@
+local Config = require("which-key.config")
 local Tree = require("which-key.tree")
 local Util = require("which-key.util")
 
@@ -61,7 +62,6 @@ end
 function Mode:on_trigger(node)
   local trigger_node = node
   require("which-key.state").set(node, "on_trigger")
-  local lhs = table.concat(node.path)
   local keys = vim.deepcopy(node.path)
   while true do
     local key = vim.fn.keytrans(vim.fn.getcharstr())
@@ -124,7 +124,7 @@ function Mode:update()
     return not self:is_trigger(mapping.lhs)
   end, mappings)
 
-  for _, m in ipairs(require("which-key").mappings) do
+  for _, m in ipairs(Config.mappings) do
     if m.mode == self.mode and (not m.buffer or m.buffer == self.buf) then
       table.insert(mappings, m)
     end
@@ -170,6 +170,13 @@ function M.cleanup()
   end
 end
 
+function M.reset()
+  M.cleanup()
+  for _, buf in pairs(M.bufs) do
+    buf:reset()
+  end
+end
+
 ---@param buf number
 function Buf.new(buf)
   local self = setmetatable({}, Buf)
@@ -179,6 +186,12 @@ function Buf.new(buf)
   --   M.update(self)
   -- end)
   return self
+end
+
+function Buf:reset()
+  for _, mode in pairs(self.modes) do
+    mode:update()
+  end
 end
 
 function Buf:valid()
