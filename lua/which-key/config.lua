@@ -135,11 +135,6 @@ function M.register(mappings, opts)
   for _, km in ipairs(Mappings.parse(mappings, opts)) do
     if km.rhs or km.callback then
       vim.keymap.set(km.mode, km.lhs, km.callback or km.rhs or "", Mappings.opts(km))
-    elseif km.plugin then
-      vim.keymap.set(km.mode, km.lhs, function()
-        require("which-key").show(km.lhs)
-      end, Mappings.opts(km))
-      ret[#ret + 1] = km
     else
       ret[#ret + 1] = km
     end
