@@ -99,16 +99,17 @@ M.loaded = false
 M.mappings = {}
 
 ---@type wk.Opts
-local options
+M.options = nil
 
 ---@param opts? wk.Opts
 function M.setup(opts)
   if vim.fn.has("nvim-0.9") == 0 then
     return vim.notify("whichkey.nvim requires Neovim >= 0.9", vim.log.levels.ERROR)
   end
-  options = vim.tbl_deep_extend("force", {}, defaults, opts or {})
+  M.options = vim.tbl_deep_extend("force", {}, defaults, opts or {})
 
   local function load()
+    require("which-key.plugins").setup()
     local wk = require("which-key")
     wk.register = M.register
     for _, v in ipairs(wk._queue) do
@@ -144,10 +145,10 @@ end
 
 setmetatable(M, {
   __index = function(_, k)
-    if not options then
+    if k == "options" then
       M.setup()
     end
-    return options[k]
+    return rawget(M, "options")[k]
   end,
 })
 

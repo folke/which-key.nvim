@@ -1,5 +1,4 @@
 local Config = require("which-key.config")
-local Keys = require("which-key.keys")
 local Util = require("which-key.util")
 
 local M = {}
@@ -29,7 +28,7 @@ function M._setup(plugin, opts)
       local prefix = trigger.trigger
       local mode = trigger.mode or "n"
       local label = trigger.label or plugin.name
-      Keys.register({ [prefix] = { label, plugin = plugin.name } }, { mode = mode })
+      Config.register({ [prefix] = { label, plugin = plugin.name } }, { mode = mode })
     end
   end
 
