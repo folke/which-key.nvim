@@ -65,13 +65,14 @@ function Mode:on_trigger(node)
   local keys = vim.deepcopy(node.path)
   while true do
     local key = vim.fn.keytrans(vim.fn.getcharstr())
-    if key == "<Esc>" then
+
+    node = (node.children or {})[key] ---@type wk.Node?
+
+    if key == "<Esc>" and not node then
       require("which-key.state").set()
       break
     end
     keys[#keys + 1] = key
-
-    node = (node.children or {})[key] ---@type wk.Node?
 
     if not node or node.keymap then
       require("which-key.state").set()
@@ -80,7 +81,7 @@ function Mode:on_trigger(node)
         self:_attach(trigger_node)
       end)
       local keystr = table.concat(keys)
-      local feed = vim.api.nvim_replace_termcodes("<Ignore>" .. keystr, true, true, true)
+      local feed = vim.api.nvim_replace_termcodes(keystr, true, true, true)
       vim.api.nvim_feedkeys(feed, "mit", false)
       break
     else
