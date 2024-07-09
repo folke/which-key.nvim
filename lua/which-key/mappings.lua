@@ -14,6 +14,7 @@ end
 
 local mapargs = {
   "noremap",
+  "remap",
   "desc",
   "expr",
   "silent",
@@ -37,6 +38,7 @@ local wkargs = {
 }
 local transargs = lookup({
   "noremap",
+  "remap",
   "expr",
   "silent",
   "nowait",
@@ -100,9 +102,9 @@ function M._parse(value, mappings, opts)
   end
 
   -- fix remap
-  if opts.remap then
-    opts.noremap = not opts.remap
-    opts.remap = nil
+  if opts.noremap ~= nil then
+    opts.remap = not opts.noremap
+    opts.noremap = nil
   end
 
   -- fix buffer
@@ -170,28 +172,21 @@ end
 ---@return Mapping
 function M.to_mapping(mapping)
   mapping.silent = mapping.silent ~= false
-  mapping.noremap = mapping.noremap ~= false
   if mapping.cmd and mapping.cmd:lower():find("^<plug>") then
-    mapping.noremap = false
+    mapping.remap = true
   end
 
-  mapping.buf = mapping.buffer
-  mapping.buffer = nil
+  if mapping.replace_keycodes == nil and mapping.expr then
+    mapping.replace_keycodes = true
+  end
+
+  mapping.lhs = mapping.prefix
+  mapping.prefix = nil
 
   mapping.mode = mapping.mode or "n"
   mapping.desc = mapping.desc or mapping.name
   mapping.name = nil
-  mapping.keys = Util.parse_keys(mapping.prefix or "")
 
-  local opts = {}
-  for _, o in ipairs(mapargs) do
-    opts[o] = mapping[o]
-    mapping[o] = nil
-  end
-  -- restore desc
-  mapping.desc = opts.desc
-
-  mapping.opts = opts
   return mapping
 end
 
