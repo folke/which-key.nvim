@@ -2,11 +2,11 @@ local Util = require("which-key.util")
 
 ---@class wk.Node
 ---@field key string
+---@field path string[]
+---@field parent? wk.Node
 ---@field desc? string
----@field keymap? Keymap
+---@field keymap? wk.Keymap
 ---@field children? table<string, wk.Node>
-
----@alias wk.Path {node:wk.Node, keys:string[]}
 
 ---@class wk.Tree
 ---@field root wk.Node
@@ -15,17 +15,29 @@ M.__index = M
 
 function M.new()
   local self = setmetatable({}, M)
-  self.root = { key = "" }
+  self:clear()
   return self
 end
 
----@param keymap Keymap
+function M:clear()
+  self.root = { key = "", path = {} }
+end
+
+---@param keymap wk.Keymap
 function M:_add(keymap)
   local keys = Util.keys(keymap.lhs, { norm = true })
   local node = self.root
+  local path = {} ---@type string[]
   for _, key in ipairs(keys) do
+    path[#path + 1] = key
     node.children = node.children or {}
-    node.children[key] = node.children[key] or { key = key }
+    if not node.children[key] then
+      node.children[key] = {
+        key = key,
+        path = vim.deepcopy(path),
+        parent = node,
+      }
+    end
     node = node.children[key]
   end
   node.desc = keymap.desc
@@ -34,7 +46,7 @@ function M:_add(keymap)
   end
 end
 
----@param keymaps Keymap[]
+---@param keymaps wk.Keymap[]
 function M:add(keymaps)
   for _, keymap in ipairs(keymaps) do
     if keymap.lhs:sub(1, 6) ~= "<Plug>" then
@@ -44,7 +56,7 @@ function M:add(keymaps)
 end
 
 ---@param keys string|string[]
----@return wk.Path?
+---@return wk.Node?
 function M:find(keys)
   keys = type(keys) == "string" and Util.keys(keys) or keys
   ---@cast keys string[]
@@ -55,26 +67,18 @@ function M:find(keys)
       return
     end
   end
-  return { node = node, keys = keys }
+  return node
 end
 
----@param fn fun(path: wk.Path):boolean?
+---@param fn fun(node: wk.Node):boolean?
 function M:walk(fn)
-  ---@type wk.Path[]
-  local queue = {
-    { node = self.root, keys = {} },
-  }
+  ---@type wk.Node[]
+  local queue = { self.root }
   while #queue > 0 do
-    local path = table.remove(queue, 1) ---@type wk.Path
-    if path.node == self.root or fn(path) ~= false then
-      for _, child in pairs(path.node.children or {}) do
-        local keys = {} ---@type string[]
-        vim.list_extend(keys, path.keys)
-        keys[#keys + 1] = child.key
-        queue[#queue + 1] = {
-          node = child,
-          keys = keys,
-        }
+    local node = table.remove(queue, 1) ---@type wk.Node
+    if node == self.root or fn(node) ~= false then
+      for _, child in pairs(node.children or {}) do
+        queue[#queue + 1] = child
       end
     end
   end

@@ -402,7 +402,7 @@ end
 ---@param mode string
 ---@param buf? number
 function M.update_keymaps(mode, buf)
-  ---@type Keymap[]
+  ---@type wk.Keymap[]
   local keymaps = buf and vim.api.nvim_buf_get_keymap(buf, mode) or vim.api.nvim_get_keymap(mode)
   local tree = M.get_tree(mode, buf).tree
 
