@@ -75,6 +75,9 @@ local defaults = {
   ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
   replace = {
     key = {
+      function(key)
+        return require("which-key.view").format(key)
+      end,
       -- { "<Space>", "SPC" },
     },
     desc = {
