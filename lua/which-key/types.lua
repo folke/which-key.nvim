@@ -11,6 +11,7 @@
 ---@field plugin? string
 ---@field group? boolean
 ---@field virtual? boolean
+---@field hidden? boolean
 
 ---@class MappingOptions
 ---@field noremap boolean
