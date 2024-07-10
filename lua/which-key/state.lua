@@ -1,4 +1,5 @@
 local Buf = require("which-key.buf")
+local Config = require("which-key.config")
 local Tree = require("which-key.tree")
 local Util = require("which-key.util")
 
@@ -65,6 +66,7 @@ end
 ---@param state wk.State
 ---@return wk.Node?
 function M.step(state)
+  local View = require("which-key.view")
   vim.cmd.redraw()
   local key = vim.fn.keytrans(vim.fn.getcharstr())
   local node = (state.node.children or {})[key] ---@type wk.Node?
@@ -88,6 +90,12 @@ function M.step(state)
     return mode == "o" and Util.exit() or nil
   elseif key == "<BS>" then
     return state.node.parent or state.mode.tree.root
+  elseif View.valid() and key:lower() == Config.ui.keys.scroll_down then
+    View.scroll(false)
+    return M.step(state)
+  elseif View.valid() and key:lower() == Config.ui.keys.scroll_up then
+    View.scroll(true)
+    return M.step(state)
   end
 
   state.mode:reattach(node or state.node)

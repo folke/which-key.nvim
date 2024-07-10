@@ -228,4 +228,19 @@ function M.show()
   vim.cmd.redraw()
 end
 
+---@param up boolean
+function M.scroll(up)
+  assert(M.valid(), "invalid view")
+  local height = vim.api.nvim_win_get_height(M.win)
+  local delta = (up and -1 or 1) * height / 2
+  local view = vim.api.nvim_win_call(M.win, vim.fn.winsaveview)
+  local top = view.topline ---@type number
+  top = top + delta
+  top = math.max(top, 1)
+  top = math.min(top, vim.api.nvim_buf_line_count(M.buf) - height)
+  vim.api.nvim_win_call(M.win, function()
+    vim.fn.winrestview({ topline = top, lnum = top })
+  end)
+end
+
 return M
