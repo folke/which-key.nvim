@@ -7,6 +7,7 @@ local Util = require("which-key.util")
 ---@field desc? string
 ---@field plugin? string
 ---@field keymap? wk.Keymap
+---@field virtual? wk.Keymap
 ---@field children? table<string, wk.Node>
 ---@field action? fun()
 
@@ -55,7 +56,9 @@ function M:_add(keymap)
   end
   node.desc = keymap.desc or node.desc
   node.plugin = node.plugin or keymap.plugin
-  if not keymap.virtual then
+  if keymap.virtual then
+    node.virtual = keymap
+  else
     node.keymap = keymap
   end
   -- node.keymap = not keymap.group and keymap or nil
@@ -67,10 +70,39 @@ end
 ---@param keymaps wk.Keymap[]
 function M:add(keymaps)
   for _, keymap in ipairs(keymaps) do
-    if keymap.lhs:sub(1, 6) ~= "<Plug>" and keymap.desc ~= "which_key_ignore" then
+    if keymap.lhs:sub(1, 6) ~= "<Plug>" then
       self:_add(keymap)
     end
   end
+end
+
+---@param node wk.Node
+function M:del(node)
+  if node == self.root then
+    return self:clear()
+  end
+  local parent = node.parent
+  assert(parent, "node has no parent")
+  parent.children[node.key] = nil
+  if not self:keep(parent) then
+    self:del(parent)
+  end
+end
+
+---@param node wk.Node
+function M:keep(node)
+  if node.keymap and node.keymap == "which_key_ignore" or node.virtual and node.virtual.hidden then
+    return false
+  end
+  return node.plugin or node.keymap or M.is_group(node) or (node.virtual and not node.virtual.group)
+end
+
+function M:fix()
+  self:walk(function(node)
+    if not self:keep(node) then
+      self:del(node)
+    end
+  end)
 end
 
 ---@param keys string|string[]

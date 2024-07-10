@@ -28,8 +28,10 @@ local wkargs = {
   "plugin",
   "buffer",
   "remap",
+  "hidden",
   "cmd",
   "name",
+  "hidden",
   "group",
   "preset",
   "cond",
@@ -154,7 +156,7 @@ function M._parse(value, mappings, opts)
     error("Incorrect mapping " .. vim.inspect(list))
   end
 
-  if opts.desc or opts.group then
+  if opts.desc or opts.group or opts.hidden ~= nil then
     if type(opts.mode) == "table" then
       for _, mode in pairs(opts.mode) do
         local mode_opts = vim.deepcopy(opts)
@@ -185,6 +187,9 @@ function M.to_mapping(mapping)
 
   mapping.mode = mapping.mode or "n"
   mapping.desc = mapping.desc or mapping.name
+  if mapping.desc == "which_key_ignore" then
+    mapping.hidden = true
+  end
   mapping.name = nil
 
   return mapping
