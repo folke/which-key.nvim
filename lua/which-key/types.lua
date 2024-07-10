@@ -45,6 +45,7 @@
 
 ---@class wk.Plugin
 ---@field name string
+---@field cols? wk.Col[]
 ---@field actions wk.Plugin.action[]
 ---@field expand fun():wk.Plugin.item[]
 ---@field setup fun(opts: table<string, any>)

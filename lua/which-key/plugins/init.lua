@@ -48,9 +48,13 @@ end
 local PluginNode = {}
 
 function PluginNode:__index(k)
-  if k == "children" then
+  if k == "cols" then
     assert(self.plugin, "node must be a plugin node")
-
+    local plugin = M.plugins[self.plugin or ""]
+    assert(plugin, "plugin not found")
+    return plugin.cols
+  elseif k == "children" then
+    assert(self.plugin, "node must be a plugin node")
     local plugin = M.plugins[self.plugin or ""]
     assert(plugin, "plugin not found")
     local ret = {} ---@type table<string, wk.Node>
@@ -68,6 +72,7 @@ function PluginNode:__index(k)
         order = i,
         value = item.value,
         action = item.action,
+        data = item,
       }
       ret[item.key] = child
     end

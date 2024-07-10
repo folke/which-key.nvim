@@ -39,6 +39,7 @@ function M:height()
   return #self._lines
 end
 
+---@return number
 function M:width()
   local width = 0
   for _, line in ipairs(self._lines) do
