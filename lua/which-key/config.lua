@@ -26,6 +26,10 @@ local defaults = {
   },
   ui = {
     delay = 300,
+    keys = {
+      scroll_down = "<c-d>", -- binding to scroll down inside the popup
+      scroll_up = "<c-u>", -- binding to scroll up inside the popup
+    },
     ---@type (string|wk.Sorter)[]
     sort = { "order", "group", "alphanum", "mod", "lower", "icase" },
     ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
@@ -49,10 +53,6 @@ local defaults = {
       separator = "➜", -- symbol used between a key and it's label
       group = "+", -- symbol prepended to a group
     },
-  },
-  popup_mappings = {
-    scroll_down = "<c-d>", -- binding to scroll down inside the popup
-    scroll_up = "<c-u>", -- binding to scroll up inside the popup
   },
   window = {
     border = "none", -- none, single, double, shadow
