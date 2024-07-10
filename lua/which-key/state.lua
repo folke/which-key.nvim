@@ -24,6 +24,7 @@ function M.setup()
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
     callback = function()
+      Buf.get() -- make sure the buffer mode exists
       if Util.xo() then
         return not M.state and M.start()
       else
