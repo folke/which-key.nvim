@@ -28,21 +28,27 @@ local defaults = {
     delay = 300,
     ---@type (string|wk.Sorter)[]
     sort = { "order", "group", "alphanum", "mod", "lower", "icase" },
-  },
-  key_labels = {
-    -- override the label used to display some keys. It doesn't effect WK in any other way.
-    -- For example:
-    -- ["<space>"] = "SPC",
-    -- ["<cr>"] = "RET",
-    -- ["<tab>"] = "TAB",
-  },
-  motions = {
-    count = true,
-  },
-  icons = {
-    breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
-    separator = "➜", -- symbol used between a key and it's label
-    group = "+", -- symbol prepended to a group
+    ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
+    replace = {
+      key = {
+        -- { "<Space>", "SPC" },
+      },
+      desc = {
+        { "<Plug>%((.*)%)", "%1" },
+        { "^%+", "" },
+        { "<[cC]md>", "" },
+        { "<[cC][rR]>", "" },
+        { "<[sS]ilent>", "" },
+        { "^lua%s+", "" },
+        { "^call%s+", "" },
+        { "^:%s*", "" },
+      },
+    },
+    icons = {
+      breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
+      separator = "➜", -- symbol used between a key and it's label
+      group = "+", -- symbol prepended to a group
+    },
   },
   popup_mappings = {
     scroll_down = "<c-d>", -- binding to scroll down inside the popup
@@ -62,8 +68,6 @@ local defaults = {
     spacing = 3, -- spacing between columns
     align = "left", -- align columns left, center or right
   },
-  ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
-  hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "^:", "^ ", "^call ", "^lua " }, -- hide mapping boilerplate
   show_help = true, -- show a help message in the command line for using WhichKey
   show_keys = true, -- show the currently pressed key and its label as a message in the command line
   triggers = "auto", -- automatically setup triggers
@@ -80,12 +84,6 @@ local defaults = {
     "<c-r>",
     -- spelling
     "z=",
-  },
-  triggers_blacklist = {
-    -- list of mode / prefixes that should never be hooked by WhichKey
-    -- this is mostly relevant for keymaps that start with a native binding
-    i = { "j", "k" },
-    v = { "j", "k" },
   },
   -- disable the WhichKey popup for certain buf types and file types.
   -- Disabled by default for Telescope
@@ -138,6 +136,7 @@ function M.register(mappings, opts)
     if km.rhs or km.callback then
       vim.keymap.set(km.mode, km.lhs, km.callback or km.rhs or "", Mappings.opts(km))
     else
+      km.virtual = true
       ret[#ret + 1] = km
     end
   end
