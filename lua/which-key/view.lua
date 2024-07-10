@@ -243,7 +243,7 @@ function M.show()
   local box_width = M.dim(Config.layout.width, container.width, max_row_width)
   local box_count = math.max(math.floor(container.width / (box_width + Config.layout.spacing)), 1)
   box_width = math.floor(container.width / box_count)
-  local box_height = M.dim(Config.layout.height, container.height, math.max(math.ceil(#items / box_count), 2))
+  local box_height = math.max(math.ceil(#items / box_count), 2)
 
   local rows = t:layout({ width = box_width - Config.layout.spacing })
 
