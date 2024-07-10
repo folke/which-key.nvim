@@ -1,7 +1,7 @@
 local Keys = require("which-key.keys")
-local config = require("which-key.config")
 local Layout = require("which-key.layout")
 local Util = require("which-key.util")
+local config = require("which-key.config")
 
 local highlight = vim.api.nvim_buf_add_highlight
 
