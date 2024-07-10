@@ -24,6 +24,10 @@ local labels = {
   [">"] = "To end of last visual selection",
 }
 
+M.cols = {
+  { key = "lnum", hl = "Number", align = "right" },
+}
+
 function M.expand()
   local buf = vim.api.nvim_get_current_buf()
   local items = {} ---@type wk.Plugin.item[]
@@ -38,19 +42,17 @@ function M.expand()
 
     local line ---@type string?
     if mark.pos[1] and mark.pos[1] ~= 0 then
-      line = vim.fn.getbufline(mark.pos[1], lnum)[1] --[[@as string?]]
+      line = vim.api.nvim_buf_get_lines(mark.pos[1], lnum - 1, lnum, false)[1]
     end
 
     local file = mark.file and vim.fn.fnamemodify(mark.file, ":p:~:.")
 
-    local value = string.format("%4d  ", lnum)
-    value = value .. (line or file or "")
-
     table.insert(items, {
       key = key,
       desc = labels[key] or file and ("file: " .. file) or "",
-      value = value,
+      value = vim.trim(line or file or ""),
       highlights = { { 1, 5, "Number" } },
+      lnum = lnum,
     })
   end
 

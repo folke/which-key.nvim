@@ -1,4 +1,5 @@
 local Config = require("which-key.config")
+local Layout = require("which-key.layout")
 local State = require("which-key.state")
 local Tree = require("which-key.tree")
 local Util = require("which-key.util")
@@ -21,7 +22,7 @@ M.fields = {
     return item.desc or "~"
   end,
   group = function(item)
-    return item.group and 0 or 1
+    return item.group and 1 or 0
   end,
   alphanum = function(item)
     return item.key:find("^%w+$") and 0 or 1
@@ -143,27 +144,47 @@ function M.show()
       desc = child_count .. " keymap" .. (child_count > 1 and "s" or "")
     end
     desc = M.replace("desc", desc or "")
-    return {
+    return setmetatable({
       node = node,
       key = M.replace("key", node.key),
       desc = child_count > 0 and Config.ui.icons.group .. desc or desc,
       group = child_count > 0,
-    }
+      value = node.value,
+    }, { __index = node.data or {} })
   end, children)
 
   M.sort(items, Config.ui.sort)
 
-  local width = 0
-  for _, node in ipairs(items) do
-    width = math.max(width, dw(node.key))
-  end
+  ---@type wk.Col[]
+  local cols = {
+    { key = "key", hl = "WhichKey", align = "right" },
+    { key = "sep", hl = "WhichKeySeparator", default = Config.ui.icons.separator },
+  }
+  vim.list_extend(cols, state.node.cols or {})
+  vim.list_extend(cols, {
+    { key = "value", hl = "WhichKeyValue", width = 0.5 },
+    { key = "desc", width = 1 },
+  })
 
-  for _, item in ipairs(items) do
-    text:append(string.rep(" ", width - dw(item.key)) .. item.key, "WhichKey")
-    text:append(" " .. Config.ui.icons.separator .. " ", "WhichKeySeparator")
-    text:append(item.desc, item.group and "WhichKeyGroup" or "WhichKeyDesc")
-    text:nl()
-  end
+  local t = Layout.new({
+    cols = cols,
+    rows = items,
+  })
+
+  vim.api.nvim_win_call(M.win, function()
+    for r, row in ipairs(t:layout({ width = 120 })) do
+      local item = items[r]
+      for c, col in ipairs(row) do
+        local hl = col.hl
+        if cols[c].key == "desc" then
+          hl = item.group and "WhichKeyGroup" or "WhichKeyDesc"
+        end
+        text:append(col.value, hl)
+      end
+      text:nl()
+    end
+  end)
+
   local title = {
     { " " .. table.concat(state.node.path) .. " ", "FloatTitle" },
   }
@@ -175,12 +196,14 @@ function M.show()
   end
 
   local height = text:height() - 1
+  local width = text:width()
   vim.api.nvim_win_set_config(M.win, {
     title = title,
     relative = "editor",
     height = height,
+    width = width,
     row = vim.o.lines - height - 3,
-    col = vim.o.columns - 40,
+    col = vim.o.columns - width,
   })
   text:render(M.buf)
   vim.cmd.redraw()
