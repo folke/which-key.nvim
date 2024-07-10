@@ -1,5 +1,6 @@
 local Buf = require("which-key.buf")
 local Config = require("which-key.config")
+local Tree = require("which-key.tree")
 local Util = require("which-key.util")
 
 local M = {}
@@ -68,8 +69,14 @@ function M.step(state)
     return state.node.parent or state.mode.tree.root
   end
 
-  if node and (not node.keymap or node.children) then
-    return node
+  if node then
+    local is_group = Tree.is_group(node)
+    local is_nowait = node.keymap and node.keymap.nowait == 1
+    local is_keymap = node.keymap ~= nil
+
+    if not is_nowait and is_group then
+      return node
+    end
   end
 
   state.mode:reattach(node or state.node)

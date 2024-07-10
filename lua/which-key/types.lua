@@ -8,8 +8,8 @@
 ---@field rhs? string
 ---@field lhsraw? string
 ---@field buffer? number
----@field group? boolean
 ---@field plugin? string
+---@field virtual? boolean
 
 ---@class MappingOptions
 ---@field noremap boolean
@@ -30,31 +30,21 @@
 ---@field plugin string
 ---@field fn fun()
 
----@class MappingTree
----@field mode string
----@field buf? number
----@field tree Tree
-
----@class VisualMapping : Mapping
----@field key string
----@field highlights table
----@field value string
-
----@class PluginItem
+---@class wk.Plugin.item
 ---@field key string
 ---@field value string
 ---@field desc string
 ---@field cmd string
 ---@field highlights table
 
----@class PluginAction
+---@class wk.Plugin.action
 ---@field trigger string
 ---@field mode string
 ---@field label? string
 ---@field delay? boolean
 
----@class Plugin
+---@class wk.Plugin
 ---@field name string
----@field actions PluginAction[]
----@field expand fun():PluginItem[]
+---@field actions wk.Plugin.action[]
+---@field expand fun():wk.Plugin.item[]
 ---@field setup fun(opts: table<string, any>)

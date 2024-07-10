@@ -25,6 +25,17 @@ function M:clear()
   self.root = { key = "", path = {} }
 end
 
+---@param node wk.Node
+function M.count(node)
+  local children = node.children
+  return vim.tbl_count(children or {})
+end
+
+---@param node wk.Node
+function M.is_group(node)
+  return M.count(node) > 0
+end
+
 ---@param keymap wk.Keymap
 function M:_add(keymap)
   local keys = Util.keys(keymap.lhs, { norm = true })
@@ -44,7 +55,7 @@ function M:_add(keymap)
   end
   node.desc = keymap.desc or node.desc
   node.plugin = node.plugin or keymap.plugin
-  if not keymap.group then
+  if not keymap.virtual then
     node.keymap = keymap
   end
   -- node.keymap = not keymap.group and keymap or nil

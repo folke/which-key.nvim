@@ -1,5 +1,5 @@
 ---@diagnostic disable: missing-fields, inject-field
----@type Plugin
+---@type wk.Plugin
 local M = {}
 
 M.name = "marks"
@@ -26,7 +26,7 @@ local labels = {
 
 function M.expand()
   local buf = vim.api.nvim_get_current_buf()
-  local items = {} ---@type PluginItem[]
+  local items = {} ---@type wk.Plugin.item[]
 
   local marks = {} ---@type vim.fn.getmarklist.ret.item[]
   vim.list_extend(marks, vim.fn.getmarklist(buf))
