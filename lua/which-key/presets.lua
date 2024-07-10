@@ -23,7 +23,7 @@ return {
   classic = {
     win = {
       width = 1,
-      height = { min = 4, max = 0.25 },
+      height = { min = 4, max = 25 },
       col = 0,
       border = "none",
     },
