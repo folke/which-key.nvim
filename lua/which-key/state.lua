@@ -75,7 +75,11 @@ end
 function M.step(state)
   local View = require("which-key.view")
   vim.cmd.redraw()
-  local key = vim.fn.keytrans(vim.fn.getcharstr())
+  local ok, char = pcall(vim.fn.getcharstr)
+  if not ok then
+    return
+  end
+  local key = vim.fn.keytrans(char)
   local node = (state.node.children or {})[key] ---@type wk.Node?
 
   local mode = state.mode.mode
