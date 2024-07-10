@@ -47,6 +47,37 @@ M.fields = {
   end,
 }
 
+M.icons = {
+  Up = "↑",
+  Down = "↓",
+  Left = "←",
+  Right = "→",
+  C = "⌃",
+  M = "⌥",
+  S = "⇧",
+  CR = "⏎",
+  Esc = "⎋",
+  ScrollWheelDown = "⇟",
+  ScrollWheelUp = "⇞",
+  NL = "⏎",
+  Space = "␣",
+  Tab = "⇥",
+}
+
+---@param key string
+function M.format(key)
+  local inner = key:match("^<(.*)>$")
+  if not inner then
+    return key
+  end
+  local parts = vim.split(inner, "-", { plain = true })
+  parts[1] = M.icons[parts[1]] or parts[1]
+  if parts[2] and not parts[2]:match("^%w$") then
+    parts[2] = M.icons[parts[2]] or parts[2]
+  end
+  return table.concat(parts, "")
+end
+
 ---@param nodes wk.Item[]
 ---@param fields (string|wk.Sorter)[]
 function M.sort(nodes, fields)
