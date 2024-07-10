@@ -5,6 +5,23 @@ M.ns = vim.api.nvim_create_namespace("wk")
 
 ---@class wk.Opts
 local defaults = {
+  ---@type "classic" | "modern" | "helix"
+  preset = "classic",
+  -- Delay before showing the popup. Can be a number or a function that returns a number.
+  ---@type number | fun(ctx: { lhs: string, mode: string, plugin?: string }):number
+  delay = function(ctx)
+    return ctx.plugin and 0 or 200
+  end,
+  -- Enable/disable WhichKey for certain mapping modes
+  modes = {
+    n = true, -- Normal mode
+    i = true, -- Insert mode
+    x = true, -- Visual mode
+    s = true, -- Select mode
+    o = true, -- Operator pending mode
+    t = true, -- Terminal mode
+    c = true, -- Command mode
+  },
   plugins = {
     marks = true, -- shows a list of your marks on ' and `
     registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
@@ -24,72 +41,70 @@ local defaults = {
       g = true, -- bindings for prefixed with g
     },
   },
-  ui = {
-    delay = 300,
-    keys = {
-      scroll_down = "<c-d>", -- binding to scroll down inside the popup
-      scroll_up = "<c-u>", -- binding to scroll up inside the popup
+  ---@type wk.Win
+  win = {
+    width = 0.9,
+    -- width = { min = 40, max = 0.4 },
+    height = { min = 4, max = 0.25 },
+    padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
+    col = 0.05,
+    row = -1,
+    border = "rounded",
+    title = true,
+    title_pos = "center",
+    zindex = 1000,
+    -- Additional vim.wo and vim.bo options
+    bo = {},
+    wo = {
+      -- winblend = 10, -- value between 0-100 0 for fully opaque and 100 for fully transparent
     },
-    ---@type (string|wk.Sorter)[]
-    sort = { "order", "group", "alphanum", "mod", "lower", "icase" },
-    ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
-    replace = {
-      key = {
-        -- { "<Space>", "SPC" },
-      },
-      desc = {
-        { "<Plug>%((.*)%)", "%1" },
-        { "^%+", "" },
-        { "<[cC]md>", "" },
-        { "<[cC][rR]>", "" },
-        { "<[sS]ilent>", "" },
-        { "^lua%s+", "" },
-        { "^call%s+", "" },
-        { "^:%s*", "" },
-      },
-    },
-    icons = {
-      breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
-      separator = "➜", -- symbol used between a key and it's label
-      group = "+", -- symbol prepended to a group
-    },
-  },
-  window = {
-    border = "none", -- none, single, double, shadow
-    position = "bottom", -- bottom, top
-    margin = { 1, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]. When between 0 and 1, will be treated as a percentage of the screen size.
-    padding = { 1, 2, 1, 2 }, -- extra window padding [top, right, bottom, left]
-    winblend = 0, -- value between 0-100 0 for fully opaque and 100 for fully transparent
-    zindex = 1000, -- positive value to position WhichKey above other floating windows.
   },
   layout = {
     height = { min = 4, max = 25 }, -- min and max height of the columns
-    width = { min = 20, max = 50 }, -- min and max width of the columns
+    width = { min = 20 }, -- min and max width of the columns
     spacing = 3, -- spacing between columns
     align = "left", -- align columns left, center or right
   },
+  keys = {
+    scroll_down = "<c-d>", -- binding to scroll down inside the popup
+    scroll_up = "<c-u>", -- binding to scroll up inside the popup
+  },
+  ---@type (string|wk.Sorter)[]
+  sort = { "order", "group", "alphanum", "mod", "lower", "icase" },
+  ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
+  replace = {
+    key = {
+      -- { "<Space>", "SPC" },
+    },
+    desc = {
+      { "<Plug>%((.*)%)", "%1" },
+      { "^%+", "" },
+      { "<[cC]md>", "" },
+      { "<[cC][rR]>", "" },
+      { "<[sS]ilent>", "" },
+      { "^lua%s+", "" },
+      { "^call%s+", "" },
+      { "^:%s*", "" },
+    },
+  },
+  icons = {
+    breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
+    separator = "➜", -- symbol used between a key and it's label
+    group = "+", -- symbol prepended to a group
+    ellipsis = "…",
+  },
   show_help = true, -- show a help message in the command line for using WhichKey
   show_keys = true, -- show the currently pressed key and its label as a message in the command line
-  triggers = "auto", -- automatically setup triggers
+  -- Which-key automatically sets up triggers for your mappings.
+  -- But you can disable this and manually setup triggers.
+  -- Be aware, that triggers are not used for visual and operator pending mode.
+  ---@type boolean | string[]
+  triggers = true, -- automatically setup triggers
   -- triggers = {"<leader>"} -- or specify a list manually
-  -- list of triggers, where WhichKey should not wait for timeoutlen and show immediately
-  triggers_nowait = {
-    -- marks
-    "`",
-    "'",
-    "g`",
-    "g'",
-    -- registers
-    '"',
-    "<c-r>",
-    -- spelling
-    "z=",
-  },
-  -- disable the WhichKey popup for certain buf types and file types.
-  -- Disabled by default for Telescope
   disable = {
-    buftypes = {},
-    filetypes = {},
+    -- disable WhichKey for certain buf types and file types.
+    ft = {},
+    bt = {},
   },
 }
 
@@ -109,6 +124,10 @@ function M.setup(opts)
   M.options = vim.tbl_deep_extend("force", {}, defaults, opts or {})
 
   local function load()
+    if M.options.preset then
+      local Presets = require("which-key.presets")
+      M.options = vim.tbl_deep_extend("force", M.options, Presets[M.options.preset] or {})
+    end
     require("which-key.plugins").setup()
     local wk = require("which-key")
     wk.register = M.register

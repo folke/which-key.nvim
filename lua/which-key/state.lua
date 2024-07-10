@@ -42,10 +42,17 @@ function M.setup()
     end,
   })
 
-  vim.api.nvim_create_autocmd({ "BufReadPost", "LspAttach", "LspDetach" }, {
+  vim.api.nvim_create_autocmd({ "LspAttach", "LspDetach" }, {
     group = group,
     callback = function(ev)
       Buf.get({ buf = ev.buf, update = true })
+    end,
+  })
+
+  vim.api.nvim_create_autocmd({ "BufReadPost", "BufEnter" }, {
+    group = group,
+    callback = function(ev)
+      Buf.get({ buf = ev.buf, update = false })
     end,
   })
 
@@ -90,10 +97,10 @@ function M.step(state)
     return mode == "o" and Util.exit() or nil
   elseif key == "<BS>" then
     return state.node.parent or state.mode.tree.root
-  elseif View.valid() and key:lower() == Config.ui.keys.scroll_down then
+  elseif View.valid() and key:lower() == Config.keys.scroll_down then
     View.scroll(false)
     return M.step(state)
-  elseif View.valid() and key:lower() == Config.ui.keys.scroll_up then
+  elseif View.valid() and key:lower() == Config.keys.scroll_up then
     View.scroll(true)
     return M.step(state)
   end
@@ -160,7 +167,7 @@ function M.update()
     return M.stop()
   end
   M.state.node = node
-  require("which-key.view").update()
+  require("which-key.view").update({ schedule = false })
 end
 
 return M

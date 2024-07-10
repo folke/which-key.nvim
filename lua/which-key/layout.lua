@@ -1,6 +1,5 @@
+local Config = require("which-key.config")
 local M = {}
-
-M.ELLIPSIS = "…"
 
 local dw = vim.fn.strdisplaywidth
 
@@ -38,6 +37,7 @@ function M.dim(size, opts)
   end
 
   size = math.max(size, 0)
+  size = math.min(size, opts.parent or size)
   return size
 end
 
@@ -64,33 +64,44 @@ function Table.new(opts)
   return self
 end
 
----@param opts {width: number, spacing?: number}
-function Table:layout(opts)
+---@param opts? {spacing?: number}
+---@return string[][], number[], number
+function Table:cells(opts)
+  opts = opts or {}
   opts.spacing = opts.spacing or 1
 
   local widths = {} ---@type number[] actual column widths
 
   local cells = {} ---@type string[][]
 
+  local total = 0
   for c, col in ipairs(self.cols) do
     widths[c] = 0
     for r, row in ipairs(self.rows) do
       cells[r] = cells[r] or {}
       local value = row[col.key] or col.default or ""
       value = vim.fn.strtrans(value)
+      if c ~= #self.cols then
+        value = value .. (" "):rep(opts.spacing)
+      end
       cells[r][c] = value
       widths[c] = math.max(widths[c], dw(value))
     end
+    total = total + widths[c]
   end
+
+  return cells, widths, total
+end
+
+---@param opts {width: number, spacing?: number}
+function Table:layout(opts)
+  local cells, widths = self:cells(opts)
 
   local free = opts.width
 
   for c, col in ipairs(self.cols) do
     if not col.width then
       free = free - widths[c]
-    end
-    if c ~= #self.cols then
-      free = free - opts.spacing
     end
   end
   free = math.max(free, 0)
@@ -112,7 +123,9 @@ function Table:layout(opts)
       local value = row[c]
       local width = dw(value)
       if width > widths[c] then
-        value = vim.fn.strcharpart(value, 0, widths[c] - 1, true) .. M.ELLIPSIS
+        value = vim.fn.strcharpart(value, 0, widths[c] - 1 - (opts.spacing or 1), true)
+          .. Config.icons.ellipsis
+          .. string.rep(" ", opts.spacing or 1)
       else
         local align = col.align or "left"
         if align == "left" then
@@ -123,9 +136,6 @@ function Table:layout(opts)
           local pad = (widths[c] - width) / 2
           value = (" "):rep(math.floor(pad)) .. value .. (" "):rep(math.ceil(pad))
         end
-      end
-      if c ~= #self.cols then
-        value = value .. (" "):rep(opts.spacing)
       end
       line[#line + 1] = { value = value, hl = col.hl }
     end
