@@ -15,7 +15,7 @@ local function needs_trigger(node)
   if node and node.plugin then
     return false
   end
-  if node.keymap or not node.children then
+  if node.keymap or not Tree.is_group(node) then
     return false
   end
   if #node.path == 1 then
@@ -49,12 +49,22 @@ function Mode:attach()
       return false
     end
   end)
-  self.tree:walk(function(node)
-    if needs_trigger(node) then
-      self:_attach(node)
-      return false
+  local triggers = Config.triggers
+  if type(triggers) == "table" then
+    for _, trigger in ipairs(triggers) do
+      local node = self.tree:find(trigger)
+      if node then
+        self:_attach(node)
+      end
     end
-  end)
+  elseif triggers == true then
+    self.tree:walk(function(node)
+      if needs_trigger(node) then
+        self:_attach(node)
+        return false
+      end
+    end)
+  end
 end
 
 function Mode:detach()
@@ -153,7 +163,13 @@ function M.get(opts)
     return
   end
 
-  if vim.bo[buf].buftype == "nofile" then
+  local ft = vim.bo[buf].filetype
+  local bt = vim.bo[buf].buftype
+
+  if vim.tbl_contains(Config.disable.ft, ft) then
+    return
+  end
+  if vim.tbl_contains(Config.disable.bt, bt) then
     return
   end
 
@@ -183,9 +199,6 @@ function Buf.new(buf)
   buf = buf or 0
   self.buf = buf == 0 and vim.api.nvim_get_current_buf() or buf
   self.modes = {}
-  -- self.update = Util.debounce(300, function()
-  --   M.update(self)
-  -- end)
   return self
 end
 
@@ -216,6 +229,9 @@ function Buf:get(opts)
   end
   opts = opts or {}
   local mode = opts.mode or Util.mapmode()
+  if not Config.modes[mode] then
+    return
+  end
   local ret = self.modes[mode]
   if not ret then
     self.modes[mode] = Mode.new(self, mode)

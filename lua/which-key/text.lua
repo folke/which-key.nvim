@@ -7,7 +7,6 @@ local Util = require("which-key.util")
 ---@field width? number
 
 ---@class wk.Text.opts
----@field padding? number
 ---@field multiline? boolean
 ---@field indent? boolean
 
@@ -27,7 +26,6 @@ function M.new(opts)
   self._lines = {}
   self._col = 0
   self._opts = opts or {}
-  self._opts.padding = self._opts.padding or 0
   self._indents = {}
   for i = 0, 100, 1 do
     self._indents[i] = (" "):rep(i)
@@ -49,7 +47,7 @@ function M:width()
     end
     width = math.max(width, w)
   end
-  return width + ((self._opts.padding or 0) * 2)
+  return width
 end
 
 ---@param text string|wk.Segment[]
@@ -111,9 +109,8 @@ end
 function M:render(buf)
   local lines = {}
 
-  local padding = (" "):rep(self._opts.padding)
   for _, line in ipairs(self._lines) do
-    local parts = { padding }
+    local parts = {} ---@type string[]
     for _, segment in ipairs(line) do
       parts[#parts + 1] = segment.str
     end
@@ -125,7 +122,7 @@ function M:render(buf)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 
   for l, line in ipairs(self._lines) do
-    local col = self._opts.padding or 0
+    local col = 0
     local row = l - 1
 
     for _, segment in ipairs(line) do

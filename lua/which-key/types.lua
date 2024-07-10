@@ -13,6 +13,13 @@
 ---@field virtual? boolean
 ---@field hidden? boolean
 
+---@class wk.Win: vim.api.keyset.win_config
+---@field width? wk.Size
+---@field height? wk.Size
+---@field wo? vim.wo
+---@field bo? vim.bo
+---@field padding? {[1]: number, [2]:number}
+
 ---@class MappingOptions
 ---@field noremap boolean
 ---@field silent boolean
