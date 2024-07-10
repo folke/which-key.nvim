@@ -7,8 +7,6 @@ local M = {}
 ---@class wk.State
 ---@field mode wk.Mode
 ---@field node wk.Node
----@field trigger wk.Node
----@field debug? string
 
 ---@type wk.State?
 M.state = nil
@@ -34,7 +32,7 @@ function M.setup()
     end,
   })
 
-  vim.api.nvim_create_autocmd({ "BufReadPost", "LspAttach" }, {
+  vim.api.nvim_create_autocmd({ "BufReadPost", "LspAttach", "LspDetach" }, {
     group = group,
     callback = function(ev)
       Buf.get({ buf = ev.buf, update = true })
@@ -96,7 +94,6 @@ function M.start(node)
   M.state = {
     mode = mode,
     node = node or mode.tree.root,
-    trigger = node or mode.tree.root,
   }
 
   while M.state and Buf.get() == mode do
@@ -110,6 +107,22 @@ function M.start(node)
   end
   M.state = nil
   View.hide()
+end
+
+function M.update()
+  if not M.state then
+    return
+  end
+  local mode = Buf.get()
+  if not mode or mode ~= M.state.mode then
+    return M.stop()
+  end
+  local node = mode.tree:find(M.state.node.path)
+  if not node then
+    return M.stop()
+  end
+  M.state.node = node
+  require("which-key.view").update()
 end
 
 return M

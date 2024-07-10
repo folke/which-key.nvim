@@ -142,6 +142,7 @@ function Mode:update()
 
   self.tree:add(mappings --[[@as wk.Keymap[] ]])
   self:attach()
+  require("which-key.state").update()
 end
 
 ---@class wk.Buffer
