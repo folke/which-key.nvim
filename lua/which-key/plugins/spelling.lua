@@ -29,7 +29,7 @@ function M.expand()
   local suggestions = vim.fn.spellsuggest(word, M.opts.suggestions or 20, bad[2] == "caps" and 1 or 0)
 
   local items = {} ---@type wk.Plugin.item[]
-  local keys = "1234567890abcdefghijklmnopqrstuvwxyz"
+  local keys = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
   for i, label in ipairs(suggestions) do
     local key = keys:sub(i, i)
@@ -37,8 +37,8 @@ function M.expand()
     table.insert(items, {
       key = key,
       desc = label,
-      fn = function()
-        vim.cmd('norm! "_ciw' .. label)
+      action = function()
+        vim.cmd("norm! " .. i .. "z=")
       end,
     })
   end

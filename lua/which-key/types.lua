@@ -34,8 +34,8 @@
 ---@field key string
 ---@field value string
 ---@field desc string
----@field cmd string
----@field highlights table
+---@field highlights? table
+---@field action? fun()
 
 ---@class wk.Plugin.action
 ---@field trigger string

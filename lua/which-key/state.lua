@@ -72,14 +72,19 @@ function M.step(state)
   if node then
     local is_group = Tree.is_group(node)
     local is_nowait = node.keymap and node.keymap.nowait == 1
+    local is_action = node.action ~= nil
     local is_keymap = node.keymap ~= nil
 
-    if is_group and not is_nowait then
+    if is_group and not is_nowait and not is_action then
       return node
     end
   end
 
   state.mode:reattach(node or state.node)
+
+  if node and node.action then
+    return node.action()
+  end
 
   local keys = vim.deepcopy(state.node.path)
   keys[#keys + 1] = key
