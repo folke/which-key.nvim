@@ -4,6 +4,7 @@
 
 ---@class wk.Keymap: vim.api.keyset.keymap
 ---@field lhs string
+---@field idx? number
 ---@field mode string
 ---@field rhs? string
 ---@field lhsraw? string

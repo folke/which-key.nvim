@@ -69,7 +69,9 @@ local defaults = {
     scroll_up = "<c-u>", -- binding to scroll up inside the popup
   },
   ---@type (string|wk.Sorter)[]
+  --- Add "manual" as the first element to use the order the mappings were registered
   sort = { "order", "group", "alphanum", "mod", "lower", "icase" },
+  expand = 1, -- expand groups when <= n mappings
   ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
   replace = {
     key = {
@@ -149,16 +151,15 @@ end
 
 function M.register(mappings, opts)
   local Mappings = require("which-key.mappings")
-  local ret = {} ---@type wk.Keymap[]
   for _, km in ipairs(Mappings.parse(mappings, opts)) do
     if km.rhs or km.callback then
       vim.keymap.set(km.mode, km.lhs, km.callback or km.rhs or "", Mappings.opts(km))
     else
       km.virtual = true
-      ret[#ret + 1] = km
+      table.insert(M.mappings, km)
+      km.idx = #M.mappings
     end
   end
-  vim.list_extend(M.mappings, ret)
   if M.loaded then
     require("which-key.buf").reset()
   end
