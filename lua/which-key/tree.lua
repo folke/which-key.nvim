@@ -91,7 +91,7 @@ end
 
 ---@param node wk.Node
 function M:keep(node)
-  if node.keymap and node.keymap == "which_key_ignore" or node.virtual and node.virtual.hidden then
+  if node.keymap and (node.keymap.desc == "which_key_ignore" or (node.virtual and node.virtual.hidden)) then
     return false
   end
   return node.plugin or node.keymap or M.is_group(node) or (node.virtual and not node.virtual.group)
