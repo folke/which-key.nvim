@@ -74,7 +74,7 @@ function M.step(state)
     local is_nowait = node.keymap and node.keymap.nowait == 1
     local is_keymap = node.keymap ~= nil
 
-    if not is_nowait and is_group then
+    if is_group and not is_nowait then
       return node
     end
   end

@@ -1,5 +1,6 @@
 local Config = require("which-key.config")
 local State = require("which-key.state")
+local Tree = require("which-key.tree")
 local Util = require("which-key.util")
 
 local M = {}
@@ -7,34 +8,36 @@ M.buf = nil ---@type number
 M.win = nil ---@type number
 M.timer = vim.uv.new_timer()
 
----@alias wk.Sorter fun(node:wk.Node): (string|number)
+---@alias wk.Item { node: wk.Node, key: string, desc: string, value?: string, group?: boolean }
+
+---@alias wk.Sorter fun(node:wk.Item): (string|number)
 
 ---@type table<string, wk.Sorter>
 M.fields = {
-  order = function(node)
-    return node.order and node.order or 1000
+  order = function(item)
+    return item.node.order and item.node.order or 1000
   end,
-  desc = function(node)
-    return node.desc or "~"
+  desc = function(item)
+    return item.desc or "~"
   end,
-  group = function(node)
-    return node.children and 0 or 1
+  group = function(item)
+    return item.group and 0 or 1
   end,
-  alphanum = function(node)
-    return node.key:find("^%w+$") and 0 or 1
+  alphanum = function(item)
+    return item.key:find("^%w+$") and 0 or 1
   end,
-  mod = function(node)
-    return node.key:find("^<.*>$") and 0 or 1
+  mod = function(item)
+    return item.key:find("^<.*>$") and 0 or 1
   end,
-  lower = function(node)
-    return node.key:lower()
+  lower = function(item)
+    return item.key:lower()
   end,
-  icase = function(node)
-    return node.key:lower() == node.key and 0 or 1
+  icase = function(item)
+    return item.key:lower() == item.key and 0 or 1
   end,
 }
 
----@param nodes wk.Node[]
+---@param nodes wk.Item[]
 ---@param fields (string|wk.Sorter)[]
 function M.sort(nodes, fields)
   table.sort(nodes, function(a, b)
@@ -104,6 +107,16 @@ function M.mount()
   })
 end
 
+---@param field string
+---@param value string
+---@return string
+function M.replace(field, value)
+  for _, repl in pairs(Config.ui.replace[field]) do
+    value = type(repl) == "function" and (repl(value) or value) or value:gsub(repl[1], repl[2])
+  end
+  return value
+end
+
 function M.show()
   local state = State.state
   if not state or not state.node.children then
@@ -117,36 +130,43 @@ function M.show()
 
   ---@type wk.Node[]
   local children = vim.tbl_values(state.node.children or {})
-  M.sort(children, Config.ui.sort)
+
+  ---@param node wk.Node
+  ---@type wk.Item[]
+  local items = vim.tbl_map(function(node)
+    local child_count = Tree.count(node)
+    local desc = node.desc
+    if not desc and node.keymap and node.keymap.rhs ~= "" then
+      desc = node.keymap.rhs
+    end
+    if not desc and child_count > 0 then
+      desc = child_count .. " keymap" .. (child_count > 1 and "s" or "")
+    end
+    desc = M.replace("desc", desc or "")
+    return {
+      node = node,
+      key = M.replace("key", node.key),
+      desc = child_count > 0 and Config.ui.icons.group .. desc or desc,
+      group = child_count > 0,
+    }
+  end, children)
+
+  M.sort(items, Config.ui.sort)
 
   local width = 0
-  for _, node in ipairs(children) do
+  for _, node in ipairs(items) do
     width = math.max(width, dw(node.key))
   end
 
-  for _, node in ipairs(children) do
-    local desc = node.desc
-    if not desc and node.keymap then
-      desc = node.keymap.rhs and tostring(node.keymap.rhs) or nil
-    end
-    desc = desc or ""
-    desc = desc:gsub("^%++", "")
-    text:append(string.rep(" ", width - dw(node.key)) .. node.key, "WhichKey")
-    text:append(" ➜ ", "WhichKeySeparator")
-    if desc then
-      if not node.keymap then
-        desc = "+" .. desc
-      end
-      text:append(desc, node.keymap and "WhichKeyDesc" or "WhichKeyGroup")
-    end
+  for _, item in ipairs(items) do
+    text:append(string.rep(" ", width - dw(item.key)) .. item.key, "WhichKey")
+    text:append(" " .. Config.ui.icons.separator .. " ", "WhichKeySeparator")
+    text:append(item.desc, item.group and "WhichKeyGroup" or "WhichKeyDesc")
     text:nl()
   end
   local title = {
     { " " .. table.concat(state.node.path) .. " ", "FloatTitle" },
   }
-  if state.debug then
-    table.insert(title, { " " .. state.debug .. " ", "FloatTitle" })
-  end
   if state.node.desc then
     local desc = state.node.desc or ""
     desc = desc:gsub("^%++", "")
