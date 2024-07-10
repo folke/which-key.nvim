@@ -14,18 +14,26 @@ M.state = nil
 function M.setup()
   local group = vim.api.nvim_create_augroup("wk", { clear = true })
 
-  vim.api.nvim_create_autocmd("CursorMoved", {
+  vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
     group = group,
-    callback = function()
-      M.stop()
+    callback = function(ev)
+      if ev.event == "RecordingEnter" then
+        Buf.reset({ detach = true })
+        M.stop()
+      else
+        Buf.get({ update = true })
+      end
     end,
   })
 
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
     callback = function()
-      Buf.get() -- make sure the buffer mode exists
-      if Util.xo() then
+      if not Util.safe() then
+        return M.stop()
+      end
+      -- make sure the buffer mode exists
+      if Buf.get() and Util.xo() then
         return not M.state and M.start()
       else
         M.stop()
@@ -65,6 +73,9 @@ function M.step(state)
   local xo = mode:find("[xo]") ~= nil
 
   if node then
+    -- NOTE: a node can be both a keymap and a group
+    -- We always prefer the group and only use the keymap if it is nowait
+
     local is_group = Tree.is_group(node)
     local is_nowait = node.keymap and node.keymap.nowait == 1
     local is_action = node.action ~= nil

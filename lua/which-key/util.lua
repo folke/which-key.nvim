@@ -86,6 +86,10 @@ function M.xo()
   return M.mapmode():find("[xo]") ~= nil
 end
 
+function M.safe()
+  return vim.fn.reg_recording() == "" and vim.fn.reg_executing() == ""
+end
+
 ---@param msg string
 function M.warn(msg)
   vim.notify(msg, vim.log.levels.WARN, { title = "WhichKey" })

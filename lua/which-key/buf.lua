@@ -168,10 +168,11 @@ function M.cleanup()
   end
 end
 
-function M.reset()
+---@param opts? {detach?:boolean}
+function M.reset(opts)
   M.cleanup()
   for _, buf in pairs(M.bufs) do
-    buf:reset()
+    buf:reset(opts)
   end
 end
 
@@ -187,9 +188,18 @@ function Buf.new(buf)
   return self
 end
 
-function Buf:reset()
+---@param opts? {detach?:boolean}
+function Buf:reset(opts)
+  opts = opts or {}
   for _, mode in pairs(self.modes) do
-    mode:update()
+    if opts.detach then
+      mode:detach()
+    else
+      mode:update()
+    end
+  end
+  if opts.detach then
+    self.modes = {}
   end
 end
 
