@@ -11,11 +11,29 @@ function M.t(str)
   return M.cache.termcodes[str]
 end
 
+M.CR = M.t("<cr>")
+M.ESC = M.t("<esc>")
+M.BS = M.t("<bs>")
+M.EXIT = M.t("<C-\\><C-n>")
+M.LUA_CALLBACK = "\x80\253g"
+M.CMD = "\x80\253h"
+
+function M.exit()
+  vim.api.nvim_feedkeys(M.EXIT, "nx", false)
+  vim.api.nvim_feedkeys(M.ESC, "n", false)
+end
+
 --- Normalizes (and fixes) the lhs of a keymap
 ---@param lhs string
 function M.norm(lhs)
   M.cache.norm[lhs] = M.cache.norm[lhs] or vim.fn.keytrans(M.t(lhs))
   return M.cache.norm[lhs]
+end
+
+-- Default register
+function M.reg()
+  local cb = vim.o.clipboard
+  return cb:find("unnamedplus") and "+" or cb:find("unnamed") and "*" or '"'
 end
 
 --- Returns the keys of a keymap, taking multibyte and special keys into account
@@ -62,6 +80,10 @@ function M.mapmode(mode)
     return "x" -- mapmode is actually "x" for visual only mappings
   end
   return mode:sub(1, 1):match("[ncits]") or "n"
+end
+
+function M.xo()
+  return M.mapmode():find("[xo]") ~= nil
 end
 
 ---@param msg string

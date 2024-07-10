@@ -37,13 +37,6 @@ function M._setup(plugin, opts)
   end
 end
 
----@param name string
-function M.expand(name)
-  local plugin = M.plugins[name]
-  assert(plugin, "plugin not found")
-  return plugin.expand()
-end
-
 ---@class wk.Node.plugin: wk.Node
 local PluginNode = {}
 
