@@ -7,6 +7,51 @@ M.buf = nil ---@type number
 M.win = nil ---@type number
 M.timer = vim.uv.new_timer()
 
+---@alias wk.Sorter fun(node:wk.Node): (string|number)
+
+---@type table<string, wk.Sorter>
+M.fields = {
+  order = function(node)
+    return node.order and node.order or 1000
+  end,
+  desc = function(node)
+    return node.desc or "~"
+  end,
+  group = function(node)
+    return node.children and 0 or 1
+  end,
+  alphanum = function(node)
+    return node.key:find("^%w+$") and 0 or 1
+  end,
+  mod = function(node)
+    return node.key:find("^<.*>$") and 0 or 1
+  end,
+  lower = function(node)
+    return node.key:lower()
+  end,
+  icase = function(node)
+    return node.key:lower() == node.key and 0 or 1
+  end,
+}
+
+---@param nodes wk.Node[]
+---@param fields (string|wk.Sorter)[]
+function M.sort(nodes, fields)
+  table.sort(nodes, function(a, b)
+    for _, f in ipairs(fields) do
+      local field = type(f) == "function" and f or M.fields[f]
+      if field then
+        local aa = field(a)
+        local bb = field(b)
+        if aa ~= bb then
+          return aa < bb
+        end
+      end
+    end
+    return a.key < b.key
+  end)
+end
+
 local dw = vim.fn.strdisplaywidth
 
 function M.valid()
@@ -72,20 +117,7 @@ function M.show()
 
   ---@type wk.Node[]
   local children = vim.tbl_values(state.node.children or {})
-
-  table.sort(children, function(a, b)
-    local ag = a.keymap and 0 or 1
-    local bg = b.keymap and 0 or 1
-    if ag ~= bg then
-      return ag < bg
-    end
-    local al = a.key:lower()
-    local bl = b.key:lower()
-    if al ~= bl then
-      return al < bl
-    end
-    return a.key > b.key
-  end)
+  M.sort(children, Config.ui.sort)
 
   local width = 0
   for _, node in ipairs(children) do
