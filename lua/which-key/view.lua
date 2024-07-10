@@ -188,7 +188,7 @@ function M.replace(field, value)
 end
 
 ---@param node wk.Node
----@param opts? {default?: "count"|"path"}
+---@param opts? {default?: "count"|"path", parent_key?: string}
 function M.item(node, opts)
   opts = opts or {}
   opts.default = opts.default or "count"
@@ -204,10 +204,11 @@ function M.item(node, opts)
     desc = table.concat(node.path)
   end
   desc = M.replace("desc", desc or "")
+  local parent_key = opts.parent_key and M.replace("key", opts.parent_key) or ""
   ---@type wk.Item
   return setmetatable({
     node = node,
-    key = M.replace("key", node.key),
+    key = parent_key .. M.replace("key", node.key),
     desc = child_count > 0 and Config.icons.group .. desc or desc,
     group = child_count > 0,
   }, { __index = node })
@@ -252,7 +253,17 @@ function M.show()
   local children = vim.tbl_values(state.node.children or {})
 
   ---@type wk.Item[]
-  local items = vim.tbl_map(M.item, children)
+  local items = {}
+  for _, node in ipairs(children) do
+    local child_count = Tree.count(node)
+    if child_count > 0 and child_count <= Config.expand then
+      for _, child in ipairs(vim.tbl_values(node.children or {})) do
+        table.insert(items, M.item(child, { parent_key = node.key }))
+      end
+    else
+      table.insert(items, M.item(node))
+    end
+  end
 
   M.sort(items, Config.sort)
 
