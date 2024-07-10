@@ -1,5 +1,4 @@
 local Buf = require("which-key.buf")
-local Config = require("which-key.config")
 local Tree = require("which-key.tree")
 local Util = require("which-key.util")
 
@@ -24,12 +23,12 @@ function M.setup()
 
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
-    callback = function(ev)
-      local mode = Buf.get({ buf = ev.buf, update = true })
-      if mode and mode.mode:find("[xo]") then
-        return M.start()
+    callback = function()
+      if Util.xo() then
+        return not M.state and M.start()
+      else
+        M.stop()
       end
-      M.stop()
     end,
   })
 
@@ -61,23 +60,22 @@ function M.step(state)
   local key = vim.fn.keytrans(vim.fn.getcharstr())
   local node = (state.node.children or {})[key] ---@type wk.Node?
 
-  if (key == "<Esc>" or key == "<C-C>") and not node then
-    return
-  end
-
-  if key == "<BS>" then
-    return state.node.parent or state.mode.tree.root
-  end
+  local mode = state.mode.mode
+  local xo = mode:find("[xo]") ~= nil
 
   if node then
     local is_group = Tree.is_group(node)
     local is_nowait = node.keymap and node.keymap.nowait == 1
     local is_action = node.action ~= nil
     local is_keymap = node.keymap ~= nil
-
     if is_group and not is_nowait and not is_action then
       return node
     end
+  elseif key == "<Esc>" then
+    -- cancel and exit if in op-mode
+    return mode == "o" and Util.exit() or nil
+  elseif key == "<BS>" then
+    return state.node.parent or state.mode.tree.root
   end
 
   state.mode:reattach(node or state.node)
@@ -90,6 +88,14 @@ function M.step(state)
   keys[#keys + 1] = key
 
   local keystr = table.concat(keys)
+  if not xo then
+    if vim.v.count > 0 then
+      keystr = vim.v.count .. keystr
+    end
+    if vim.v.register ~= Util.reg() and mode ~= "i" and mode ~= "c" then
+      keystr = '"' .. vim.v.register .. keystr
+    end
+  end
   local feed = vim.api.nvim_replace_termcodes(keystr, true, true, true)
   vim.api.nvim_feedkeys(feed, "mit", false)
 end
