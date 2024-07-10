@@ -84,7 +84,7 @@ function Mode:_attach(node)
   self.triggers[lhs] = node
   vim.keymap.set(self.mode, lhs, function()
     require("which-key.state").start(node)
-  end, { buffer = self.buf.buf, nowait = true })
+  end, { buffer = self.buf.buf, nowait = true, desc = "which-key trigger" })
   return lhs
 end
 

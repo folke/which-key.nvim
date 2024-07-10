@@ -71,7 +71,7 @@ end
 ---@param keymaps wk.Keymap[]
 function M:add(keymaps)
   for _, keymap in ipairs(keymaps) do
-    if keymap.lhs:sub(1, 6) ~= "<Plug>" then
+    if keymap.lhs:sub(1, 6) ~= "<Plug>" and keymap.desc ~= "which_key_ignore" then
       self:_add(keymap)
     end
   end
