@@ -66,7 +66,8 @@ function PluginNode:__index(k)
         parent = self,
         desc = item.desc,
         order = i,
-        keymap = item,
+        value = item.value,
+        action = item.action,
       }
       ret[item.key] = child
     end
