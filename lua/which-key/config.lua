@@ -45,7 +45,7 @@ local defaults = {
   win = {
     width = 0.9,
     -- width = { min = 40, max = 0.4 },
-    height = { min = 4, max = 0.25 },
+    height = { min = 4, max = 25 },
     padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
     col = 0.05,
     row = -1,
@@ -60,8 +60,7 @@ local defaults = {
     },
   },
   layout = {
-    height = { min = 4, max = 25 }, -- min and max height of the columns
-    width = { min = 20 }, -- min and max width of the columns
+    width = { min = 20, max = 50 }, -- min and max width of the columns
     spacing = 3, -- spacing between columns
     align = "left", -- align columns left, center or right
   },
