@@ -54,7 +54,7 @@ function PluginNode:__index(k)
     local plugin = M.plugins[self.plugin or ""]
     assert(plugin, "plugin not found")
     local ret = {} ---@type table<string, wk.Node>
-    for _, item in ipairs(plugin.expand()) do
+    for i, item in ipairs(plugin.expand()) do
       ---@type string[]
       local child_path = vim.list_extend({}, self.path)
       child_path[#child_path + 1] = item.key
@@ -65,6 +65,7 @@ function PluginNode:__index(k)
         path = child_path,
         parent = self,
         desc = item.desc,
+        order = i,
         keymap = item,
       }
       ret[item.key] = child

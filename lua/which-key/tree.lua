@@ -7,6 +7,7 @@ local Util = require("which-key.util")
 ---@field desc? string
 ---@field plugin? string
 ---@field keymap? wk.Keymap
+---@field order? number
 ---@field children? table<string, wk.Node>
 
 ---@class wk.Tree

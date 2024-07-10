@@ -26,6 +26,8 @@ local defaults = {
   },
   ui = {
     delay = 300,
+    ---@type (string|wk.Sorter)[]
+    sort = { "order", "group", "alphanum", "mod", "lower", "icase" },
   },
   key_labels = {
     -- override the label used to display some keys. It doesn't effect WK in any other way.
