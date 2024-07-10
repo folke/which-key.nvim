@@ -121,6 +121,54 @@ function M.replace(field, value)
   return value
 end
 
+---@param node wk.Node
+---@param opts? {default?: "count"|"path"}
+function M.item(node, opts)
+  opts = opts or {}
+  opts.default = opts.default or "count"
+  local child_count = Tree.count(node)
+  local desc = node.desc
+  if not desc and node.keymap and node.keymap.rhs ~= "" then
+    desc = node.keymap.rhs
+  end
+  if not desc and opts.default == "count" and child_count > 0 then
+    desc = child_count .. " keymap" .. (child_count > 1 and "s" or "")
+  end
+  if not desc and opts.default == "path" then
+    desc = table.concat(node.path)
+  end
+  desc = M.replace("desc", desc or "")
+  ---@type wk.Item
+  return setmetatable({
+    node = node,
+    key = M.replace("key", node.key),
+    desc = child_count > 0 and Config.ui.icons.group .. desc or desc,
+    group = child_count > 0,
+  }, { __index = node })
+end
+
+---@param node wk.Node
+function M.trail(node)
+  local trail = {} ---@type string[][]
+  while node do
+    local desc = node.desc and (Config.ui.icons.group .. M.replace("desc", node.desc))
+      or node.key and M.replace("key", node.key)
+      or ""
+    node = node.parent
+    if desc ~= "" then
+      if node and #trail > 0 then
+        table.insert(trail, 1, { " " .. Config.ui.icons.breadcrumb .. " ", "WhichKeyTitle" })
+      end
+      table.insert(trail, 1, { desc, "WhichKeyTitle" })
+    end
+  end
+  if #trail > 0 then
+    table.insert(trail, 1, { " " })
+    table.insert(trail, { " " })
+    return trail
+  end
+end
+
 function M.show()
   local state = State.state
   if not state or not state.node.children then
@@ -135,25 +183,8 @@ function M.show()
   ---@type wk.Node[]
   local children = vim.tbl_values(state.node.children or {})
 
-  ---@param node wk.Node
   ---@type wk.Item[]
-  local items = vim.tbl_map(function(node)
-    local child_count = Tree.count(node)
-    local desc = node.desc
-    if not desc and node.keymap and node.keymap.rhs ~= "" then
-      desc = node.keymap.rhs
-    end
-    if not desc and child_count > 0 then
-      desc = child_count .. " keymap" .. (child_count > 1 and "s" or "")
-    end
-    desc = M.replace("desc", desc or "")
-    return setmetatable({
-      node = node,
-      key = M.replace("key", node.key),
-      desc = child_count > 0 and Config.ui.icons.group .. desc or desc,
-      group = child_count > 0,
-    }, { __index = node })
-  end, children)
+  local items = vim.tbl_map(M.item, children)
 
   M.sort(items, Config.ui.sort)
 
@@ -183,20 +214,10 @@ function M.show()
     end
   end)
 
-  local title = {
-    { " " .. table.concat(state.node.path) .. " ", "FloatTitle" },
-  }
-  if state.node.desc then
-    local desc = state.node.desc or ""
-    desc = desc:gsub("^%++", "")
-    desc = "+" .. desc
-    table.insert(title, { " " .. desc .. " ", "FloatTitle" })
-  end
-
   local height = text:height() - 1
   local width = text:width()
   vim.api.nvim_win_set_config(M.win, {
-    title = title,
+    title = M.trail(state.node),
     relative = "editor",
     height = height,
     width = width,
