@@ -165,13 +165,12 @@ function M.register(mappings, opts)
   end
 end
 
-setmetatable(M, {
+return setmetatable(M, {
   __index = function(_, k)
-    if k == "options" then
+    if rawget(M, "options") == nil then
       M.setup()
     end
-    return rawget(M, "options")[k]
+    local opts = rawget(M, "options")
+    return k == "options" and opts or opts[k]
   end,
 })
-
-return M
