@@ -1,22 +1,27 @@
 local Config = require("which-key.config")
 local Layout = require("which-key.layout")
+local Plugins = require("which-key.plugins")
 local State = require("which-key.state")
 local Tree = require("which-key.tree")
-local Util = require("which-key.util")
 
 local M = {}
 M.buf = nil ---@type number
 M.win = nil ---@type number
 M.timer = vim.uv.new_timer()
 
----@alias wk.Item { node: wk.Node, key: string, desc: string, value?: string, group?: boolean }
+---@class wk.Item: wk.Node
+---@field node wk.Node
+---@field key string
+---@field desc string
+---@field group? boolean
+---@field order? number
 
 ---@alias wk.Sorter fun(node:wk.Item): (string|number)
 
 ---@type table<string, wk.Sorter>
 M.fields = {
   order = function(item)
-    return item.node.order and item.node.order or 1000
+    return item.order and item.order or 1000
   end,
   desc = function(item)
     return item.desc or "~"
@@ -55,8 +60,6 @@ function M.sort(nodes, fields)
     return a.key < b.key
   end)
 end
-
-local dw = vim.fn.strdisplaywidth
 
 function M.valid()
   return M.buf and vim.api.nvim_buf_is_valid(M.buf) and M.win and vim.api.nvim_win_is_valid(M.win)
@@ -149,8 +152,7 @@ function M.show()
       key = M.replace("key", node.key),
       desc = child_count > 0 and Config.ui.icons.group .. desc or desc,
       group = child_count > 0,
-      value = node.value,
-    }, { __index = node.data or {} })
+    }, { __index = node })
   end, children)
 
   M.sort(items, Config.ui.sort)
@@ -160,16 +162,12 @@ function M.show()
     { key = "key", hl = "WhichKey", align = "right" },
     { key = "sep", hl = "WhichKeySeparator", default = Config.ui.icons.separator },
   }
-  vim.list_extend(cols, state.node.cols or {})
-  vim.list_extend(cols, {
-    { key = "value", hl = "WhichKeyValue", width = 0.5 },
-    { key = "desc", width = 1 },
-  })
+  if state.node.plugin then
+    vim.list_extend(cols, Plugins.cols(state.node.plugin))
+  end
+  cols[#cols + 1] = { key = "desc", width = 1 }
 
-  local t = Layout.new({
-    cols = cols,
-    rows = items,
-  })
+  local t = Layout.new({ cols = cols, rows = items })
 
   vim.api.nvim_win_call(M.win, function()
     for r, row in ipairs(t:layout({ width = 120 })) do

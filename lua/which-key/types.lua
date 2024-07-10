@@ -9,6 +9,7 @@
 ---@field lhsraw? string
 ---@field buffer? number
 ---@field plugin? string
+---@field group? boolean
 ---@field virtual? boolean
 
 ---@class MappingOptions
@@ -34,7 +35,7 @@
 ---@field key string
 ---@field value string
 ---@field desc string
----@field highlights? table
+---@field order? number
 ---@field action? fun()
 
 ---@class wk.Plugin.action

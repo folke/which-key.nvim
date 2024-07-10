@@ -37,16 +37,23 @@ function M._setup(plugin, opts)
   end
 end
 
+---@param name string
+function M.cols(name)
+  local plugin = M.plugins[name]
+  assert(plugin, "plugin not found")
+  local ret = {} ---@type wk.Col[]
+  vim.list_extend(ret, plugin.cols or {})
+  ret[#ret + 1] = { key = "value", hl = "WhichKeyValue", width = 0.5 }
+  return ret
+end
+
+---@class wk.Node.plugin.item: wk.Node,wk.Plugin.item
+
 ---@class wk.Node.plugin: wk.Node
 local PluginNode = {}
 
 function PluginNode:__index(k)
-  if k == "cols" then
-    assert(self.plugin, "node must be a plugin node")
-    local plugin = M.plugins[self.plugin or ""]
-    assert(plugin, "plugin not found")
-    return plugin.cols
-  elseif k == "children" then
+  if k == "children" then
     assert(self.plugin, "node must be a plugin node")
     local plugin = M.plugins[self.plugin or ""]
     assert(plugin, "plugin not found")
@@ -56,18 +63,11 @@ function PluginNode:__index(k)
       local child_path = vim.list_extend({}, self.path)
       child_path[#child_path + 1] = item.key
 
-      ---@type wk.Node
-      local child = {
-        key = item.key,
-        path = child_path,
-        parent = self,
-        desc = item.desc,
-        order = i,
-        value = item.value,
-        action = item.action,
-        data = item,
-      }
-      ret[item.key] = child
+      ---@cast item wk.Node.plugin.item
+      item.path = child_path
+      item.parent = self
+      item.order = i
+      ret[item.key] = item
     end
     return ret
   end
