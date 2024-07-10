@@ -24,6 +24,9 @@ M.fields = {
   order = function(item)
     return item.order and item.order or 1000
   end,
+  manual = function(item)
+    return item.virtual and item.virtual.idx or 10000
+  end,
   desc = function(item)
     return item.desc or "~"
   end,
