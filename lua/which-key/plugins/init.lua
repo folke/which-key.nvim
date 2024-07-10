@@ -2,7 +2,7 @@ local Config = require("which-key.config")
 
 local M = {}
 
----@type table<string, Plugin>
+---@type table<string, wk.Plugin>
 M.plugins = {}
 
 function M.setup()
@@ -21,7 +21,7 @@ function M.setup()
   end
 end
 
----@param plugin Plugin
+---@param plugin wk.Plugin
 function M._setup(plugin, opts)
   if plugin.actions then
     for _, trigger in pairs(plugin.actions) do

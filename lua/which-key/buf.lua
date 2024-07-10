@@ -113,26 +113,13 @@ function Mode:update()
 
   local mappings = vim.api.nvim_get_keymap(self.mode)
   vim.list_extend(mappings, vim.api.nvim_buf_get_keymap(self.buf.buf, self.mode))
+  ---@cast mappings wk.Keymap[]
 
-  ---@param mapping wk.Keymap
-  mappings = vim.tbl_filter(function(mapping)
-    if (mapping.rhs == "" or mapping.rhs == "<Nop>") and mapping.desc then
-      if mapping.buffer == 0 then
-        mapping.buffer = nil
-      end
-      require("which-key").register({
-        [mapping.lhs] = {
-          mapping.desc,
-          mode = self.mode,
-          group = true,
-          buffer = mapping.buffer,
-        },
-      })
-      pcall(vim.keymap.del, self.mode, mapping.lhs, { buffer = mapping.buffer })
-      return false
+  for _, mapping in ipairs(mappings) do
+    if mapping.rhs == "" or mapping.rhs == "<Nop>" then
+      mapping.virtual = true
     end
-    return not self:is_trigger(mapping.lhs)
-  end, mappings)
+  end
 
   for _, m in ipairs(Config.mappings) do
     if m.mode == self.mode and (not m.buffer or m.buffer == self.buf) then

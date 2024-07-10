@@ -1,5 +1,5 @@
 ---@diagnostic disable: missing-fields, inject-field
----@type Plugin
+---@type wk.Plugin
 local M = {}
 
 M.name = "registers"
@@ -30,7 +30,7 @@ local labels = {
 }
 
 function M.expand()
-  local items = {} ---@type PluginItem[]
+  local items = {} ---@type wk.Plugin.item[]
 
   local is_osc52 = vim.g.clipboard and vim.g.clipboard.name == "OSC 52"
 

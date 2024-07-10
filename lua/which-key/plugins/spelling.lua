@@ -1,5 +1,5 @@
 ---@diagnostic disable: missing-fields, inject-field
----@type Plugin
+---@type wk.Plugin
 local M = {}
 
 M.name = "spelling"
@@ -28,7 +28,7 @@ function M.expand()
   ---@type string[]
   local suggestions = vim.fn.spellsuggest(word, M.opts.suggestions or 20, bad[2] == "caps" and 1 or 0)
 
-  local items = {} ---@type PluginItem[]
+  local items = {} ---@type wk.Plugin.item[]
   local keys = "1234567890abcdefghijklmnopqrstuvwxyz"
 
   for i, label in ipairs(suggestions) do
