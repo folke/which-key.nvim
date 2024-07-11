@@ -156,13 +156,8 @@ end
 function M.register(mappings, opts)
   local Mappings = require("which-key.mappings")
   for _, km in ipairs(Mappings.parse(mappings, opts)) do
-    if km.rhs or km.callback then
-      vim.keymap.set(km.mode, km.lhs, km.callback or km.rhs or "", Mappings.opts(km))
-    else
-      km.virtual = true
-      table.insert(M.mappings, km)
-      km.idx = #M.mappings
-    end
+    table.insert(M.mappings, km)
+    km.idx = #M.mappings
   end
   if M.loaded then
     require("which-key.buf").clear()

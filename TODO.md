@@ -1,21 +1,36 @@
 # Todo
 
-* [x] hook into all groups
-* [x] show mappings without keymap (zz etc)
-* [x] plugin support for marks, registers, text objects
-* [x] `<bs>` to go up a level
-* [x] config modes
-* [x] update buf only
-* [x] + thingy for groups
-* [x] text objects
-* [x] get label from global when not found for buffer
-* [x] operators & motions
-* [x] show window after timeout?
-* [x] make plugins a list of key value with config in value
-* [x] cleanup text objects text
-* [x] buf local mappings seems to interfere with global mappings (push K in help)
-* [x] fix help in visual mode
-* [x] Plug>whichkey nop
-* [x] preset plugin
-* [x] command should auto stuff
-* [x] timeoutlen is always respected and should still work when zero
+- [x] create keymaps in register()
+- [x] distinction between actual keymap and just a desc
+- [x] virtual mappings wihtout real children?
+- [x] registers / counts?
+- [x] presets / plugins
+- [x] config?
+- [x] auto blacklist single keys for default keymaps (for mappings like `aa`, a hook would be created for `a` and `a` would be ignored)
+- [x] custom sorting
+- [x] gr doesn't work because of grn and friends
+- [x] same for gc opmode and gc normal mode
+- [x] yank and shift-paste hangs
+- [x] macro recording / macro execution
+- [x] spell
+- [x] spell with count, like `1z=`
+- [x] which-key-ignore
+- [x] empty groups?
+- [x] timeoutlen and nowait
+- [x] ui presets
+- [x] ui opts & columns etc
+- [x] scroll window
+- [x] help text?
+- [x] plugin layout?
+- [x] ✅ 🔥🔥🚀
+- [x] minimize attach
+- [x] sometimes incorrectly attached `gcc` not working
+- [x] error handling for view
+- [x] spelling layout
+- [x] better mappings parser? Especially needs typings
+- [x] Mappings with mode `v`
+- [ ] health
+- [ ] auto gen docs
+- [ ] more tests
+- [ ] allow register from opts
+- [ ] News
