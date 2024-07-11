@@ -1,5 +1,6 @@
 local Buf = require("which-key.buf")
 local Config = require("which-key.config")
+local Icons = require("which-key.icons")
 local Layout = require("which-key.layout")
 local Plugins = require("which-key.plugins")
 local State = require("which-key.state")
@@ -25,7 +26,7 @@ M.fields = {
   order = function(item)
     return item.order and item.order or 1000
   end,
-  buffer = function(item)
+  ["local"] = function(item)
     return item.keymap and item.keymap.buffer ~= 0 and 0 or 1000
   end,
   manual = function(item)
@@ -215,10 +216,13 @@ function M.item(node, opts)
     desc = node.keys
   end
   desc = M.replace("desc", desc or "")
+  local icon, icon_hl = Icons.get({ keymap = node.keymap, desc = node.desc })
   local parent_key = opts.parent_key and M.replace("key", opts.parent_key) or ""
   ---@type wk.Item
   return setmetatable({
     node = node,
+    icon = icon,
+    icon_hl = icon_hl,
     key = parent_key .. M.replace("key", node.key),
     desc = child_count > 0 and Config.icons.group .. desc or desc,
     group = child_count > 0,
@@ -291,6 +295,7 @@ function M.show()
   local cols = {
     { key = "key", hl = "WhichKey", align = "right" },
     { key = "sep", hl = "WhichKeySeparator", default = Config.icons.separator },
+    { key = "icon", padding = { 0, 0 } },
   }
   if state.node.plugin then
     vim.list_extend(cols, Plugins.cols(state.node.plugin))
@@ -328,6 +333,9 @@ function M.show()
           local hl = col.hl
           if cols[c].key == "desc" then
             hl = item.group and "WhichKeyGroup" or "WhichKeyDesc"
+          end
+          if cols[c].key == "icon" then
+            hl = item.icon_hl
           end
           text:append(col.value, hl)
         end
