@@ -9,11 +9,13 @@ function M.show(opts)
   require("which-key.state").start(opts)
 end
 
----@type {mappings:table, opts?:table}
+---@type {spec:wk.Spec, opts?:wk.Mapping}[]
 M._queue = {}
 
+---@param mappings wk.Spec
+---@param opts? wk.Mapping
 function M.register(mappings, opts)
-  table.insert(M._queue, { mappings = mappings, opts = opts })
+  table.insert(M._queue, { spec = mappings, opts = opts })
 end
 
 function M.setup(opts)

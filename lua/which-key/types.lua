@@ -35,6 +35,7 @@
 ---@field remap? boolean
 ---@field hidden? boolean
 ---@field preset? boolean
+---@field icon? wk.Icon
 
 ---@class wk.Spec: {[string]: wk.Spec, [number]: wk.Spec} , wk.Mapping
 ---@field [1]? string|fun()

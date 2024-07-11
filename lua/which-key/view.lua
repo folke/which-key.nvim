@@ -217,7 +217,10 @@ function M.item(node, opts)
   end
   desc = M.replace("desc", desc or "")
   local icon, icon_hl
-  if not (node.parent and node.parent.plugin) then
+  if node.mapping and node.mapping.icon then
+    icon, icon_hl = Icons.get(node.mapping.icon)
+  end
+  if not icon and not (node.parent and node.parent.plugin) then
     icon, icon_hl = Icons.get({ keymap = node.keymap, desc = node.desc })
   end
   local parent_key = opts.parent_key and M.replace("key", opts.parent_key) or ""

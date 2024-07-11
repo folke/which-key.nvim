@@ -62,7 +62,7 @@ function M:add(keymap, virtual)
   node.desc = keymap.desc or node.desc
   node.plugin = node.plugin or keymap.plugin
   if virtual then
-    node.virtual = keymap
+    node.mapping = keymap
   else
     node.keymap = keymap
     node.global = not (keymap.buffer and keymap.buffer ~= 0)

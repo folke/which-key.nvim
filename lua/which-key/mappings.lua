@@ -33,6 +33,7 @@ M.fields = {
   name = {},
   cmd = { transform = "rhs" },
   group = {},
+  icon = { transitive = true },
   rhs = {},
   lhs = {},
 }
