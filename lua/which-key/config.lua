@@ -72,6 +72,7 @@ local defaults = {
   },
   ---@type (string|wk.Sorter)[]
   --- Add "manual" as the first element to use the order the mappings were registered
+  --- Other sorters: "desc"
   sort = { "local", "order", "group", "alphanum", "mod", "lower", "icase" },
   expand = 1, -- expand groups when <= n mappings
   ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
