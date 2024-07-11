@@ -130,15 +130,15 @@ function M.step(state)
   vim.api.nvim_feedkeys(feed, "mit", false)
 end
 
----@param filter? wk.Filter
-function M.start(filter)
-  filter = filter or {}
-  filter.update = true
-  local mode = Buf.get(filter)
+---@param opts? wk.Filter
+function M.start(opts)
+  opts = opts or {}
+  opts.update = true
+  local mode = Buf.get(opts)
   if not mode then
     return
   end
-  local node = mode.tree:find(filter.keys or {})
+  local node = mode.tree:find(opts.keys or {})
   if not node then
     return
   end
@@ -150,15 +150,15 @@ function M.start(filter)
   M.state = {
     mode = mode,
     node = node,
-    filter = filter,
+    filter = opts,
   }
 
   while M.state do
-    mode = Buf.get(filter)
+    mode = Buf.get(opts)
     if not mode or mode.mode ~= mapmode then
       break
     end
-    View.update()
+    View.update(opts)
     local child = M.step(M.state)
     if child and M.state then
       M.state.node = child

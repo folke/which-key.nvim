@@ -1,9 +1,12 @@
 local M = {}
 
----@param filter? wk.Filter|string
-function M.show(filter)
+---@param opts? wk.Filter|string
+function M.show(opts)
+  opts = opts or {}
+  opts = type(opts) == "string" and { keys = opts } or opts
+  opts.delay = 0
   ---@diagnostic disable-next-line: param-type-mismatch
-  require("which-key.state").start(type(filter) == "string" and { keys = filter } or filter)
+  require("which-key.state").start(opts)
 end
 
 ---@type {mappings:table, opts?:table}
