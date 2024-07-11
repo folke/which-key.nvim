@@ -383,14 +383,22 @@ function M.show()
 
   opts.width = M.dim(opts.width, vim.o.columns, text:width() + bw)
   opts.height = M.dim(opts.height, vim.o.lines, text:height() + bw)
+
   if Config.show_help then
     opts.height = opts.height + 1
   end
 
+  -- top-left
   opts.col = Layout.dim(opts.col, { parent = vim.o.columns })
   opts.row = opts.row < 0 and vim.o.lines + opts.row - opts.height or opts.row
   opts.width = opts.width - bw
   opts.height = opts.height - bw
+  local cursor = vim.fn.screenrow()
+  if cursor >= opts.row and cursor <= opts.row + opts.height then
+    opts.row = cursor + 1
+  end
+  opts.height = math.max(vim.o.lines - opts.row, 1)
+
   M.mount(opts)
 
   if Config.show_help or show_keys then
