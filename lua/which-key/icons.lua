@@ -52,6 +52,7 @@ M.rules = {
 ---@module 'mini.icons'
 local Icons
 local loaded = false
+local have_hl = nil
 
 local function load()
   if not loaded then
@@ -67,7 +68,11 @@ end
 
 ---@param hl? string
 function M.hl(hl)
-  return (not hl or Config.icons.colors == false) and "WhichKeyIcon" or hl
+  if have_hl == nil then
+    local thl = vim.api.nvim_get_hl(0, { create = false, name = "MiniIconsBlue" })
+    have_hl = not vim.tbl_isempty(thl)
+  end
+  return (not have_hl or not hl or Config.icons.colors == false) and "WhichKeyIcon" or hl
 end
 
 ---@param icon wk.Icon|string
