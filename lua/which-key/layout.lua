@@ -45,6 +45,7 @@ end
 ---@field key string
 ---@field hl? string
 ---@field width? number
+---@field padding? number[]
 ---@field default? string
 ---@field align? "left"|"right"|"center"
 
@@ -81,7 +82,10 @@ function Table:cells(opts)
       cells[r] = cells[r] or {}
       local value = row[col.key] or col.default or ""
       value = vim.fn.strtrans(value)
-      value = value:gsub("%s$", "")
+      value = value:gsub("%s*$", "")
+      if col.padding then
+        value = (" "):rep(col.padding[1] or 0) .. value .. (" "):rep(col.padding[2] or 0)
+      end
       if c ~= #self.cols then
         value = value .. (" "):rep(opts.spacing)
       end

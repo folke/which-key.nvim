@@ -69,7 +69,7 @@ local defaults = {
   },
   ---@type (string|wk.Sorter)[]
   --- Add "manual" as the first element to use the order the mappings were registered
-  sort = { "order", "group", "alphanum", "mod", "lower", "icase" },
+  sort = { "local", "order", "group", "alphanum", "mod", "lower", "icase" },
   expand = 1, -- expand groups when <= n mappings
   ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
   replace = {
@@ -95,6 +95,10 @@ local defaults = {
     separator = "➜", -- symbol used between a key and it's label
     group = "+", -- symbol prepended to a group
     ellipsis = "…",
+    --- See `lua/which-key/icons.lua` for more details
+    --- Set to `false` to disable keymap icons
+    ---@type wk.IconRule[]|false
+    rules = {},
   },
   show_help = true, -- show a help message in the command line for using WhichKey
   show_keys = true, -- show the currently pressed key and its label as a message in the command line

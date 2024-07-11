@@ -10,6 +10,16 @@
 ---@field local? boolean
 ---@field update? boolean
 
+---@class wk.Icon
+---@field icon? string
+---@field hl? string
+---@field cat? string
+---@field name? string
+
+---@class wk.IconRule: wk.Icon
+---@field pattern? string
+---@field plugin? string
+
 ---@class wk.Keymap: vim.api.keyset.keymap
 ---@field lhs string
 ---@field idx? number
