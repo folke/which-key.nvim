@@ -28,6 +28,16 @@ function M.setup()
     end,
   })
 
+  vim.api.nvim_create_autocmd("FocusLost", {
+    group = group,
+    callback = function()
+      if M.state then
+        M.stop()
+        vim.api.nvim_input("<esc>")
+      end
+    end,
+  })
+
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
     callback = function()
