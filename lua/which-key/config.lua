@@ -12,6 +12,9 @@ local defaults = {
   delay = function(ctx)
     return ctx.plugin and 0 or 200
   end,
+  --- You can add any mappings here, or use `require('which-key').register()` later
+  ---@type wk.Spec
+  spec = {},
   -- Enable/disable WhichKey for certain mapping modes
   modes = {
     n = true, -- Normal mode
@@ -139,6 +142,7 @@ function M.setup(opts)
     for _, v in ipairs(wk._queue) do
       M.register(v.mappings, v.opts)
     end
+    M.register(M.options.spec)
     wk._queue = {}
     require("which-key.colors").setup()
     require("which-key.state").setup()

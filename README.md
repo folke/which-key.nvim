@@ -15,10 +15,10 @@ the command you started typing. Heavily inspired by the original [emacs-which-ke
 - works correctly with buffer-local mappings
 - extensible plugin architecture
 - built-in plugins:
-  - **marks:** shows your marks when you hit one of the jump keys.
-  - **registers:** shows the contents of your registers
-  - **presets:** built-in key binding help for `motions`, `text-objects`, `operators`, `windows`, `nav`, `z` and `g`
-  - **spelling:** spelling suggestions inside the which-key popup
+  + **marks:** shows your marks when you hit one of the jump keys.
+  + **registers:** shows the contents of your registers
+  + **presets:** built-in key binding help for `motions`, `text-objects`, `operators`, `windows`, `nav`, `z` and `g`
+  + **spelling:** spelling suggestions inside the which-key popup
 
 ## ⚡️ Requirements
 
@@ -77,8 +77,31 @@ use {
 
 WhichKey comes with the following defaults:
 
+<!-- config:start -->
+
 ```lua
-{
+---@class wk.Opts
+local defaults = {
+  ---@type "classic" | "modern" | "helix"
+  preset = "classic",
+  -- Delay before showing the popup. Can be a number or a function that returns a number.
+  ---@type number | fun(ctx: { keys: string, mode: string, plugin?: string }):number
+  delay = function(ctx)
+    return ctx.plugin and 0 or 200
+  end,
+  --- You can add any mappings here, or use `require('which-key').register()` later
+  ---@type wk.Spec
+  spec = {},
+  -- Enable/disable WhichKey for certain mapping modes
+  modes = {
+    n = true, -- Normal mode
+    i = true, -- Insert mode
+    x = true, -- Visual mode
+    s = true, -- Select mode
+    o = true, -- Operator pending mode
+    t = true, -- Terminal mode
+    c = true, -- Command mode
+  },
   plugins = {
     marks = true, -- shows a list of your marks on ' and `
     registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
@@ -98,75 +121,80 @@ WhichKey comes with the following defaults:
       g = true, -- bindings for prefixed with g
     },
   },
-  -- add operators that will trigger motion and text object completion
-  -- to enable all native operators, set the preset / operators plugin above
-  operators = { gc = "Comments" },
-  key_labels = {
-    -- override the label used to display some keys. It doesn't effect WK in any other way.
-    -- For example:
-    -- ["<space>"] = "SPC",
-    -- ["<cr>"] = "RET",
-    -- ["<tab>"] = "TAB",
+  ---@type wk.Win
+  win = {
+    -- width = 1,
+    -- height = { min = 4, max = 25 },
+    -- col = 0,
+    row = -1,
+    border = "none",
+    padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
+    title = true,
+    title_pos = "center",
+    zindex = 1000,
+    -- Additional vim.wo and vim.bo options
+    bo = {},
+    wo = {
+      -- winblend = 10, -- value between 0-100 0 for fully opaque and 100 for fully transparent
+    },
   },
-  motions = {
-    count = true,
+  layout = {
+    width = { min = 20 }, -- min and max width of the columns
+    spacing = 3, -- spacing between columns
+    align = "left", -- align columns left, center or right
+  },
+  keys = {
+    scroll_down = "<c-d>", -- binding to scroll down inside the popup
+    scroll_up = "<c-u>", -- binding to scroll up inside the popup
+  },
+  ---@type (string|wk.Sorter)[]
+  --- Add "manual" as the first element to use the order the mappings were registered
+  sort = { "local", "order", "group", "alphanum", "mod", "lower", "icase" },
+  expand = 1, -- expand groups when <= n mappings
+  ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
+  replace = {
+    key = {
+      function(key)
+        return require("which-key.view").format(key)
+      end,
+      -- { "<Space>", "SPC" },
+    },
+    desc = {
+      { "<Plug>%((.*)%)", "%1" },
+      { "^%+", "" },
+      { "<[cC]md>", "" },
+      { "<[cC][rR]>", "" },
+      { "<[sS]ilent>", "" },
+      { "^lua%s+", "" },
+      { "^call%s+", "" },
+      { "^:%s*", "" },
+    },
   },
   icons = {
     breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
     separator = "➜", -- symbol used between a key and it's label
     group = "+", -- symbol prepended to a group
+    ellipsis = "…",
+    --- See `lua/which-key/icons.lua` for more details
+    --- Set to `false` to disable keymap icons
+    ---@type wk.IconRule[]|false
+    rules = {},
   },
-  popup_mappings = {
-    scroll_down = "<c-d>", -- binding to scroll down inside the popup
-    scroll_up = "<c-u>", -- binding to scroll up inside the popup
-  },
-  window = {
-    border = "none", -- none, single, double, shadow
-    position = "bottom", -- bottom, top
-    margin = { 1, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]. When between 0 and 1, will be treated as a percentage of the screen size.
-    padding = { 1, 2, 1, 2 }, -- extra window padding [top, right, bottom, left]
-    winblend = 0, -- value between 0-100 0 for fully opaque and 100 for fully transparent
-    zindex = 1000, -- positive value to position WhichKey above other floating windows.
-  },
-  layout = {
-    height = { min = 4, max = 25 }, -- min and max height of the columns
-    width = { min = 20, max = 50 }, -- min and max width of the columns
-    spacing = 3, -- spacing between columns
-    align = "left", -- align columns left, center or right
-  },
-  ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
-  hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "^:", "^ ", "^call ", "^lua " }, -- hide mapping boilerplate
   show_help = true, -- show a help message in the command line for using WhichKey
   show_keys = true, -- show the currently pressed key and its label as a message in the command line
-  triggers = "auto", -- automatically setup triggers
-  -- triggers = {"<leader>"} -- or specify a list manually
-  -- list of triggers, where WhichKey should not wait for timeoutlen and show immediately
-  triggers_nowait = {
-    -- marks
-    "`",
-    "'",
-    "g`",
-    "g'",
-    -- registers
-    '"',
-    "<c-r>",
-    -- spelling
-    "z=",
-  },
-  triggers_blacklist = {
-    -- list of mode / prefixes that should never be hooked by WhichKey
-    -- this is mostly relevant for keymaps that start with a native binding
-    i = { "j", "k" },
-    v = { "j", "k" },
-  },
-  -- disable the WhichKey popup for certain buf types and file types.
-  -- Disabled by default for Telescope
+  -- Which-key automatically sets up triggers for your mappings.
+  -- But you can disable this and setup the triggers yourself.
+  -- Be aware, that triggers are not needed for visual and operator pending mode.
+  triggers = true, -- automatically setup triggers
   disable = {
-    buftypes = {},
-    filetypes = {},
+    -- disable WhichKey for certain buf types and file types.
+    ft = {},
+    bt = {},
   },
 }
 ```
+
+<!-- config:end -->
 
 ## 🪄 Setup
 
@@ -277,14 +305,14 @@ wk.register({
 > `[count]operator[count][text-object]`
 
 - operators can be configured with the `operators` option
-  - set `plugins.presets.operators` to `true` to automatically configure vim built-in operators
-  - set this to `false`, to only include the list you configured in the `operators` option.
-  - see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L5) for the full list part of the preset
+  + set `plugins.presets.operators` to `true` to automatically configure vim built-in operators
+  + set this to `false`, to only include the list you configured in the `operators` option.
+  + see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L5) for the full list part of the preset
 - text objects are automatically retrieved from **operator pending** key maps (`omap`)
-  - set `plugins.presets.text_objects` to `true` to configure built-in text objects
-  - see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L43)
+  + set `plugins.presets.text_objects` to `true` to configure built-in text objects
+  + see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L43)
 - motions are part of the preset `plugins.presets.motions` setting
-  - see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L20)
+  + see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L20)
 
 <details>
 <summary>How to disable some operators? (like v)</summary>
@@ -352,16 +380,20 @@ When enabled, this plugin hooks into `z=` and replaces the full-screen spelling 
 
 The table below shows all the highlight groups defined for **WhichKey** with their default link.
 
-| Highlight Group     | Defaults to | Description                                 |
-| ------------------- | ----------- | ------------------------------------------- |
-| _WhichKey_          | Function    | the key                                     |
-| _WhichKeyGroup_     | Keyword     | a group                                     |
-| _WhichKeySeparator_ | DiffAdd     | the separator between the key and its label |
-| _WhichKeyDesc_      | Identifier  | the label of the key                        |
-| _WhichKeyFloat_     | NormalFloat | Normal in the popup window                  |
-| _WhichKeyBorder_    | FloatBorder | Normal in the popup window                  |
-| _WhichKeyValue_     | Comment     | used by plugins that provide values         |
+<!-- colors:start -->
 
+| Highlight Group       | Default Group     | Description                                       |
+| --------------------- | ----------------- | ------------------------------------------------- |
+| **WhichKey**          | **_Function_**    |                                                   |
+| **WhichKeyBorder**    | **_FloatBorder_** | Border of the which-key window                    |
+| **WhichKeyDesc**      | **_Identifier_**  | description                                       |
+| **WhichKeyFloat**     | **_NormalFloat_** | Normal in th which-key window                     |
+| **WhichKeyGroup**     | **_Keyword_**     | group name                                        |
+| **WhichKeySeparator** | **_Comment_**     | the separator between the key and its description |
+| **WhichKeyTitle**     | **_FloatTitle_**  | Title of the which-key window                     |
+| **WhichKeyValue**     | **_Comment_**     | values by plugins (like marks, registers, etc)    |
+
+<!-- colors:end -->
 <!-- markdownlint-disable-file MD033 -->
 <!-- markdownlint-configure-file { "MD013": { "line_length": 120 } } -->
 <!-- markdownlint-configure-file { "MD004": { "style": "sublist" } } -->

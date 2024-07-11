@@ -320,7 +320,7 @@ function M.show()
 
   local rows = t:layout({ width = box_width - Config.layout.spacing })
 
-  for _ = 1, Config.options.win.padding[1] + 1 do
+  for _ = 1, Config.win.padding[1] + 1 do
     text:nl()
   end
 
@@ -348,7 +348,7 @@ function M.show()
   end
   text:trim()
 
-  for _ = 1, Config.options.win.padding[1] do
+  for _ = 1, Config.win.padding[1] do
     text:nl()
   end
 

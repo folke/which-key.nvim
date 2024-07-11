@@ -29,8 +29,8 @@
 - [x] spelling layout
 - [x] better mappings parser? Especially needs typings
 - [x] Mappings with mode `v`
+- [x] allow register from opts
+- [x] auto gen docs
 - [ ] health
-- [ ] auto gen docs
 - [ ] more tests
-- [ ] allow register from opts
 - [ ] News
