@@ -252,7 +252,7 @@ function M.clear(opts)
   M.check()
 end
 
-M.check = Util.debounce(100, function()
+M.check = Util.debounce(50, function()
   M.get()
 end)
 
