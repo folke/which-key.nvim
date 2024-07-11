@@ -216,7 +216,10 @@ function M.item(node, opts)
     desc = node.keys
   end
   desc = M.replace("desc", desc or "")
-  local icon, icon_hl = Icons.get({ keymap = node.keymap, desc = node.desc })
+  local icon, icon_hl
+  if not (node.parent and node.parent.plugin) then
+    icon, icon_hl = Icons.get({ keymap = node.keymap, desc = node.desc })
+  end
   local parent_key = opts.parent_key and M.replace("key", opts.parent_key) or ""
   ---@type wk.Item
   return setmetatable({
