@@ -118,6 +118,16 @@ function M.debounce(ms, fn)
   end
 end
 
+---@param opts? {msg?: string}
+function M.try(fn, opts)
+  local ok, err = pcall(fn)
+  if not ok then
+    local msg = opts and opts.msg or "Something went wrong:"
+    msg = msg .. "\n" .. err
+    M.error(msg)
+  end
+end
+
 ---@param buf number
 ---@param row number
 ---@param ns number

@@ -19,10 +19,10 @@ function M.setup()
     group = group,
     callback = function(ev)
       if ev.event == "RecordingEnter" then
-        Buf.reset({ detach = true })
+        Buf.clear({ buf = ev.buf })
         M.stop()
       else
-        Buf.get({ update = true })
+        Buf.check()
       end
     end,
   })
@@ -45,20 +45,18 @@ function M.setup()
   vim.api.nvim_create_autocmd({ "LspAttach", "LspDetach" }, {
     group = group,
     callback = function(ev)
-      Buf.get({ buf = ev.buf, update = true })
+      Buf.clear({ buf = ev.buf })
     end,
   })
 
   vim.api.nvim_create_autocmd({ "BufReadPost", "BufEnter" }, {
     group = group,
-    callback = function(ev)
-      Buf.get({ buf = ev.buf, update = false })
+    callback = function()
+      Buf.check()
     end,
   })
 
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    Buf.get({ buf = buf, update = true })
-  end
+  Buf.check()
 end
 
 function M.stop()
@@ -138,6 +136,8 @@ function M.start(node)
     return
   end
 
+  local mapmode = mode.mode
+
   local View = require("which-key.view")
 
   M.state = {
@@ -145,7 +145,11 @@ function M.start(node)
     node = node or mode.tree.root,
   }
 
-  while M.state and Buf.get() == mode do
+  while M.state do
+    mode = Buf.get()
+    if not mode or mode.mode ~= mapmode then
+      break
+    end
     View.update()
     local child = M.step(M.state)
     if child and M.state then
@@ -163,7 +167,7 @@ function M.update()
     return
   end
   local mode = Buf.get()
-  if not mode or mode ~= M.state.mode then
+  if not mode or mode.mode ~= M.state.mode.mode then
     return M.stop()
   end
   local node = mode.tree:find(M.state.node.path)
