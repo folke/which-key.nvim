@@ -9,6 +9,7 @@
 ---@field global? boolean
 ---@field local? boolean
 ---@field update? boolean
+---@field delay? number
 
 ---@class wk.Icon
 ---@field icon? string
