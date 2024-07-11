@@ -65,17 +65,22 @@ function M.have()
   return load() ~= nil
 end
 
+---@param hl? string
+function M.hl(hl)
+  return (not hl or Config.icons.colors == false) and "WhichKeyIcon" or hl
+end
+
 ---@param icon wk.Icon|string
 ---@return string?, string?
 function M.get_icon(icon)
   icon = type(icon) == "string" and { cat = "filetype", name = icon } or icon --[[@as wk.Icon]]
   if icon.icon then
-    return icon.icon, icon.hl
+    return icon.icon, M.hl(icon.hl)
   end
   if icon.cat and icon.name and load() then
     local ico, ico_hl, ico_def = Icons.get(icon.cat, icon.name) --[[@as string, string, boolean]]
     if not ico_def then
-      return ico, ico_hl
+      return ico, M.hl(ico_hl)
     end
   end
 end
