@@ -9,6 +9,7 @@ M.colors = {
   Title = "FloatTitle", -- Title of the which-key window
   Border = "FloatBorder", -- Border of the which-key window
   Value = "Comment", -- values by plugins (like marks, registers, etc)
+  Icon = "@markup.link", -- icons
 }
 
 function M.setup()

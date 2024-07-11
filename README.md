@@ -149,6 +149,7 @@ local defaults = {
   },
   ---@type (string|wk.Sorter)[]
   --- Add "manual" as the first element to use the order the mappings were registered
+  --- Other sorters: "desc"
   sort = { "local", "order", "group", "alphanum", "mod", "lower", "icase" },
   expand = 1, -- expand groups when <= n mappings
   ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
@@ -179,6 +180,9 @@ local defaults = {
     --- Set to `false` to disable keymap icons
     ---@type wk.IconRule[]|false
     rules = {},
+    -- use the highlights from mini.icons
+    -- When `false`, it will use `WhichKeyIcon` instead
+    colors = true,
   },
   show_help = true, -- show a help message in the command line for using WhichKey
   show_keys = true, -- show the currently pressed key and its label as a message in the command line
@@ -382,16 +386,17 @@ The table below shows all the highlight groups defined for **WhichKey** with the
 
 <!-- colors:start -->
 
-| Highlight Group       | Default Group     | Description                                       |
-| --------------------- | ----------------- | ------------------------------------------------- |
-| **WhichKey**          | **_Function_**    |                                                   |
-| **WhichKeyBorder**    | **_FloatBorder_** | Border of the which-key window                    |
-| **WhichKeyDesc**      | **_Identifier_**  | description                                       |
-| **WhichKeyFloat**     | **_NormalFloat_** | Normal in th which-key window                     |
-| **WhichKeyGroup**     | **_Keyword_**     | group name                                        |
-| **WhichKeySeparator** | **_Comment_**     | the separator between the key and its description |
-| **WhichKeyTitle**     | **_FloatTitle_**  | Title of the which-key window                     |
-| **WhichKeyValue**     | **_Comment_**     | values by plugins (like marks, registers, etc)    |
+| Highlight Group | Default Group | Description |
+| --- | --- | --- |
+| **WhichKey** | ***Function*** |  |
+| **WhichKeyBorder** | ***FloatBorder*** | Border of the which-key window |
+| **WhichKeyDesc** | ***Identifier*** | description |
+| **WhichKeyFloat** | ***NormalFloat*** | Normal in th which-key window |
+| **WhichKeyGroup** | ***Keyword*** | group name |
+| **WhichKeyIcon** | ***@markup.link*** | icons |
+| **WhichKeySeparator** | ***Comment*** | the separator between the key and its description |
+| **WhichKeyTitle** | ***FloatTitle*** | Title of the which-key window |
+| **WhichKeyValue** | ***Comment*** | values by plugins (like marks, registers, etc) |
 
 <!-- colors:end -->
 <!-- markdownlint-disable-file MD033 -->

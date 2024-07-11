@@ -103,6 +103,9 @@ local defaults = {
     --- Set to `false` to disable keymap icons
     ---@type wk.IconRule[]|false
     rules = {},
+    -- use the highlights from mini.icons
+    -- When `false`, it will use `WhichKeyIcon` instead
+    colors = true,
   },
   show_help = true, -- show a help message in the command line for using WhichKey
   show_keys = true, -- show the currently pressed key and its label as a message in the command line
