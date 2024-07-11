@@ -140,7 +140,7 @@ function M.setup(opts)
     local wk = require("which-key")
     wk.register = M.register
     for _, v in ipairs(wk._queue) do
-      M.register(v.mappings, v.opts)
+      M.register(v.spec, v.opts)
     end
     M.register(M.options.spec)
     wk._queue = {}
@@ -157,6 +157,8 @@ function M.setup(opts)
   end
 end
 
+---@param mappings wk.Spec
+---@param opts? wk.Mapping
 function M.register(mappings, opts)
   local Mappings = require("which-key.mappings")
   for _, km in ipairs(Mappings.parse(mappings, opts)) do
