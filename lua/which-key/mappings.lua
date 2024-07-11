@@ -82,10 +82,19 @@ function M._parse(value, parent, ret)
 
   if count == 1 then
     assert(type(value[1]) == "string", "Invalid mapping " .. vim.inspect(value))
-    mapping.desc = value[1] --[[@as string]]
+    if mapping.desc then
+      mapping.lhs = value[1] --[[@as string]]
+    else
+      mapping.desc = value[1] --[[@as string]]
+    end
   elseif count == 2 then
-    mapping.rhs = value[1] --[[@as string]]
-    mapping.desc = value[2] --[[@as string]]
+    if mapping.desc then
+      mapping.lhs = value[1] --[[@as string]]
+      mapping.rhs = value[2] --[[@as string]]
+    else
+      mapping.rhs = value[1] --[[@as string]]
+      mapping.desc = value[2] --[[@as string]]
+    end
   elseif count > 2 then
     Util.error("Invalid mapping " .. vim.inspect(value))
   end
