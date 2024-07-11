@@ -88,7 +88,7 @@ end
 
 ---@param node wk.Node
 function M:keep(node)
-  if node.keymap and (node.keymap.desc == "which_key_ignore" or (node.mapping and node.mapping.hidden)) then
+  if (node.keymap and node.keymap.desc == "which_key_ignore") or (node.mapping and node.mapping.hidden) then
     return false
   end
   return node.plugin or node.keymap or M.is_group(node) or (node.mapping and not node.mapping.group)
