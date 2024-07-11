@@ -2,6 +2,8 @@ local Config = require("which-key.config")
 local Tree = require("which-key.tree")
 local Util = require("which-key.util")
 
+---@alias wk.Filter { mode?:string, buf?:number }
+
 ---@class wk.Mode
 ---@field buf wk.Buffer
 ---@field mode string
@@ -140,7 +142,9 @@ function Mode:update()
   self.tree:add(mappings --[[@as wk.Keymap[] ]])
   self.tree:fix()
   self:attach()
-  require("which-key.state").update()
+  vim.schedule(function()
+    require("which-key.state").update()
+  end)
 end
 
 ---@class wk.Buffer
@@ -148,6 +152,55 @@ end
 ---@field modes table<string, wk.Mode>
 local Buf = {}
 Buf.__index = Buf
+
+---@param buf? number
+function Buf.new(buf)
+  local self = setmetatable({}, Buf)
+  buf = buf or 0
+  self.buf = buf == 0 and vim.api.nvim_get_current_buf() or buf
+  self.modes = {}
+  return self
+end
+
+---@param opts? wk.Filter
+function Buf:clear(opts)
+  opts = opts or {}
+  assert(not opts.buf or opts.buf == self.buf, "buffer mismatch")
+  ---@type string[]
+  local modes = opts.mode and { opts.mode } or vim.tbl_keys(self.modes)
+  for _, m in ipairs(modes) do
+    local mode = self.modes[m]
+    if mode then
+      mode:clear()
+      self.modes[m] = nil
+    end
+  end
+end
+
+function Buf:valid()
+  return vim.api.nvim_buf_is_valid(self.buf)
+end
+
+---@param opts? {mode?:string, update?:boolean}
+---@return wk.Mode?
+function Buf:get(opts)
+  if not self:valid() then
+    return
+  end
+  opts = opts or {}
+  local mode = opts.mode or Util.mapmode()
+  if not Config.modes[mode] then
+    return
+  end
+  local ret = self.modes[mode]
+  if not ret then
+    self.modes[mode] = Mode.new(self, mode)
+    return self.modes[mode]
+  elseif opts.update then
+    ret:update()
+  end
+  return ret
+end
 
 local M = {}
 M.Buf = Buf
@@ -185,61 +238,22 @@ function M.cleanup()
   end
 end
 
----@param opts? {detach?:boolean}
-function M.reset(opts)
+---@param opts? wk.Filter
+function M.clear(opts)
   M.cleanup()
-  for _, buf in pairs(M.bufs) do
-    buf:reset(opts)
-  end
-end
-
----@param buf? number
-function Buf.new(buf)
-  local self = setmetatable({}, Buf)
-  buf = buf or 0
-  self.buf = buf == 0 and vim.api.nvim_get_current_buf() or buf
-  self.modes = {}
-  return self
-end
-
----@param opts? {detach?:boolean}
-function Buf:reset(opts)
   opts = opts or {}
-  for _, mode in pairs(self.modes) do
-    if opts.detach then
-      mode:detach()
-    else
-      mode:update()
+  ---@type number[]
+  local bufs = opts.buf and { opts.buf } or vim.tbl_keys(M.bufs)
+  for _, b in ipairs(bufs) do
+    if M.bufs[b] then
+      M.bufs[b]:clear(opts)
     end
   end
-  if opts.detach then
-    self.modes = {}
-  end
+  M.check()
 end
 
-function Buf:valid()
-  return vim.api.nvim_buf_is_valid(self.buf)
-end
-
----@param opts? {mode?:string, update?:boolean}
----@return wk.Mode?
-function Buf:get(opts)
-  if not self:valid() then
-    return
-  end
-  opts = opts or {}
-  local mode = opts.mode or Util.mapmode()
-  if not Config.modes[mode] then
-    return
-  end
-  local ret = self.modes[mode]
-  if not ret then
-    self.modes[mode] = Mode.new(self, mode)
-    return self.modes[mode]
-  elseif opts.update then
-    ret:update()
-  end
-  return ret
-end
+M.check = Util.debounce(100, function()
+  M.get()
+end)
 
 return M

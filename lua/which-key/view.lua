@@ -120,7 +120,13 @@ function M.update(opts)
         plugin = state.node.plugin,
       })
       or Config.delay --[[@as number]]
-    M.timer:start(delay, 0, vim.schedule_wrap(M.show))
+    M.timer:start(
+      delay,
+      0,
+      vim.schedule_wrap(function()
+        Util.try(M.show)
+      end)
+    )
   end
 end
 

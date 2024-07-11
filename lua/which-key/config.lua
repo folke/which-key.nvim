@@ -43,13 +43,12 @@ local defaults = {
   },
   ---@type wk.Win
   win = {
-    width = 0.9,
-    -- width = { min = 40, max = 0.4 },
-    height = { min = 4, max = 25 },
-    padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
-    col = 0.05,
+    -- width = 1,
+    -- height = { min = 4, max = 25 },
+    -- col = 0,
     row = -1,
-    border = "rounded",
+    border = "none",
+    padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
     title = true,
     title_pos = "center",
     zindex = 1000,
@@ -60,7 +59,7 @@ local defaults = {
     },
   },
   layout = {
-    width = { min = 20, max = 50 }, -- min and max width of the columns
+    width = { min = 20 }, -- min and max width of the columns
     spacing = 3, -- spacing between columns
     align = "left", -- align columns left, center or right
   },
@@ -164,7 +163,7 @@ function M.register(mappings, opts)
     end
   end
   if M.loaded then
-    require("which-key.buf").reset()
+    require("which-key.buf").clear()
   end
 end
 

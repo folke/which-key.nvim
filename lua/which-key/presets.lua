@@ -13,7 +13,7 @@ return {
   modern = {
     win = {
       width = 0.9,
-      height = { min = 4, max = 0.25 },
+      height = { min = 4, max = 25 },
       col = 0.05,
       border = "rounded",
       title = true,
