@@ -3,9 +3,11 @@ local Util = require("which-key.util")
 ---@class wk.Node
 ---@field key string
 ---@field path string[]
+---@field keys string
 ---@field parent? wk.Node
 ---@field desc? string
 ---@field plugin? string
+---@field global? boolean
 ---@field keymap? wk.Keymap
 ---@field virtual? wk.Keymap
 ---@field children? table<string, wk.Node>
@@ -23,7 +25,7 @@ function M.new()
 end
 
 function M:clear()
-  self.root = { key = "", path = {} }
+  self.root = { key = "", path = {}, keys = "" }
 end
 
 ---@param node wk.Node
@@ -48,8 +50,10 @@ function M:_add(keymap)
     if not node.children[key] then
       node.children[key] = {
         key = key,
+        keys = node.keys .. key,
         path = vim.deepcopy(path),
         parent = node,
+        global = true,
       }
     end
     node = node.children[key]
@@ -60,6 +64,7 @@ function M:_add(keymap)
     node.virtual = keymap
   else
     node.keymap = keymap
+    node.global = not (keymap.buffer and keymap.buffer ~= 0)
   end
   -- node.keymap = not keymap.group and keymap or nil
   if node.plugin then

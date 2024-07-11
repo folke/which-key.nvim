@@ -2,8 +2,6 @@ local Config = require("which-key.config")
 local Tree = require("which-key.tree")
 local Util = require("which-key.util")
 
----@alias wk.Filter { mode?:string, buf?:number }
-
 ---@class wk.Mode
 ---@field buf wk.Buffer
 ---@field mode string
@@ -51,15 +49,7 @@ function Mode:attach()
       return false
     end
   end)
-  local triggers = Config.triggers
-  if type(triggers) == "table" then
-    for _, trigger in ipairs(triggers) do
-      local node = self.tree:find(trigger)
-      if node then
-        self:_attach(node)
-      end
-    end
-  elseif triggers == true then
+  if Config.triggers then
     self.tree:walk(function(node)
       if needs_trigger(node) then
         self:_attach(node)
@@ -78,8 +68,7 @@ end
 ---@param node wk.Node
 function Mode:reattach(node)
   while node do
-    local lhs = table.concat(node.path)
-    if self:is_trigger(lhs) then
+    if self:is_trigger(node.keys) then
       local trigger = node
       self:_detach(trigger)
       vim.schedule(function()
@@ -92,22 +81,19 @@ end
 
 ---@param node wk.Node
 function Mode:_attach(node)
-  local lhs = table.concat(node.path)
-  self.triggers[lhs] = node
-  vim.keymap.set(self.mode, lhs, function()
-    require("which-key.state").start(node)
+  self.triggers[node.keys] = node
+  vim.keymap.set(self.mode, node.keys, function()
+    require("which-key.state").start({ keys = node.keys })
   end, { buffer = self.buf.buf, nowait = true, desc = "which-key " .. (node.plugin or "trigger") })
-  return lhs
 end
 
 ---@param node wk.Node
 function Mode:_detach(node)
-  local lhs = table.concat(node.path)
-  if not self:is_trigger(lhs) then
+  if not self:is_trigger(node.keys) then
     return false
   end
-  self.triggers[lhs] = nil
-  pcall(vim.keymap.del, self.mode, lhs, { buffer = self.buf.buf })
+  self.triggers[node.keys] = nil
+  pcall(vim.keymap.del, self.mode, node.keys, { buffer = self.buf.buf })
   return true
 end
 
@@ -181,7 +167,7 @@ function Buf:valid()
   return vim.api.nvim_buf_is_valid(self.buf)
 end
 
----@param opts? {mode?:string, update?:boolean}
+---@param opts? wk.Filter
 ---@return wk.Mode?
 function Buf:get(opts)
   if not self:valid() then
@@ -206,7 +192,7 @@ local M = {}
 M.Buf = Buf
 M.bufs = {} ---@type table<number,wk.Buffer>
 
----@param opts? {buf?: number, mode?:string, update?:boolean}
+---@param opts? wk.Filter
 function M.get(opts)
   M.cleanup()
   opts = opts or {}

@@ -2,6 +2,14 @@
 
 --# selene: allow(unused_variable)
 
+---@class wk.Filter
+---@field mode? string
+---@field buf? number
+---@field keys? string
+---@field global? boolean
+---@field local? boolean
+---@field update? boolean
+
 ---@class wk.Keymap: vim.api.keyset.keymap
 ---@field lhs string
 ---@field idx? number
