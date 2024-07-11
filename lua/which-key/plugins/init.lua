@@ -6,7 +6,7 @@ local M = {}
 M.plugins = {}
 
 function M.setup()
-  for name, opts in pairs(Config.options.plugins) do
+  for name, opts in pairs(Config.plugins) do
     -- only setup plugin if we didnt load it before
     if not M.plugins[name] then
       if type(opts) == "boolean" then
