@@ -1,4 +1,7 @@
-local Keys = require("which-key.keys")
+local Buf = require("which-key.buf")
+local Config = require("which-key.config")
+local Icons = require("which-key.icons")
+local Tree = require("which-key.tree")
 
 local M = {}
 
@@ -9,48 +12,64 @@ local error = vim.health.error or vim.health.report_error
 local info = vim.health.info or vim.health.report_info
 
 function M.check()
-  start("WhichKey: checking conflicting keymaps")
-  local conflicts = 0
-  for _, tree in pairs(Keys.mappings) do
-    Keys.update_keymaps(tree.mode, tree.buf)
-    tree.tree:walk(
-      ---@param node Node
-      function(node)
-        local count = 0
-        for _ in pairs(node.children) do
-          count = count + 1
-        end
+  if Icons.have() then
+    ok("|mini.icons| installed and ready")
+  else
+    warn("|mini.icons| not installed. Keymap icon support will be limited.")
+  end
 
-        local auto_prefix = not node.mapping or (node.mapping.group == true and not node.mapping.cmd)
-        if node.prefix_i ~= "" and count > 0 and not auto_prefix then
-          conflicts = conflicts + 1
-          local msg = ("conflicting keymap exists for mode **%q**, lhs: **%q**"):format(tree.mode, node.mapping.prefix)
-          warn(msg)
-          local cmd = node.mapping.cmd or " "
-          info(("rhs: `%s`"):format(cmd))
-        end
+  start("checking for overlapping keymaps")
+  local found = false
+
+  Buf.cleanup()
+
+  ---@type table<string, boolean>
+  local reported = {}
+
+  for _, buf in pairs(Buf.bufs) do
+    for mapmode in pairs(Config.modes) do
+      local mode = buf:get({ mode = mapmode })
+      if mode then
+        mode.tree:walk(function(node)
+          local km = node.keymap
+          if not km or km.rhs == "" or km.rhs == "<Nop>" or node.keys:sub(1, 6) == "<Plug>" then
+            return
+          end
+          if node.keymap and Tree.is_group(node) then
+            local id = mode.mode .. ":" .. node.keys
+            if reported[id] then
+              return
+            end
+            reported[id] = true
+            local overlaps = {}
+            local queue = vim.tbl_values(node.children)
+            while #queue > 0 do
+              local child = table.remove(queue)
+              if child.keymap then
+                table.insert(overlaps, "<" .. child.keys .. ">")
+              end
+              vim.list_extend(queue, vim.tbl_values(child.children or {}))
+            end
+            if #overlaps > 0 then
+              found = true
+              warn(
+                "In mode `" .. mode.mode .. "`, <" .. node.keys .. "> overlaps with " .. table.concat(overlaps, ", ")
+              )
+            end
+            return false
+          end
+        end)
       end
+    end
+  end
+
+  if found then
+    ok(
+      "Overlapping keymaps are only reported for informational purposes.\n"
+        .. "This doesn't necessarily mean there is a problem with your config."
     )
-  end
-  if conflicts == 0 then
-    ok("No conflicting keymaps found")
-    return
-  end
-  for _, dup in ipairs(Keys.duplicates) do
-    local msg = ""
-    if dup.buf == dup.other.buffer then
-      msg = "duplicate keymap"
-    else
-      msg = "buffer-local keymap overriding global"
-    end
-    msg = (msg .. " for mode **%q**, buf: %d, lhs: **%q**"):format(dup.mode, dup.buf or 0, dup.prefix)
-    if dup.buf == dup.other.buffer then
-      error(msg)
-    else
-      warn(msg)
-    end
-    info(("old rhs: `%s`"):format(dup.other.rhs or ""))
-    info(("new rhs: `%s`"):format(dup.cmd or ""))
+  else
+    ok("No overlapping keymaps found")
   end
 end
 

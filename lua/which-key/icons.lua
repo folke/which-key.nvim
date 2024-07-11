@@ -61,6 +61,10 @@ local function load()
   return Icons ~= nil
 end
 
+function M.have()
+  return load() ~= nil
+end
+
 ---@param icon wk.Icon|string
 ---@return string?, string?
 function M.get_icon(icon)

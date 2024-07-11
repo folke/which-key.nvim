@@ -81,6 +81,9 @@ end
 
 ---@param node wk.Node
 function Mode:_attach(node)
+  if not self.buf:valid() then
+    return
+  end
   self.triggers[node.keys] = node
   vim.keymap.set(self.mode, node.keys, function()
     require("which-key.state").start({ keys = node.keys })

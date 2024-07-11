@@ -31,6 +31,7 @@
 - [x] Mappings with mode `v`
 - [x] allow register from opts
 - [x] auto gen docs
-- [ ] health
+- [x] health
+- [x] `<leader>gh_`
 - [ ] more tests
 - [ ] News
