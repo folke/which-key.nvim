@@ -78,11 +78,15 @@ function Table:cells(opts)
   local total = 0
   for c, col in ipairs(self.cols) do
     widths[c] = 0
+    local all_ws = true
     for r, row in ipairs(self.rows) do
       cells[r] = cells[r] or {}
       local value = row[col.key] or col.default or ""
       value = vim.fn.strtrans(value)
       value = value:gsub("%s*$", "")
+      if value:find("%S") then
+        all_ws = false
+      end
       if col.padding then
         value = (" "):rep(col.padding[1] or 0) .. value .. (" "):rep(col.padding[2] or 0)
       end
@@ -91,6 +95,12 @@ function Table:cells(opts)
       end
       cells[r][c] = value
       widths[c] = math.max(widths[c], dw(value))
+    end
+    if all_ws then
+      widths[c] = 0
+      for _, cell in pairs(cells) do
+        cell[c] = ""
+      end
     end
     total = total + widths[c]
   end
