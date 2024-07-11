@@ -23,15 +23,26 @@
 
 ---@class wk.Keymap: vim.api.keyset.keymap
 ---@field lhs string
----@field idx? number
 ---@field mode string
----@field rhs? string
+---@field rhs? string|fun()
 ---@field lhsraw? string
 ---@field buffer? number
+
+---@class wk.Mapping: wk.Keymap
+---@field idx? number
 ---@field plugin? string
 ---@field group? boolean
----@field virtual? boolean
+---@field remap? boolean
 ---@field hidden? boolean
+---@field preset? boolean
+
+---@class wk.Spec: {[string]: wk.Spec, [number]: wk.Spec} , wk.Mapping
+---@field [1]? string|fun()
+---@field [2]? string
+---@field name? string
+---@field lhs? string
+---@field mode? string|string[]
+---@field cond? boolean|fun():boolean?
 
 ---@class wk.Win: vim.api.keyset.win_config
 ---@field width? wk.Size
@@ -39,25 +50,6 @@
 ---@field wo? vim.wo
 ---@field bo? vim.bo
 ---@field padding? {[1]: number, [2]:number}
-
----@class MappingOptions
----@field noremap boolean
----@field silent boolean
----@field nowait boolean
----@field expr boolean
-
----@class Mapping
----@field buf number
----@field group boolean
----@field desc string
----@field prefix string
----@field cmd string
----@field opts MappingOptions
----@field mode? string
----@field callback fun()|nil
----@field preset boolean
----@field plugin string
----@field fn fun()
 
 ---@class wk.Plugin.item
 ---@field key string

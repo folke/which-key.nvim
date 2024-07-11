@@ -115,17 +115,24 @@ function Mode:update()
 
   for _, mapping in ipairs(mappings) do
     if mapping.rhs == "" or mapping.rhs == "<Nop>" then
-      mapping.virtual = true
+      self.tree:add(mapping, true)
+    elseif mapping.lhs:sub(1, 6) ~= "<Plug>" then
+      self.tree:add(mapping)
     end
   end
 
+  local modes = { [self.mode] = true }
+  if self.mode == "s" then
+    modes.v = true
+  elseif self.mode == "x" then
+    modes.v = true
+  end
   for _, m in ipairs(Config.mappings) do
-    if m.mode == self.mode and (not m.buffer or m.buffer == self.buf) then
-      table.insert(mappings, m)
+    if modes[m.mode] and (not m.buffer or m.buffer == self.buf) then
+      self.tree:add(m, true)
     end
   end
 
-  self.tree:add(mappings --[[@as wk.Keymap[] ]])
   self.tree:fix()
   self:attach()
   vim.schedule(function()

@@ -8,8 +8,8 @@ local Util = require("which-key.util")
 ---@field desc? string
 ---@field plugin? string
 ---@field global? boolean
----@field keymap? wk.Keymap
----@field virtual? wk.Keymap
+---@field keymap? wk.Keymap Real keymap
+---@field mapping? wk.Mapping Mapping info supplied by user
 ---@field children? table<string, wk.Node>
 ---@field action? fun()
 
@@ -39,8 +39,9 @@ function M.is_group(node)
   return M.count(node) > 0
 end
 
----@param keymap wk.Keymap
-function M:_add(keymap)
+---@param keymap wk.Mapping|wk.Keymap
+---@param virtual? boolean
+function M:add(keymap, virtual)
   local keys = Util.keys(keymap.lhs, { norm = true })
   local node = self.root
   local path = {} ---@type string[]
@@ -60,7 +61,7 @@ function M:_add(keymap)
   end
   node.desc = keymap.desc or node.desc
   node.plugin = node.plugin or keymap.plugin
-  if keymap.virtual then
+  if virtual then
     node.virtual = keymap
   else
     node.keymap = keymap
@@ -69,15 +70,6 @@ function M:_add(keymap)
   -- node.keymap = not keymap.group and keymap or nil
   if node.plugin then
     setmetatable(node, require("which-key.plugins").PluginNode)
-  end
-end
-
----@param keymaps wk.Keymap[]
-function M:add(keymaps)
-  for _, keymap in ipairs(keymaps) do
-    if keymap.lhs:sub(1, 6) ~= "<Plug>" then
-      self:_add(keymap)
-    end
   end
 end
 
@@ -96,10 +88,10 @@ end
 
 ---@param node wk.Node
 function M:keep(node)
-  if node.keymap and (node.keymap.desc == "which_key_ignore" or (node.virtual and node.virtual.hidden)) then
+  if node.keymap and (node.keymap.desc == "which_key_ignore" or (node.mapping and node.mapping.hidden)) then
     return false
   end
-  return node.plugin or node.keymap or M.is_group(node) or (node.virtual and not node.virtual.group)
+  return node.plugin or node.keymap or M.is_group(node) or (node.mapping and not node.mapping.group)
 end
 
 function M:fix()

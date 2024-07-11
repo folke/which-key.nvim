@@ -30,7 +30,7 @@ M.fields = {
     return item.keymap and item.keymap.buffer ~= 0 and 0 or 1000
   end,
   manual = function(item)
-    return item.virtual and item.virtual.idx or 10000
+    return item.mapping and item.mapping.idx or 10000
   end,
   desc = function(item)
     return item.desc or "~"
