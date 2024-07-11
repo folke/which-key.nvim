@@ -48,20 +48,21 @@ M.fields = {
 }
 
 M.icons = {
-  Up = "↑",
-  Down = "↓",
-  Left = "←",
-  Right = "→",
-  C = "⌃",
-  M = "⌥",
-  S = "⇧",
-  CR = "⏎",
-  Esc = "⎋",
-  ScrollWheelDown = "⇟",
-  ScrollWheelUp = "⇞",
-  NL = "⏎",
-  Space = "␣",
-  Tab = "⇥",
+  Up = " ",
+  Down = " ",
+  Left = " ",
+  Right = " ",
+  C = "󰘴 ",
+  M = "󰘵 ",
+  S = "󰘶 ",
+  CR = "󰌑 ",
+  Esc = "󱊷 ",
+  ScrollWheelDown = "󱕐 ",
+  ScrollWheelUp = "󱕑 ",
+  NL = "󰌑 ",
+  BS = "⌫",
+  Space = "󱁐 ",
+  Tab = "󰌒 ",
 }
 
 ---@param key string
