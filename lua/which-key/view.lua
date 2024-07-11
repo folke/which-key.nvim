@@ -1,3 +1,4 @@
+local Buf = require("which-key.buf")
 local Config = require("which-key.config")
 local Layout = require("which-key.layout")
 local Plugins = require("which-key.plugins")
@@ -23,6 +24,9 @@ M.timer = vim.uv.new_timer()
 M.fields = {
   order = function(item)
     return item.order and item.order or 1000
+  end,
+  buffer = function(item)
+    return item.keymap and item.keymap.buffer ~= 0 and 0 or 1000
   end,
   manual = function(item)
     return item.virtual and item.virtual.idx or 10000
@@ -117,7 +121,7 @@ function M.update(opts)
     local delay = opts.delay
       or type(Config.delay) == "function" and Config.delay({
         mode = state.mode.mode,
-        lhs = table.concat(state.node.path),
+        keys = state.node.keys,
         plugin = state.node.plugin,
       })
       or Config.delay --[[@as number]]
@@ -208,7 +212,7 @@ function M.item(node, opts)
     desc = child_count .. " keymap" .. (child_count > 1 and "s" or "")
   end
   if not desc and opts.default == "path" then
-    desc = table.concat(node.path)
+    desc = node.keys
   end
   desc = M.replace("desc", desc or "")
   local parent_key = opts.parent_key and M.replace("key", opts.parent_key) or ""
@@ -262,13 +266,22 @@ function M.show()
   ---@type wk.Item[]
   local items = {}
   for _, node in ipairs(children) do
-    local child_count = Tree.count(node)
-    if child_count > 0 and child_count <= Config.expand then
-      for _, child in ipairs(vim.tbl_values(node.children or {})) do
-        table.insert(items, M.item(child, { parent_key = node.key }))
+    local use = true
+    if state.filter.global == false and node.global then
+      use = false
+    end
+    if state.filter["local"] == false and not node.global then
+      use = false
+    end
+    if use then
+      local child_count = Tree.count(node)
+      if child_count > 0 and child_count <= Config.expand then
+        for _, child in ipairs(vim.tbl_values(node.children or {})) do
+          table.insert(items, M.item(child, { parent_key = node.key }))
+        end
+      else
+        table.insert(items, M.item(node))
       end
-    else
-      table.insert(items, M.item(node))
     end
   end
 

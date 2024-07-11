@@ -8,6 +8,7 @@ local M = {}
 ---@class wk.State
 ---@field mode wk.Mode
 ---@field node wk.Node
+---@field filter wk.Filter
 
 ---@type wk.State?
 M.state = nil
@@ -129,10 +130,16 @@ function M.step(state)
   vim.api.nvim_feedkeys(feed, "mit", false)
 end
 
----@param node? wk.Node
-function M.start(node)
-  local mode = Buf.get({ update = true })
+---@param filter? wk.Filter
+function M.start(filter)
+  filter = filter or {}
+  filter.update = true
+  local mode = Buf.get(filter)
   if not mode then
+    return
+  end
+  local node = mode.tree:find(filter.keys or {})
+  if not node then
     return
   end
 
@@ -142,11 +149,12 @@ function M.start(node)
 
   M.state = {
     mode = mode,
-    node = node or mode.tree.root,
+    node = node,
+    filter = filter,
   }
 
   while M.state do
-    mode = Buf.get()
+    mode = Buf.get(filter)
     if not mode or mode.mode ~= mapmode then
       break
     end

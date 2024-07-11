@@ -1,22 +1,9 @@
 local M = {}
 
----@param lhs? string
----@param opts? {buf?: number, mode?:string, update?:boolean}
-function M.show(lhs, opts)
-  opts = opts or {}
-  if opts.update == nil then
-    opts.update = true
-  end
-  local Buf = require("which-key.buf")
-  local State = require("which-key.state")
-  local mode = Buf.get(opts)
-  if not mode then
-    return
-  end
-  local node = mode.tree:find(lhs or {})
-  if node then
-    State.start(node)
-  end
+---@param filter? wk.Filter|string
+function M.show(filter)
+  ---@diagnostic disable-next-line: param-type-mismatch
+  require("which-key.state").start(type(filter) == "string" and { keys = filter } or filter)
 end
 
 ---@type {mappings:table, opts?:table}

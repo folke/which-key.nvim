@@ -8,7 +8,7 @@ local defaults = {
   ---@type "classic" | "modern" | "helix"
   preset = "classic",
   -- Delay before showing the popup. Can be a number or a function that returns a number.
-  ---@type number | fun(ctx: { lhs: string, mode: string, plugin?: string }):number
+  ---@type number | fun(ctx: { keys: string, mode: string, plugin?: string }):number
   delay = function(ctx)
     return ctx.plugin and 0 or 200
   end,
@@ -99,11 +99,9 @@ local defaults = {
   show_help = true, -- show a help message in the command line for using WhichKey
   show_keys = true, -- show the currently pressed key and its label as a message in the command line
   -- Which-key automatically sets up triggers for your mappings.
-  -- But you can disable this and manually setup triggers.
-  -- Be aware, that triggers are not used for visual and operator pending mode.
-  ---@type boolean | string[]
+  -- But you can disable this and setup the triggers yourself.
+  -- Be aware, that triggers are not needed for visual and operator pending mode.
   triggers = true, -- automatically setup triggers
-  -- triggers = {"<leader>"} -- or specify a list manually
   disable = {
     -- disable WhichKey for certain buf types and file types.
     ft = {},
