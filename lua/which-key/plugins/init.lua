@@ -28,7 +28,7 @@ function M._setup(plugin, opts)
       local prefix = trigger.trigger
       local mode = trigger.mode or "n"
       local label = trigger.label or plugin.name
-      Config.register({ [prefix] = { label, plugin = plugin.name } }, { mode = mode })
+      Config.add({ prefix, desc = label, plugin = plugin.name, mode = mode })
     end
   end
 

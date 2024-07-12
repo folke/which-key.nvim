@@ -1,6 +1,8 @@
 local Buf = require("which-key.buf")
 local Config = require("which-key.config")
 local Icons = require("which-key.icons")
+local Mappings = require("which-key.mappings")
+local Migrate = require("which-key.migrate")
 local Tree = require("which-key.tree")
 
 local M = {}
@@ -36,6 +38,22 @@ function M.check()
   end
   if not have_icons then
     warn("Keymap icon support will be limited.")
+  end
+
+  start("Checking for issues with your mappings")
+  if #Mappings.notifs == 0 then
+    ok("No issues reported")
+  end
+  for _, notif in ipairs(Mappings.notifs) do
+    local msg = notif.msg
+    if notif.spec then
+      msg = msg .. ": >\n" .. vim.inspect(notif.spec)
+      if msg:find("old version") then
+        local fixed = Migrate.migrate(notif.spec)
+        msg = msg .. "\n\n-- fixed:\n" .. fixed
+      end
+    end
+    (notif.level >= vim.log.levels.ERROR and error or warn)(msg)
   end
 
   start("checking for overlapping keymaps")

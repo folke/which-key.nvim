@@ -43,10 +43,9 @@
 ---@field preset? boolean
 ---@field icon? wk.Icon
 
----@class wk.Spec: {[string]: wk.Spec, [number]: wk.Spec} , wk.Mapping
+---@class wk.Spec: {[number]: wk.Spec} , wk.Mapping
 ---@field [1]? string|fun()
 ---@field [2]? string
----@field name? string
 ---@field lhs? string
 ---@field mode? string|string[]
 ---@field cond? boolean|fun():boolean?

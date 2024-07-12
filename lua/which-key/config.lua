@@ -140,13 +140,13 @@ function M.setup(opts)
       local Presets = require("which-key.presets")
       M.options = vim.tbl_deep_extend("force", M.options, Presets[M.options.preset] or {})
     end
-    require("which-key.plugins").setup()
     local wk = require("which-key")
-    wk.register = M.register
-    for _, v in ipairs(wk._queue) do
-      M.register(v.spec, v.opts)
+    wk.add = M.add
+    require("which-key.plugins").setup()
+    for _, todo in ipairs(wk._queue) do
+      M.add(todo.spec, todo.opts)
     end
-    M.register(M.options.spec)
+    M.add(M.options.spec)
     wk._queue = {}
     require("which-key.colors").setup()
     require("which-key.state").setup()
@@ -161,11 +161,13 @@ function M.setup(opts)
   end
 end
 
+---@param opts? wk.Parse
 ---@param mappings wk.Spec
----@param opts? wk.Mapping
-function M.register(mappings, opts)
+function M.add(mappings, opts)
+  opts = opts or {}
+  opts.create = opts.create ~= false
   local Mappings = require("which-key.mappings")
-  for _, km in ipairs(Mappings.parse(mappings, opts, { create = true })) do
+  for _, km in ipairs(Mappings.parse(mappings, opts)) do
     table.insert(M.mappings, km)
     km.idx = #M.mappings
   end
