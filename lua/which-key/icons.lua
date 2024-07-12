@@ -178,12 +178,18 @@ function M._get(rules, opts, check_ft)
       end
     end
   end
-
-  return M.get_icon(opts)
 end
 
----@param opts? {keymap?: wk.Keymap, desc?: string, ft?:string|string[]}|wk.Icon
+---@param opts {keymap?: wk.Keymap, desc?: string, ft?:string|string[]}|wk.Icon
 function M.get(opts)
+  if type(opts) == "string" then
+    opts = { icon = opts }
+  end
+
+  if opts.icon or opts.cat then
+    return M.get_icon(opts)
+  end
+
   if Config.icons.rules == false then
     return
   end

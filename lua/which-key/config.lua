@@ -8,7 +8,7 @@ local defaults = {
   -- Delay before showing the popup. Can be a number or a function that returns a number.
   ---@type number | fun(ctx: { keys: string, mode: string, plugin?: string }):number
   delay = function(ctx)
-    return ctx.plugin and 0 or 300
+    return ctx.plugin and 0 or 200
   end,
   --- You can add any mappings here, or use `require('which-key').add()` later
   ---@type wk.Spec
@@ -106,6 +106,24 @@ local defaults = {
     -- use the highlights from mini.icons
     -- When `false`, it will use `WhichKeyIcon` instead
     colors = true,
+    -- used by key format
+    keys = {
+      Up = " ",
+      Down = " ",
+      Left = " ",
+      Right = " ",
+      C = "󰘴 ",
+      M = "󰘵 ",
+      S = "󰘶 ",
+      CR = "󰌑 ",
+      Esc = "󱊷 ",
+      ScrollWheelDown = "󱕐 ",
+      ScrollWheelUp = "󱕑 ",
+      NL = "󰌑 ",
+      BS = "⌫",
+      Space = "󱁐 ",
+      Tab = "󰌒 ",
+    },
   },
   show_help = true, -- show a help message in the command line for using WhichKey
   show_keys = true, -- show the currently pressed key and its label as a message in the command line
