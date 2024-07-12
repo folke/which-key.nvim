@@ -4,6 +4,9 @@
 in a popup as you type.
 
 ![image](https://github.com/user-attachments/assets/89277334-dcdc-4b0f-9fd4-02f27012f589)
+![image](https://github.com/user-attachments/assets/f8d71a75-312e-4a42-add8-d153493b2633)
+![image](https://github.com/user-attachments/assets/e4400a1d-7e71-4439-b6ff-6cbc40647a6f)
+
 
 
 ## ✨ Features
