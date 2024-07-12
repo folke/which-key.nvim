@@ -72,7 +72,7 @@ local defaults = {
   -- Delay before showing the popup. Can be a number or a function that returns a number.
   ---@type number | fun(ctx: { keys: string, mode: string, plugin?: string }):number
   delay = function(ctx)
-    return ctx.plugin and 0 or 300
+    return ctx.plugin and 0 or 200
   end,
   --- You can add any mappings here, or use `require('which-key').add()` later
   ---@type wk.Spec
@@ -170,6 +170,24 @@ local defaults = {
     -- use the highlights from mini.icons
     -- When `false`, it will use `WhichKeyIcon` instead
     colors = true,
+    -- used by key format
+    keys = {
+      Up = " ",
+      Down = " ",
+      Left = " ",
+      Right = " ",
+      C = "󰘴 ",
+      M = "󰘵 ",
+      S = "󰘶 ",
+      CR = "󰌑 ",
+      Esc = "󱊷 ",
+      ScrollWheelDown = "󱕐 ",
+      ScrollWheelUp = "󱕑 ",
+      NL = "󰌑 ",
+      BS = "⌫",
+      Space = "󱁐 ",
+      Tab = "󰌒 ",
+    },
   },
   show_help = true, -- show a help message in the command line for using WhichKey
   show_keys = true, -- show the currently pressed key and its label as a message in the command line
@@ -301,26 +319,26 @@ The table below shows all the highlight groups defined for **WhichKey** with the
 
 <!-- colors:start -->
 
-| Highlight Group        | Default Group         | Description                                       |
-| ---------------------- | --------------------- | ------------------------------------------------- |
-| **WhichKey**           | **_Function_**        |                                                   |
-| **WhichKeyBorder**     | **_FloatBorder_**     | Border of the which-key window                    |
-| **WhichKeyDesc**       | **_Identifier_**      | description                                       |
-| **WhichKeyFloat**      | **_NormalFloat_**     | Normal in th which-key window                     |
-| **WhichKeyGroup**      | **_Keyword_**         | group name                                        |
-| **WhichKeyIcon**       | **_@markup.link_**    | icons                                             |
-| **WhichKeyIconAzure**  | **_Function_**        |                                                   |
-| **WhichKeyIconBlue**   | **_DiagnosticInfo_**  |                                                   |
-| **WhichKeyIconCyan**   | **_DiagnosticHint_**  |                                                   |
-| **WhichKeyIconGreen**  | **_DiagnosticOk_**    |                                                   |
-| **WhichKeyIconGrey**   | **_Normal_**          |                                                   |
-| **WhichKeyIconOrange** | **_DiagnosticWarn_**  |                                                   |
-| **WhichKeyIconPurple** | **_Constant_**        |                                                   |
-| **WhichKeyIconRed**    | **_DiagnosticError_** |                                                   |
-| **WhichKeyIconYellow** | **_DiagnosticWarn_**  |                                                   |
-| **WhichKeySeparator**  | **_Comment_**         | the separator between the key and its description |
-| **WhichKeyTitle**      | **_FloatTitle_**      | Title of the which-key window                     |
-| **WhichKeyValue**      | **_Comment_**         | values by plugins (like marks, registers, etc)    |
+| Highlight Group | Default Group | Description |
+| --- | --- | --- |
+| **WhichKey** | ***Function*** |  |
+| **WhichKeyBorder** | ***FloatBorder*** | Border of the which-key window |
+| **WhichKeyDesc** | ***Identifier*** | description |
+| **WhichKeyFloat** | ***NormalFloat*** | Normal in th which-key window |
+| **WhichKeyGroup** | ***Keyword*** | group name |
+| **WhichKeyIcon** | ***@markup.link*** | icons |
+| **WhichKeyIconAzure** | ***Function*** |  |
+| **WhichKeyIconBlue** | ***DiagnosticInfo*** |  |
+| **WhichKeyIconCyan** | ***DiagnosticHint*** |  |
+| **WhichKeyIconGreen** | ***DiagnosticOk*** |  |
+| **WhichKeyIconGrey** | ***Normal*** |  |
+| **WhichKeyIconOrange** | ***DiagnosticWarn*** |  |
+| **WhichKeyIconPurple** | ***Constant*** |  |
+| **WhichKeyIconRed** | ***DiagnosticError*** |  |
+| **WhichKeyIconYellow** | ***DiagnosticWarn*** |  |
+| **WhichKeySeparator** | ***Comment*** | the separator between the key and its description |
+| **WhichKeyTitle** | ***FloatTitle*** | Title of the which-key window |
+| **WhichKeyValue** | ***Comment*** | values by plugins (like marks, registers, etc) |
 
 <!-- colors:end -->
 
