@@ -3,7 +3,7 @@ local M = {}
 
 ---@class wk.Opts
 local defaults = {
-  ---@type "classic" | "modern" | "helix"
+  ---@type false | "classic" | "modern" | "helix"
   preset = "classic",
   -- Delay before showing the popup. Can be a number or a function that returns a number.
   ---@type number | fun(ctx: { keys: string, mode: string, plugin?: string }):number
@@ -50,7 +50,7 @@ local defaults = {
     -- height = { min = 4, max = 25 },
     -- col = 0,
     row = -1,
-    border = "none",
+    -- border = "none",
     padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
     title = true,
     title_pos = "center",
@@ -142,7 +142,7 @@ function M.setup(opts)
 
     if M.options.preset then
       local Presets = require("which-key.presets")
-      M.options = vim.tbl_deep_extend("force", M.options, Presets[M.options.preset] or {})
+      M.options = vim.tbl_deep_extend("force", Presets[M.options.preset] or {}, M.options)
     end
     local wk = require("which-key")
 
