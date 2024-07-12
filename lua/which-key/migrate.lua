@@ -17,6 +17,9 @@ function M.migrate(spec)
     m.rhs = nil
     local mode = m.mode
     m.mode = nil
+    if m.silent then
+      m.silent = nil
+    end
     if m.group then
       m.group = m.desc
       m.desc = nil

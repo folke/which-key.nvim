@@ -26,6 +26,7 @@ return {
       height = { min = 4, max = 25 },
       col = 0,
       border = "none",
+      title = false,
     },
   },
 }

@@ -1,32 +1,32 @@
 # 💥 Which Key
 
-**WhichKey** is a lua plugin for Neovim 0.5 that displays a popup with possible key bindings of
-the command you started typing. Heavily inspired by the original [emacs-which-key](https://github.com/justbur/emacs-which-key) and [vim-which-key](https://github.com/liuchengxu/vim-which-key).
+**WhichKey** helps you remember your Neovim keymaps, by showing available keybindings
+in a popup as you type.
 
 ![image](https://user-images.githubusercontent.com/292349/116439438-669f8d00-a804-11eb-9b5b-c7122bd9acac.png)
 
 ## ✨ Features
 
-- for Neovim 0.7 and higher, it uses the `desc` attributes of your mappings as the default label
-- for Neovim 0.7 and higher, new mappings will be created with a `desc` attribute
-- opens a popup with suggestions to complete a key binding
-- works with any setting for [timeoutlen](https://neovim.io/doc/user/options.html#'timeoutlen'), including instantly (`timeoutlen=0`)
-- works correctly with built-in key bindings
-- works correctly with buffer-local mappings
-- extensible plugin architecture
-- built-in plugins:
-  + **marks:** shows your marks when you hit one of the jump keys.
-  + **registers:** shows the contents of your registers
-  + **presets:** built-in key binding help for `motions`, `text-objects`, `operators`, `windows`, `nav`, `z` and `g`
-  + **spelling:** spelling suggestions inside the which-key popup
+- 🔍 **Key Binding Help**: show available keybindings in a popup as you type.
+- ⌨️ **Modes**: works in normal, insert, visual, operator pending, terminal and command mode.
+  Every mode can be enabled/disabled.
+- 🛠️ **Customizable Layouts**: choose from `classic`, `modern`, and `helix` presets or customize the window.
+- 🔄 **Flexible Sorting**: sort by `local`, `order`, `group`, `alphanum`, `mod`, `lower`, `icase`, `desc`, or `manual`.
+- 🎨 **Formatting**: customizable key labels and descriptions
+- 🖼️ **Icons**: integrates with [mini.icons](https://github.com/echasnovski/mini.icons) and [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons)
+- ⏱️ **Delay**: delay is independent of `timeoutlen`
+- 🌐 **Plugins**: built-in plugins for marks, registers, presets, and spelling suggestions
+- 🚀 **Operators, Motions, Text Objects**: help for operators, motions and text objects
 
 ## ⚡️ Requirements
 
-- Neovim >= 0.5.0
+- **Neovim** >= 0.9.0
+- [mini.icons](https://github.com/echasnovski/mini.icons) _(optional)_
+- [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) _(optional)_
 
 ## 📦 Installation
 
-Install the plugin with your preferred package manager:
+Install the plugin with your package manager:
 
 ### [lazy.nvim](https://github.com/folke/lazy.nvim)
 
@@ -34,10 +34,6 @@ Install the plugin with your preferred package manager:
 {
   "folke/which-key.nvim",
   event = "VeryLazy",
-  init = function()
-    vim.o.timeout = true
-    vim.o.timeoutlen = 300
-  end,
   opts = {
     -- your configuration comes here
     -- or leave it empty to use the default settings
@@ -46,52 +42,32 @@ Install the plugin with your preferred package manager:
 }
 ```
 
-### [packer](https://github.com/wbthomason/packer.nvim)
-
-```lua
--- Lua
-use {
-  "folke/which-key.nvim",
-  config = function()
-    vim.o.timeout = true
-    vim.o.timeoutlen = 300
-    require("which-key").setup {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    }
-  end
-}
-```
-
 ## ⚙️ Configuration
 
-> ❗️ IMPORTANT: the [timeout](https://neovim.io/doc/user/options.html#'timeout') when **WhichKey** opens is controlled by the vim setting [timeoutlen](https://neovim.io/doc/user/options.html#'timeoutlen').
-> Please refer to the documentation to properly set it up. Setting it to `0`, will effectively
-> always show **WhichKey** immediately, but a setting of `500` (500ms) is probably more appropriate.
+> [!important]
+> Make sure to run `:checkhealth which-key` if something isn't working properly
 
-> ❗️ don't create any keymappings yourself to trigger WhichKey. Unlike with _vim-which-key_, we do this fully automatically.
-> Please remove any left-over triggers you might have from using _vim-which-key_.
+**WhichKey** is highly configurable. Expand to see the list of all the default options below.
 
-> 🚑 You can run `:checkhealth which-key` to see if there's any conflicting keymaps that will prevent triggering **WhichKey**
-
-WhichKey comes with the following defaults:
+<details><summary>Default Options</summary>
 
 <!-- config:start -->
 
 ```lua
 ---@class wk.Opts
 local defaults = {
-  ---@type "classic" | "modern" | "helix"
+  ---@type false | "classic" | "modern" | "helix"
   preset = "classic",
   -- Delay before showing the popup. Can be a number or a function that returns a number.
   ---@type number | fun(ctx: { keys: string, mode: string, plugin?: string }):number
   delay = function(ctx)
-    return ctx.plugin and 0 or 200
+    return ctx.plugin and 0 or 300
   end,
-  --- You can add any mappings here, or use `require('which-key').register()` later
+  --- You can add any mappings here, or use `require('which-key').add()` later
   ---@type wk.Spec
   spec = {},
+  -- show a warning when issues were detected with your mappings
+  notify = true,
   -- Enable/disable WhichKey for certain mapping modes
   modes = {
     n = true, -- Normal mode
@@ -127,7 +103,7 @@ local defaults = {
     -- height = { min = 4, max = 25 },
     -- col = 0,
     row = -1,
-    border = "none",
+    -- border = "none",
     padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
     title = true,
     title_pos = "center",
@@ -200,41 +176,33 @@ local defaults = {
 
 <!-- config:end -->
 
+</details>
+
 ## 🪄 Setup
 
 With the default settings, **WhichKey** will work out of the box for most builtin keybindings,
 but the real power comes from documenting and organizing your own keybindings.
 
-To document and/or setup your own mappings, you need to call the `register` method
+> [!WARNING]
+> The **mappings spec** changed in `v3`, so make sure to only use the new `add` method if
+> you updated your existing mappings.
+
+To add or customize any mappings, you can use:
 
 ```lua
 local wk = require("which-key")
-wk.register(mappings, opts)
+wk.add(mappings)
 ```
-
-Default options for `opts`
-
-```lua
-{
-  mode = "n", -- NORMAL mode
-  -- prefix: use "<leader>f" for example for mapping everything related to finding files
-  -- the prefix is prepended to every mapping part of `mappings`
-  prefix = "",
-  buffer = nil, -- Global mappings. Specify a buffer number for buffer local mappings
-  silent = true, -- use `silent` when creating keymaps
-  noremap = true, -- use `noremap` when creating keymaps
-  nowait = false, -- use `nowait` when creating keymaps
-  expr = false, -- use `expr` when creating keymaps
-}
-```
-
-> ❕ When you specify a command in your mapping that starts with `<Plug>`, then we automatically set `noremap=false`, since you always want recursive keybindings in this case
 
 ### ⌨️ Mappings
 
-> ⌨ for **Neovim 0.7** and higher, which key will use the `desc` attribute of existing mappings as the default label
+> [!NOTE] > **WhichKey** automatically gets the descriptions of your keymaps from the `desc`
+> attribute of the keymap. So for most use-cases, you don't need to do anything else.
+>
+> However, the mapping spec is useful to configure group descriptions and mappings that don't really exist as a regular keymap.
 
-Group names use the special `name` key in the tables. There's multiple ways to define the mappings. `wk.register` can be called multiple times from anywhere in your config files.
+Group names use the special `group` key in the tables. There's multiple ways to define the mappings.
+`wk.add()` can be called multiple times from anywhere in your config files.
 
 ```lua
 local wk = require("which-key")
@@ -247,88 +215,25 @@ local wk = require("which-key")
 --  * <leader>fe edit file
 -- and hide <leader>1
 
-wk.register({
-  f = {
-    name = "file", -- optional group name
-    f = { "<cmd>Telescope find_files<cr>", "Find File" }, -- create a binding with label
-    r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File", noremap=false, buffer = 123 }, -- additional options for creating the keymap
-    n = { "New File" }, -- just a label. don't create any mapping
-    e = "Edit File", -- same as above
-    ["1"] = "which_key_ignore",  -- special label to hide it in the popup
-    b = { function() print("bar") end, "Foobar" } -- you can also pass functions!
-  },
-}, { prefix = "<leader>" })
-```
-
-<details>
-<summary>Click to see more examples</summary>
-
-```lua
--- all of the mappings below are equivalent
-
--- method 2
-wk.register({
-  ["<leader>"] = {
-    f = {
-      name = "+file",
-      f = { "<cmd>Telescope find_files<cr>", "Find File" },
-      r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
-      n = { "<cmd>enew<cr>", "New File" },
-    },
-  },
+wk.add({
+  { "<leader>f", group = "file" }, -- group
+  { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find File", mode = "n" },
+  { "<leader>fr", "<cmd>Telescope oldfiles<cr>", buffer = 316, desc = "Open Recent File", remap = true },
+  { "<leader>fb", function() print("hello") end, desc = "Foobar" },
+  { "<leader>fe", desc = "Edit File" },
+  { "<leader>fn", desc = "New File" },
+  { "<leader>f1", hidden = true }, -- hide this keymap
+  {
+    -- Nested mappings are allowed and can be added in any order
+    -- Most attributes can be inherited or overridden on any level
+    -- There's no limit to the depth of nesting
+    mode = { "n", "v" }, -- NORMAL and VISUAL mode
+    { "<leader>q", "<cmd>q<cr>", desc = "Quit" }, -- no need to specify mode since it's inherited
+    { "<leader>w", "<cmd>w<cr>", desc = "Write" },
+  }
 })
 
--- method 3
-wk.register({
-  ["<leader>f"] = {
-    name = "+file",
-    f = { "<cmd>Telescope find_files<cr>", "Find File" },
-    r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
-    n = { "<cmd>enew<cr>", "New File" },
-  },
-})
-
--- method 4
-wk.register({
-  ["<leader>f"] = { name = "+file" },
-  ["<leader>ff"] = { "<cmd>Telescope find_files<cr>", "Find File" },
-  ["<leader>fr"] = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
-  ["<leader>fn"] = { "<cmd>enew<cr>", "New File" },
-})
 ```
-
-</details>
-
-**Tips:** The default label is `keymap.desc` or `keymap.rhs` or `""`,
-`:h nvim_set_keymap()` to get more details about `desc` and `rhs`.
-
-### 🚙 Operators, Motions and Text Objects
-
-**WhichKey** provides help to work with operators, motions and text objects.
-
-> `[count]operator[count][text-object]`
-
-- operators can be configured with the `operators` option
-  + set `plugins.presets.operators` to `true` to automatically configure vim built-in operators
-  + set this to `false`, to only include the list you configured in the `operators` option.
-  + see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L5) for the full list part of the preset
-- text objects are automatically retrieved from **operator pending** key maps (`omap`)
-  + set `plugins.presets.text_objects` to `true` to configure built-in text objects
-  + see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L43)
-- motions are part of the preset `plugins.presets.motions` setting
-  + see [here](https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua#L20)
-
-<details>
-<summary>How to disable some operators? (like v)</summary>
-
-```lua
--- make sure to run this code before calling setup()
--- refer to the full lists at https://github.com/folke/which-key.nvim/blob/main/lua/which-key/plugins/presets/init.lua
-local presets = require("which-key.plugins.presets")
-presets.operators["v"] = nil
-```
-
-</details>
 
 ## 🚀 Usage
 
@@ -339,18 +244,6 @@ When the **WhichKey** popup is open, you can use the following key bindings (the
 - `<bs>` go up one level
 - `<c-d>` scroll down
 - `<c-u>` scroll up
-
-Apart from the automatic opening, you can also manually open **WhichKey** for a certain `prefix`:
-
-> ❗️ don't create any keymappings yourself to trigger WhichKey. Unlike with _vim-which-key_, we do this fully automatically.
-> Please remove any left-over triggers you might have from using _vim-which-key_.
-
-```vim
-:WhichKey " show all mappings
-:WhichKey <leader> " show all <leader> mappings
-:WhichKey <leader> v " show all <leader> mappings for VISUAL mode
-:WhichKey '' v " show ALL mappings for VISUAL mode
-```
 
 ## 🔥 Plugins
 
@@ -394,11 +287,17 @@ The table below shows all the highlight groups defined for **WhichKey** with the
 | **WhichKeyFloat** | ***NormalFloat*** | Normal in th which-key window |
 | **WhichKeyGroup** | ***Keyword*** | group name |
 | **WhichKeyIcon** | ***@markup.link*** | icons |
+| **WhichKeyIconAzure** | ***Function*** |  |
+| **WhichKeyIconBlue** | ***DiagnosticInfo*** |  |
+| **WhichKeyIconCyan** | ***DiagnosticHint*** |  |
+| **WhichKeyIconGreen** | ***DiagnosticOk*** |  |
+| **WhichKeyIconGrey** | ***Normal*** |  |
+| **WhichKeyIconOrange** | ***DiagnosticWarn*** |  |
+| **WhichKeyIconPurple** | ***Constant*** |  |
+| **WhichKeyIconRed** | ***DiagnosticError*** |  |
+| **WhichKeyIconYellow** | ***DiagnosticWarn*** |  |
 | **WhichKeySeparator** | ***Comment*** | the separator between the key and its description |
 | **WhichKeyTitle** | ***FloatTitle*** | Title of the which-key window |
 | **WhichKeyValue** | ***Comment*** | values by plugins (like marks, registers, etc) |
 
 <!-- colors:end -->
-<!-- markdownlint-disable-file MD033 -->
-<!-- markdownlint-configure-file { "MD013": { "line_length": 120 } } -->
-<!-- markdownlint-configure-file { "MD004": { "style": "sublist" } } -->
