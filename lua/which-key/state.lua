@@ -42,11 +42,12 @@ function M.setup()
     group = group,
     callback = function(ev)
       if not Util.safe() then
-        return M.stop()
-      end
+        M.stop()
       -- make sure the buffer mode exists
-      if Buf.get() and Util.xo() then
-        return not M.state and M.start()
+      elseif Buf.get() and Util.xo() then
+        if not M.state then
+          M.start()
+        end
       elseif not ev.match:find("c") then
         M.stop()
       end
