@@ -2,95 +2,119 @@ local Config = require("which-key.config")
 
 local M = {}
 
---- * `MiniIconsAzure`  - azure.
---- * `MiniIconsBlue`   - blue.
---- * `MiniIconsCyan`   - cyan.
---- * `MiniIconsGreen`  - green.
---- * `MiniIconsGrey`   - grey.
---- * `MiniIconsOrange` - orange.
---- * `MiniIconsPurple` - purple.
---- * `MiniIconsRed`    - red.
---- * `MiniIconsYellow` - yellow.
+--- * `WhichKeyColorAzure`  - azure.
+--- * `WhichKeyColorBlue`   - blue.
+--- * `WhichKeyColorCyan`   - cyan.
+--- * `WhichKeyColorGreen`  - green.
+--- * `WhichKeyColorGrey`   - grey.
+--- * `WhichKeyColorOrange` - orange.
+--- * `WhichKeyColorPurple` - purple.
+--- * `WhichKeyColorRed`    - red.
+--- * `WhichKeyColorYellow` - yellow.
 
 ---@type wk.IconRule[]
 M.rules = {
   { plugin = "fzf-lua", cat = "filetype", name = "fzf" },
   { plugin = "neo-tree.nvim", cat = "filetype", name = "neo-tree" },
   { plugin = "octo.nvim", cat = "filetype", name = "git" },
-  { plugin = "yanky.nvim", icon = "󰅇", hl = "MiniIconsYellow" },
-  { plugin = "zen-mode.nvim", icon = "󱅻 ", hl = "MiniIconsCyan" },
+  { plugin = "yanky.nvim", icon = "󰅇", color = "yellow" },
+  { plugin = "zen-mode.nvim", icon = "󱅻 ", color = "cyan" },
   { plugin = "trouble.nvim", cat = "filetype", name = "trouble" },
   { plugin = "todo-comments.nvim", cat = "file", name = "TODO" },
-  { plugin = "nvim-spectre", icon = "󰛔 ", hl = "MiniIconsBlue" },
-  { plugin = "noice.nvim", pattern = "noice", icon = "󰈸", hl = "MiniIconsOrange" },
-  { plugin = "persistence.nvim", icon = " ", hl = "MiniIconsAzure" },
+  { plugin = "nvim-spectre", icon = "󰛔 ", color = "blue" },
+  { plugin = "noice.nvim", pattern = "noice", icon = "󰈸", color = "orange" },
+  { plugin = "persistence.nvim", icon = " ", color = "azure" },
   { plugin = "neotest", cat = "filetype", name = "neotest-summary" },
   { plugin = "lazy.nvim", cat = "filetype", name = "lazy" },
-  { plugin = "CopilotChat.nvim", icon = " ", hl = "MiniIconsOrange" },
+  { plugin = "CopilotChat.nvim", icon = " ", color = "orange" },
   { pattern = "git", cat = "filetype", name = "git" },
-  { pattern = "terminal", icon = " ", hl = "MiniIconsRed" },
-  { pattern = "find", icon = " ", hl = "MiniIconsGreen" },
-  { pattern = "search", icon = " ", hl = "MiniIconsGreen" },
+  { pattern = "terminal", icon = " ", color = "red" },
+  { pattern = "find", icon = " ", color = "green" },
+  { pattern = "search", icon = " ", color = "green" },
   { pattern = "test", cat = "filetype", name = "neotest-summary" },
   { pattern = "lazy", cat = "filetype", name = "lazy" },
-  { pattern = "buffer", icon = "󰈔", hl = "MiniIconsCyan" },
-  { pattern = "file", icon = "󰈔", hl = "MiniIconsCyan" },
-  { pattern = "window", icon = " ", hl = "MiniIconsBlue" },
-  { pattern = "diagnostic", icon = "󱖫 ", hl = "MiniIconsGreen" },
-  { pattern = "format", icon = " ", hl = "MiniIconsCyan" },
-  { pattern = "debug", icon = "󰃤 ", hl = "MiniIconsRed" },
-  { pattern = "code", icon = " ", hl = "MiniIconsOrange" },
-  { pattern = "notif", icon = "󰵅 ", hl = "MiniIconsBlue" },
-  { pattern = "toggle", icon = " ", hl = "MiniIconsYellow" },
-  { pattern = "exit", icon = "󰈆 ", hl = "MiniIconsRed" },
-  { pattern = "quit", icon = "󰈆 ", hl = "MiniIconsRed" },
-  { pattern = "tab", icon = "󰓩 ", hl = "MiniIconsPurple" },
-  { pattern = "ai", icon = " ", hl = "MiniIconsGreen" },
-  { pattern = "ui", icon = "󰙵 ", hl = "MiniIconsCyan" },
+  { pattern = "buffer", icon = "󰈔", color = "cyan" },
+  { pattern = "file", icon = "󰈔", color = "cyan" },
+  { pattern = "window", icon = " ", color = "blue" },
+  { pattern = "diagnostic", icon = "󱖫 ", color = "green" },
+  { pattern = "format", icon = " ", color = "cyan" },
+  { pattern = "debug", icon = "󰃤 ", color = "red" },
+  { pattern = "code", icon = " ", color = "orange" },
+  { pattern = "notif", icon = "󰵅 ", color = "blue" },
+  { pattern = "toggle", icon = " ", color = "yellow" },
+  { pattern = "session", icon = " ", color = "azure" },
+  { pattern = "exit", icon = "󰈆 ", color = "red" },
+  { pattern = "quit", icon = "󰈆 ", color = "red" },
+  { pattern = "tab", icon = "󰓩 ", color = "purple" },
+  { pattern = "ai", icon = " ", color = "green" },
+  { pattern = "ui", icon = "󰙵 ", color = "cyan" },
 }
 
----@module 'mini.icons'
-local Icons
-local loaded = false
-local have_hl = nil
+---@type wk.IconProvider[]
+M.providers = {
+  {
+    name = "mini.icons",
+    get = function(icon)
+      local Icons = require("mini.icons")
+      local ico, ico_hl, ico_def = Icons.get(icon.cat, icon.name) --[[@as string, string, boolean]]
+      if not ico_def then
+        return ico, ico_hl
+      end
+    end,
+  },
+  {
+    name = "nvim-web-devicons",
+    get = function(icon)
+      local Icons = require("nvim-web-devicons")
+      if icon.cat == "filetype" then
+        return Icons.get_icon_by_filetype(icon.name, { default = false })
+      elseif icon.cat == "file" then
+        return Icons.get_icon(icon.name, nil, { default = false }) --[[@as string, string]]
+      elseif icon.cat == "extension" then
+        return Icons.get_icon(nil, icon.name, { default = false }) --[[@as string, string]]
+      end
+    end,
+  },
+}
 
-local function load()
-  if not loaded then
-    local ok
-    ok, Icons = pcall(require, "mini.icons")
-    if not ok then
-      Icons = nil
+---@return wk.IconProvider?
+function M.get_provider()
+  for _, provider in ipairs(M.providers) do
+    if provider.available == nil then
+      provider.available = pcall(require, provider.name)
     end
-    loaded = true
+    if provider.available then
+      return provider
+    end
   end
-  return Icons ~= nil
 end
 
 function M.have()
-  return load() ~= nil
-end
-
----@param hl? string
-function M.hl(hl)
-  if have_hl == nil then
-    local thl = vim.api.nvim_get_hl(0, { create = false, name = "MiniIconsBlue" })
-    have_hl = not vim.tbl_isempty(thl)
-  end
-  return (not have_hl or not hl or Config.icons.colors == false) and "WhichKeyIcon" or hl
+  return M.get_provider() ~= nil
 end
 
 ---@param icon wk.Icon|string
 ---@return string?, string?
 function M.get_icon(icon)
   icon = type(icon) == "string" and { cat = "filetype", name = icon } or icon --[[@as wk.Icon]]
+  ---@type string?, string?
+  local ret, hl
   if icon.icon then
-    return icon.icon, M.hl(icon.hl)
-  end
-  if icon.cat and icon.name and load() then
-    local ico, ico_hl, ico_def = Icons.get(icon.cat, icon.name) --[[@as string, string, boolean]]
-    if not ico_def then
-      return ico, M.hl(ico_hl)
+    ret, hl = icon.icon, icon.hl
+  elseif icon.cat and icon.name then
+    local provider = M.get_provider()
+    if provider then
+      ret, hl = provider.get(icon)
     end
+  end
+  if ret then
+    if icon.color then
+      hl = "WhichKeyIcon" .. icon.color:sub(1, 1):upper() .. icon.color:sub(2)
+    end
+    if not hl or Config.icons.colors == false or icon.color == false then
+      hl = "WhichKeyIcon"
+    end
+    return ret, hl
   end
 end
 
@@ -120,7 +144,10 @@ function M._get(rules, opts, check_ft)
   if plugin then
     for _, icon in ipairs(rules) do
       if icon.plugin == plugin then
-        return M.get_icon(icon)
+        local ico, hl = M.get_icon(icon)
+        if ico then
+          return ico, hl
+        end
       end
     end
   end
@@ -144,7 +171,10 @@ function M._get(rules, opts, check_ft)
   if opts.desc then
     for _, icon in ipairs(rules) do
       if icon.pattern and opts.desc:lower():find(icon.pattern) then
-        return M.get_icon(icon)
+        local ico, hl = M.get_icon(icon)
+        if ico then
+          return ico, hl
+        end
       end
     end
   end
