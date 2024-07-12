@@ -1,3 +1,4 @@
+local Config = require("which-key.config")
 local Util = require("which-key.util")
 
 local M = {}
@@ -71,10 +72,12 @@ function M.log(msg, level, spec)
     return
   end
   M.notifs[#M.notifs + 1] = { msg = msg, level = level, spec = spec }
-  Util.warn({
-    "There were issues reported with your **which-key** mappings.",
-    "Use `:checkhealth which-key` to find out more.",
-  }, { once = true })
+  if Config.notify then
+    Util.warn({
+      "There were issues reported with your **which-key** mappings.",
+      "Use `:checkhealth which-key` to find out more.",
+    }, { once = true })
+  end
 end
 
 ---@param spec wk.Spec
