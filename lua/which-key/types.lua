@@ -14,8 +14,14 @@
 ---@class wk.Icon
 ---@field icon? string
 ---@field hl? string
----@field cat? string
+---@field cat? "file" | "filetype" | "extension"
 ---@field name? string
+---@field color? false | "azure" | "blue" | "cyan" | "green" | "grey" | "orange" | "purple" | "red" | "yellow"
+
+---@class wk.IconProvider
+---@field name string
+---@field available? boolean
+---@field get fun(icon: wk.Icon):(icon: string?, hl: string?)
 
 ---@class wk.IconRule: wk.Icon
 ---@field pattern? string
