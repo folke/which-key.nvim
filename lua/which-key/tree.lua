@@ -18,6 +18,9 @@ local Util = require("which-key.util")
 local M = {}
 M.__index = M
 
+---@type table<string, table<wk.Mapping|wk.Keymap, true>>
+M.dups = {}
+
 function M.new()
   local self = setmetatable({}, M)
   self:clear()
@@ -61,11 +64,18 @@ function M:add(keymap, virtual)
   end
   node.desc = keymap.desc or node.desc
   node.plugin = node.plugin or keymap.plugin
+  node.global = not (keymap.buffer and keymap.buffer ~= 0)
   if virtual then
+    ---@cast node wk.Node
+    if node.mapping then
+      local id = keymap.mode .. ":" .. node.keys
+      M.dups[id] = M.dups[id] or {}
+      M.dups[id][keymap] = true
+      M.dups[id][node.mapping] = true
+    end
     node.mapping = keymap
   else
     node.keymap = keymap
-    node.global = not (keymap.buffer and keymap.buffer ~= 0)
   end
   -- node.keymap = not keymap.group and keymap or nil
   if node.plugin then
