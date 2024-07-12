@@ -12,10 +12,20 @@ local error = vim.health.error or vim.health.report_error
 local info = vim.health.info or vim.health.report_info
 
 function M.check()
-  if Icons.have() then
-    ok("|mini.icons| installed and ready")
-  else
-    warn("|mini.icons| not installed. Keymap icon support will be limited.")
+  local have_icons = false
+  for _, provider in ipairs(Icons.providers) do
+    if provider.available == nil then
+      provider.available = pcall(require, provider.name)
+    end
+    if provider.available then
+      ok("|" .. provider.name .. "| is installed")
+      have_icons = true
+    else
+      warn("|" .. provider.name .. "| is not installed")
+    end
+  end
+  if not have_icons then
+    warn("Keymap icon support will be limited.")
   end
 
   start("checking for overlapping keymaps")
@@ -42,18 +52,32 @@ function M.check()
             end
             reported[id] = true
             local overlaps = {}
+            local descs = {}
+            if node.desc and node.desc ~= "" then
+              descs[#descs + 1] = "- <" .. node.keys .. ">: " .. node.desc
+            end
             local queue = vim.tbl_values(node.children)
             while #queue > 0 do
               local child = table.remove(queue)
               if child.keymap then
                 table.insert(overlaps, "<" .. child.keys .. ">")
+                if child.desc and child.desc ~= "" then
+                  descs[#descs + 1] = "- <" .. child.keys .. ">: " .. child.desc
+                end
               end
               vim.list_extend(queue, vim.tbl_values(child.children or {}))
             end
             if #overlaps > 0 then
               found = true
               warn(
-                "In mode `" .. mode.mode .. "`, <" .. node.keys .. "> overlaps with " .. table.concat(overlaps, ", ")
+                "In mode `"
+                  .. mode.mode
+                  .. "`, <"
+                  .. node.keys
+                  .. "> overlaps with "
+                  .. table.concat(overlaps, ", ")
+                  .. ":\n"
+                  .. table.concat(descs, "\n")
               )
             end
             return false
