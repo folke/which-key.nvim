@@ -165,7 +165,7 @@ end
 ---@param opts? wk.Mapping
 function M.register(mappings, opts)
   local Mappings = require("which-key.mappings")
-  for _, km in ipairs(Mappings.parse(mappings, opts)) do
+  for _, km in ipairs(Mappings.parse(mappings, opts, { create = true })) do
     table.insert(M.mappings, km)
     km.idx = #M.mappings
   end

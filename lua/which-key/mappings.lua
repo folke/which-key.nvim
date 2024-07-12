@@ -4,36 +4,36 @@ local M = {}
 
 ---@class wk.Field
 ---@field transform? string|(fun(value: any, parent:table): (value:any, key:string?))
----@field transitive? boolean
+---@field inherit? boolean
 
 ---@type table<string, wk.Field>
 M.fields = {
-  buffer = { transitive = true },
+  buffer = { inherit = true },
   callback = { transform = "rhs" },
   prefix = { transform = "lhs" },
   desc = {},
   expr = {},
-  mode = { transitive = true },
+  mode = { inherit = true },
   noremap = {
     transform = function(value)
       return not value, "remap"
     end,
-    transitive = true,
+    inherit = true,
   },
-  nowait = { transitive = true },
-  remap = { transitive = true },
-  replace_keycodes = { transitive = true },
+  nowait = { inherit = true },
+  remap = { inherit = true },
+  replace_keycodes = { inherit = true },
   script = {},
-  silent = { transitive = true },
+  silent = { inherit = true },
   unique = {},
-  plugin = { transitive = true },
-  hidden = { transitive = true },
-  cond = { transitive = true },
-  preset = { transitive = true },
+  plugin = { inherit = true },
+  hidden = { inherit = true },
+  cond = { inherit = true },
+  preset = { inherit = true },
   name = {},
   cmd = { transform = "rhs" },
   group = {},
-  icon = { transitive = true },
+  icon = { inherit = true },
   rhs = {},
   lhs = {},
 }
@@ -84,14 +84,13 @@ function M._parse(value, parent, ret)
   if count == 1 then
     assert(type(value[1]) == "string", "Invalid mapping " .. vim.inspect(value))
     if mapping.desc then
-      mapping.lhs = value[1] --[[@as string]]
+      mapping.rhs = value[1] --[[@as string]]
     else
       mapping.desc = value[1] --[[@as string]]
     end
   elseif count == 2 then
     if mapping.desc then
-      mapping.lhs = value[1] --[[@as string]]
-      mapping.rhs = value[2] --[[@as string]]
+      Util.error("Invalid mapping " .. vim.inspect(value))
     else
       mapping.rhs = value[1] --[[@as string]]
       mapping.desc = value[2] --[[@as string]]
@@ -104,7 +103,7 @@ function M._parse(value, parent, ret)
 
   parent = {}
   for k, v in pairs(mapping) do
-    if M.fields[k] and M.fields[k].transitive then
+    if M.fields[k] and M.fields[k].inherit then
       parent[k] = v
     end
   end
@@ -175,9 +174,6 @@ end
 ---@return wk.Mapping[]
 function M.parse(value, parent, opts)
   opts = opts or {}
-  if opts.create == nil then
-    opts.create = true
-  end
   local ret = M._parse(value, parent)
   return vim.tbl_filter(function(v)
     if v.rhs and opts.create then
