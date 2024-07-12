@@ -40,12 +40,10 @@ function M.fix_colors()
       local mini_hl_group = "MiniIcons" .. color
       local wk_hl = vim.api.nvim_get_hl(0, {
         name = wk_hl_group,
-        create = false,
         link = true,
       })
       local mini_hl = vim.api.nvim_get_hl(0, {
         name = mini_hl_group,
-        create = false,
         link = true,
       })
       if wk_hl.default and not vim.tbl_isempty(mini_hl) then
