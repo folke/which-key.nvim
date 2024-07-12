@@ -4,6 +4,7 @@ local M = {}
 
 ---@param spec wk.Spec
 function M.migrate(spec)
+  spec = vim.deepcopy(spec)
   local mappings = Mappings.parse(spec, { version = 1, notify = false })
   ---@type table<string, {m:wk.Mapping, mode:string[]}>
   local mapping_modes = {}
@@ -59,11 +60,14 @@ function M.migrate(spec)
       lines[#lines + 1] = "  },"
     else
       for _, m in ipairs(maps) do
+        if m.mode and #m.mode == 1 then
+          m.mode = m.mode[1]
+        end
         lines[#lines + 1] = "  " .. vim.inspect(m):gsub("%s+", " ") .. ","
       end
     end
   end
 
-  return "local mappings = {\n" .. table.concat(lines, "\n") .. "\n}"
+  return "{\n" .. table.concat(lines, "\n") .. "\n}"
 end
 return M
