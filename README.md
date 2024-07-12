@@ -196,7 +196,8 @@ wk.add(mappings)
 
 ### ⌨️ Mappings
 
-> [!NOTE] > **WhichKey** automatically gets the descriptions of your keymaps from the `desc`
+> [!NOTE]
+> **WhichKey** automatically gets the descriptions of your keymaps from the `desc`
 > attribute of the keymap. So for most use-cases, you don't need to do anything else.
 >
 > However, the mapping spec is useful to configure group descriptions and mappings that don't really exist as a regular keymap.
@@ -279,25 +280,25 @@ The table below shows all the highlight groups defined for **WhichKey** with the
 
 <!-- colors:start -->
 
-| Highlight Group | Default Group | Description |
-| --- | --- | --- |
-| **WhichKey** | ***Function*** |  |
-| **WhichKeyBorder** | ***FloatBorder*** | Border of the which-key window |
-| **WhichKeyDesc** | ***Identifier*** | description |
-| **WhichKeyFloat** | ***NormalFloat*** | Normal in th which-key window |
-| **WhichKeyGroup** | ***Keyword*** | group name |
-| **WhichKeyIcon** | ***@markup.link*** | icons |
-| **WhichKeyIconAzure** | ***Function*** |  |
-| **WhichKeyIconBlue** | ***DiagnosticInfo*** |  |
-| **WhichKeyIconCyan** | ***DiagnosticHint*** |  |
-| **WhichKeyIconGreen** | ***DiagnosticOk*** |  |
-| **WhichKeyIconGrey** | ***Normal*** |  |
-| **WhichKeyIconOrange** | ***DiagnosticWarn*** |  |
-| **WhichKeyIconPurple** | ***Constant*** |  |
-| **WhichKeyIconRed** | ***DiagnosticError*** |  |
-| **WhichKeyIconYellow** | ***DiagnosticWarn*** |  |
-| **WhichKeySeparator** | ***Comment*** | the separator between the key and its description |
-| **WhichKeyTitle** | ***FloatTitle*** | Title of the which-key window |
-| **WhichKeyValue** | ***Comment*** | values by plugins (like marks, registers, etc) |
+| Highlight Group        | Default Group         | Description                                       |
+| ---------------------- | --------------------- | ------------------------------------------------- |
+| **WhichKey**           | **_Function_**        |                                                   |
+| **WhichKeyBorder**     | **_FloatBorder_**     | Border of the which-key window                    |
+| **WhichKeyDesc**       | **_Identifier_**      | description                                       |
+| **WhichKeyFloat**      | **_NormalFloat_**     | Normal in th which-key window                     |
+| **WhichKeyGroup**      | **_Keyword_**         | group name                                        |
+| **WhichKeyIcon**       | **_@markup.link_**    | icons                                             |
+| **WhichKeyIconAzure**  | **_Function_**        |                                                   |
+| **WhichKeyIconBlue**   | **_DiagnosticInfo_**  |                                                   |
+| **WhichKeyIconCyan**   | **_DiagnosticHint_**  |                                                   |
+| **WhichKeyIconGreen**  | **_DiagnosticOk_**    |                                                   |
+| **WhichKeyIconGrey**   | **_Normal_**          |                                                   |
+| **WhichKeyIconOrange** | **_DiagnosticWarn_**  |                                                   |
+| **WhichKeyIconPurple** | **_Constant_**        |                                                   |
+| **WhichKeyIconRed**    | **_DiagnosticError_** |                                                   |
+| **WhichKeyIconYellow** | **_DiagnosticWarn_**  |                                                   |
+| **WhichKeySeparator**  | **_Comment_**         | the separator between the key and its description |
+| **WhichKeyTitle**      | **_FloatTitle_**      | Title of the which-key window                     |
+| **WhichKeyValue**      | **_Comment_**         | values by plugins (like marks, registers, etc)    |
 
 <!-- colors:end -->
