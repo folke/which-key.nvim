@@ -15,6 +15,8 @@ local defaults = {
   --- You can add any mappings here, or use `require('which-key').register()` later
   ---@type wk.Spec
   spec = {},
+  -- show a warning when issues were detected with your mappings
+  notify = true,
   -- Enable/disable WhichKey for certain mapping modes
   modes = {
     n = true, -- Normal mode
