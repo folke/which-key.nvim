@@ -290,29 +290,29 @@ When the **WhichKey** popup is open, you can use the following key bindings (the
 
 Four built-in plugins are included with **WhichKey**.
 
+### Presets
+
+Built-in key binding help for `motions`, `text-objects`, `operators`, `windows`, `nav`, `z` and `g` and more.
+
 ### Marks
 
 Shows a list of your buffer local and global marks when you hit \` or '
 
-![image](https://user-images.githubusercontent.com/292349/116439573-8f278700-a804-11eb-80ca-bb9263e6d937.png)
+![image](https://github.com/user-attachments/assets/43fb0874-7f79-4521-aee9-03e2b0841758)
+
 
 ### Registers
 
 Shows a list of your buffer local and global registers when you hit " in _NORMAL_ mode, or `<c-r>` in _INSERT_ mode.
 
-![image](https://user-images.githubusercontent.com/292349/116439609-98b0ef00-a804-11eb-9385-97c7d5ff4113.png)
-
-### Presets
-
-Built-in key binding help for `motions`, `text-objects`, `operators`, `windows`, `nav`, `z` and `g`
-
-![image](https://user-images.githubusercontent.com/292349/116439871-df9ee480-a804-11eb-9529-800e167db65c.png)
+![image](https://github.com/user-attachments/assets/d8077dcb-56fb-47b0-ad9e-1aba5db16950)
 
 ### Spelling
 
 When enabled, this plugin hooks into `z=` and replaces the full-screen spelling suggestions window by a list of suggestions within **WhichKey**.
 
-![image](https://user-images.githubusercontent.com/292349/118102022-1c361880-b38d-11eb-8e82-79ad266d9bb8.png)
+![image](https://github.com/user-attachments/assets/102c7963-329a-40b9-b0a8-72c8656318b7)
+
 
 ## 🎨 Colors
 
