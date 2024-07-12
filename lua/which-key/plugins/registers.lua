@@ -29,6 +29,13 @@ local labels = {
   ["/"] = "last search pattern",
 }
 
+M.replace = {
+  ["<Space>"] = " ",
+  ["<lt>"] = "<",
+  ["<NL>"] = "\n",
+  ["\r"] = "",
+}
+
 function M.expand()
   local items = {} ---@type wk.Plugin.item[]
 
@@ -44,6 +51,10 @@ function M.expand()
       value = ok and reg_value or ""
     end
     if value ~= "" then
+      value = vim.fn.keytrans(value)
+      for k, v in pairs(M.replace) do
+        value = value:gsub(k, v)
+      end
       table.insert(items, { key = key, desc = labels[key] or "", value = value })
     end
   end
