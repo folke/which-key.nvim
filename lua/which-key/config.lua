@@ -135,6 +135,11 @@ local defaults = {
     -- disable WhichKey for certain buf types and file types.
     ft = {},
     bt = {},
+    -- disable a trigger for a certain context by returning true
+    ---@type fun(ctx: { keys: string, mode: string, plugin?: string }):boolean?
+    trigger = function(ctx)
+      return false
+    end,
   },
 }
 

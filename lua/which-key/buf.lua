@@ -84,12 +84,16 @@ function Mode:_attach(node)
   if not self.buf:valid() then
     return
   end
-  self.triggers[node.keys] = node
-  local delay = require("which-key.state").delay({
+  local ctx = {
     mode = self.mode,
     keys = node.keys,
     plugin = node.plugin,
-  })
+  }
+  if Config.disable.trigger(ctx) then
+    return
+  end
+  self.triggers[node.keys] = node
+  local delay = require("which-key.state").delay(ctx)
   local waited = vim.o.timeout and delay >= vim.o.timeoutlen and vim.o.timeoutlen or 0
   vim.keymap.set(self.mode, node.keys, function()
     require("which-key.state").start({
