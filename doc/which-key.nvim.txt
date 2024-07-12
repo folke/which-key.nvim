@@ -388,10 +388,6 @@ their default link.
   WhichKeyValue           Comment                 values by plugins (like
                                                   marks, registers, etc)
   -----------------------------------------------------------------------
->
-    
-<
-
 ==============================================================================
 2. Links                                                *which-key.nvim-links*
 
