@@ -148,7 +148,7 @@ function Mode:update()
     modes.v = true
   end
   for _, m in ipairs(Config.mappings) do
-    if modes[m.mode] and (not m.buffer or m.buffer == self.buf) then
+    if modes[m.mode] and (not m.buffer or m.buffer == self.buf.buf) then
       self.tree:add(m, true)
     end
   end
