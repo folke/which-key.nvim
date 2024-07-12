@@ -21,8 +21,10 @@ in a popup as you type.
 ## ⚡️ Requirements
 
 - **Neovim** >= 0.9.0
-- [mini.icons](https://github.com/echasnovski/mini.icons) _(optional)_
-- [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) _(optional)_
+- for proper icons support:
+  - [mini.icons](https://github.com/echasnovski/mini.icons) _(optional)_
+  - [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) _(optional)_
+  - a [Nerd Font](https://www.nerdfonts.com/) **_(optional)_**
 
 ## 📦 Installation
 
@@ -38,7 +40,16 @@ Install the plugin with your package manager:
     -- your configuration comes here
     -- or leave it empty to use the default settings
     -- refer to the configuration section below
-  }
+  },
+  keys = {
+    {
+      "<leader>?",
+      function()
+        require("which-key").show({ global = false })
+      end,
+      desc = "Buffer Local Keymaps (which-key)",
+    },
+  },
 }
 ```
 
@@ -178,50 +189,39 @@ local defaults = {
 
 </details>
 
-## 🪄 Setup
+## ⌨️ Setup
 
-With the default settings, **WhichKey** will work out of the box for most builtin keybindings,
-but the real power comes from documenting and organizing your own keybindings.
+**WhichKey** automatically gets the descriptions of your keymaps from the `desc`
+attribute of the keymap. So for most use-cases, you don't need to do anything else.
+
+However, the **mapping spec** is still useful to configure group descriptions and mappings that don't really exist as a regular keymap.
 
 > [!WARNING]
 > The **mappings spec** changed in `v3`, so make sure to only use the new `add` method if
 > you updated your existing mappings.
 
-To add or customize any mappings, you can use:
-
-```lua
-local wk = require("which-key")
-wk.add(mappings)
-```
-
-### ⌨️ Mappings
-
-> [!NOTE]
-> **WhichKey** automatically gets the descriptions of your keymaps from the `desc`
-> attribute of the keymap. So for most use-cases, you don't need to do anything else.
->
-> However, the mapping spec is useful to configure group descriptions and mappings that don't really exist as a regular keymap.
-
-Group names use the special `group` key in the tables. There's multiple ways to define the mappings.
+Mappings can be added as part of the config `opts.spec`, or can be added later
+using `require("which-key").add()`.
 `wk.add()` can be called multiple times from anywhere in your config files.
 
+A mapping has the following attributes:
+
+- **[1]**: (`string`) lhs **_(required)_**
+- **[2]**: (`string|fun()`) rhs **_(optional)_**: when present, it will create the mapping
+- **desc**: (`string`) description **_(required)_**
+- **mode**: (`string|string[]`) mode **_(optional, defaults to `"n"`)_**
+- **group**: (`string`) group name **_(optional)_**
+- **cond**: (`boolean|fun():boolean`) condition to enable the mapping **_(optional)_**
+- **hidden**: (`boolean`) hide the mapping **_(optional)_**
+- **icon**: (`string|wk.Icon`) icon spec **_(optional)_**
+- any other option valid for `vim.keymap.set`. These are only used for creating mappings.
+
 ```lua
 local wk = require("which-key")
--- As an example, we will create the following mappings:
---  * <leader>ff find files
---  * <leader>fr show recent files
---  * <leader>fb Foobar
--- we'll document:
---  * <leader>fn new file
---  * <leader>fe edit file
--- and hide <leader>1
-
 wk.add({
   { "<leader>f", group = "file" }, -- group
   { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find File", mode = "n" },
-  { "<leader>fr", "<cmd>Telescope oldfiles<cr>", buffer = 316, desc = "Open Recent File", remap = true },
   { "<leader>fb", function() print("hello") end, desc = "Foobar" },
-  { "<leader>fe", desc = "Edit File" },
   { "<leader>fn", desc = "New File" },
   { "<leader>f1", hidden = true }, -- hide this keymap
   {
@@ -233,8 +233,29 @@ wk.add({
     { "<leader>w", "<cmd>w<cr>", desc = "Write" },
   }
 })
-
 ```
+
+## 🎨 Icons
+
+> [!note]
+> For full support, you need to install either [mini.icons](https://github.com/echasnovski/mini.icons) or [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons)
+
+There's multiple ways to set icons for your keymaps:
+
+- if you use lazy.nvim, then some icons will be autodetected for keymaps belonging to certain plugins.
+- custom rules to decide what icon to use
+- in your mapping spec, you can specify what icon to use at any level, so at the node for `<leader>g` for example, to apply to all git keymaps.
+
+The `icon` attribute of a mapping can be a `string`, which will be used as the actual icon,
+or an `wk.Icon` object, which can have the following attributes:
+
+- `icon` (`string`): the icon to use **_(optional)_**
+- `hl` (`string`): the highlight group to use for the icon **_(optional)_**
+- `color` (`string`): the color to use for the icon **_(optional)_**
+  valid colors are: `azure`, `blue`, `cyan`, `green`, `grey`, `orange`, `purple`, `red`, `yellow`
+- `cat` (`string`): the category of the icon **_(optional)_**
+  valid categories are: `file`, `filetype`, `extension`
+- `name` (`string`): the name of the icon in the specified category **_(optional)_**
 
 ## 🚀 Usage
 
@@ -302,3 +323,7 @@ The table below shows all the highlight groups defined for **WhichKey** with the
 | **WhichKeyValue**      | **_Comment_**         | values by plugins (like marks, registers, etc)    |
 
 <!-- colors:end -->
+
+```
+
+```
