@@ -1,17 +1,31 @@
+---@class wk
+---@field private _queue {spec: wk.Spec, opts?: wk.Parse}[]
 local M = {}
 
+M._queue = {}
+
+--- Open which-key
 ---@param opts? wk.Filter|string
 function M.show(opts)
   opts = opts or {}
   opts = type(opts) == "string" and { keys = opts } or opts
   opts.delay = 0
   ---@diagnostic disable-next-line: param-type-mismatch
-  require("which-key.state").start(opts)
+  if not require("which-key.state").start(opts) then
+    require("which-key.util").warn(
+      "No mappings found for mode `" .. (opts.mode or "n") .. "` and keys `" .. (opts.keys or "") .. "`"
+    )
+  end
 end
 
----@type {spec: wk.Spec, opts?: wk.Parse}[]
-M._queue = {}
+---@param opts? wk.Opts
+function M.setup(opts)
+  require("which-key.config").setup(opts)
+end
 
+-- Use `require("which-key").add()` instead.
+-- The spec is different though, so check the docs!
+---@deprecated
 ---@param mappings wk.Spec
 ---@param opts? wk.Mapping
 function M.register(mappings, opts)
@@ -23,14 +37,11 @@ function M.register(mappings, opts)
   M.add(mappings, { version = 1 })
 end
 
+--- Add mappings to which-key
 ---@param mappings wk.Spec
 ---@param opts? wk.Parse
 function M.add(mappings, opts)
   table.insert(M._queue, { spec = mappings, opts = opts })
-end
-
-function M.setup(opts)
-  require("which-key.config").setup(opts)
 end
 
 return M

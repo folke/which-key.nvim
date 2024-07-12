@@ -118,12 +118,13 @@ function M.update(opts)
   if M.valid() then
     M.show()
   elseif opts.schedule ~= false then
-    local delay = State.delay({
-      mode = state.mode.mode,
-      keys = state.node.keys,
-      plugin = state.node.plugin,
-      waited = opts.waited,
-    })
+    local delay = opts.delay
+      or State.delay({
+        mode = state.mode.mode,
+        keys = state.node.keys,
+        plugin = state.node.plugin,
+        waited = opts.waited,
+      })
     M.timer:start(
       delay,
       0,
@@ -135,6 +136,10 @@ function M.update(opts)
 end
 
 function M.hide()
+  if not (M.buf or M.win) then
+    return
+  end
+
   ---@type number?, number?
   local buf, win = M.buf, M.win
   M.buf, M.win = nil, nil
