@@ -141,15 +141,26 @@ function M.setup(opts)
       M.options = vim.tbl_deep_extend("force", M.options, Presets[M.options.preset] or {})
     end
     local wk = require("which-key")
+
+    -- replace by the real add function
     wk.add = M.add
+
+    -- load presets first so that they can be overriden by the user
     require("which-key.plugins").setup()
+
+    -- process mappings queue
     for _, todo in ipairs(wk._queue) do
       M.add(todo.spec, todo.opts)
     end
-    M.add(M.options.spec)
     wk._queue = {}
+
+    -- finally, add the mapppings from the config
+    M.add(M.options.spec)
+
+    -- setup colors and start which-key
     require("which-key.colors").setup()
     require("which-key.state").setup()
+
     M.loaded = true
   end
   load = vim.schedule_wrap(load)
