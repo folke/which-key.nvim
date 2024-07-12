@@ -11,7 +11,17 @@ local warn = vim.health.warn or vim.health.report_warn
 local error = vim.health.error or vim.health.report_error
 local info = vim.health.info or vim.health.report_info
 
+-- TODO: Add more checks
+-- * duplicate desc
+-- * mapping.desc ~= keymap.desc
+-- * check for old-style mappings
+
 function M.check()
+  ok(
+    "Most of these checks are for informational purposes only.\n"
+      .. "WARNINGS should be treated as a warning, and don't necessarily indicate a problem with your config.\n"
+      .. "Please |DON't| report these warnings as an issue."
+  )
   local have_icons = false
   for _, provider in ipairs(Icons.providers) do
     if provider.available == nil then
@@ -94,6 +104,41 @@ function M.check()
     )
   else
     ok("No overlapping keymaps found")
+  end
+
+  start("Checking for duplicate mappings")
+
+  if vim.tbl_isempty(Tree.dups) then
+    ok("No duplicate mappings found")
+  else
+    for _, mappings in pairs(Tree.dups) do
+      ---@type wk.Mapping[]
+      mappings = vim.tbl_keys(mappings)
+      local first = mappings[1]
+      warn(
+        "Duplicates for <"
+          .. first.lhs
+          .. "> in mode `"
+          .. first.mode
+          .. "`:\n"
+          .. table.concat(
+            vim.tbl_map(function(m)
+              m = vim.deepcopy(m)
+              local desc = (m.desc and (m.desc .. ": ") or "")
+              m.desc = nil
+              m.idx = nil
+              m.mode = nil
+              m.lhs = nil
+              return "* " .. desc .. "`" .. vim.inspect(m):gsub("%s+", " ") .. "`"
+            end, mappings),
+            "\n"
+          )
+      )
+    end
+    ok(
+      "Duplicate mappings are only reported for informational purposes.\n"
+        .. "This doesn't necessarily mean there is a problem with your config."
+    )
   end
 end
 

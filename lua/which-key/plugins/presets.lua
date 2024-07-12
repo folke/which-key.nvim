@@ -136,7 +136,6 @@ M.z = {
     L = "Half screen to the right",
     i = "Toggle folding",
     ["="] = "Spelling suggestions",
-    ["f"] = { "Create fold from selection", mode = "x" },
   },
 }
 
