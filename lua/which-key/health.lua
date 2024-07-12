@@ -50,7 +50,7 @@ function M.check()
       msg = msg .. ": >\n" .. vim.inspect(notif.spec)
       if msg:find("old version") then
         local fixed = Migrate.migrate(notif.spec)
-        msg = msg .. "\n\n-- fixed:\n" .. fixed
+        msg = msg .. "\n\n-- Suggested Spec:\n" .. fixed
       end
     end
     (notif.level >= vim.log.levels.ERROR and error or warn)(msg)

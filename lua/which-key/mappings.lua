@@ -110,8 +110,8 @@ function M._parse(spec, ret, opts)
     M.warn(
       "You're using an old version of the which-key spec.\n"
         .. "Your mappings will work, but it's recommended to update them to the new version.\n"
-        .. "Please check the docs for more info.\nMappings",
-      spec
+        .. "Please check the docs and suggested spec below for more info.\nMappings",
+      vim.deepcopy(spec)
     )
   end
 
