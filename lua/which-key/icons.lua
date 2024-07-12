@@ -56,7 +56,11 @@ local have_hl = nil
 
 local function load()
   if not loaded then
-    _, Icons = pcall(require, "mini.icons")
+    local ok
+    ok, Icons = pcall(require, "mini.icons")
+    if not ok then
+      Icons = nil
+    end
     loaded = true
   end
   return Icons ~= nil
