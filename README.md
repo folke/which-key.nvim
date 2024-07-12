@@ -3,7 +3,8 @@
 **WhichKey** helps you remember your Neovim keymaps, by showing available keybindings
 in a popup as you type.
 
-![image](https://user-images.githubusercontent.com/292349/116439438-669f8d00-a804-11eb-9b5b-c7122bd9acac.png)
+![image](https://github.com/user-attachments/assets/89277334-dcdc-4b0f-9fd4-02f27012f589)
+
 
 ## ✨ Features
 
