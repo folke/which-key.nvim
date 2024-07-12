@@ -231,6 +231,7 @@ function M.add(mapping, ret)
   if mapping.cond == false or ((type(mapping.cond) == "function") and not mapping.cond()) then
     return
   end
+  ---@cast mapping wk.Mapping|wk.Spec
   mapping.cond = nil
   if mapping.desc == "which_key_ignore" then
     mapping.hidden = true
@@ -246,7 +247,7 @@ function M.add(mapping, ret)
   if mapping.group and mapping.desc then
     mapping.desc = mapping.desc:gsub("^%+", "")
   end
-  if mapping.buffer == 0 then
+  if mapping.buffer == 0 or mapping.buffer == true then
     mapping.buffer = vim.api.nvim_get_current_buf()
   end
   if mapping.rhs then

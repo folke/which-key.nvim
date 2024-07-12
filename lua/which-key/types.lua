@@ -48,6 +48,7 @@
 ---@field [2]? string
 ---@field lhs? string
 ---@field group? string
+---@field buffer? number|boolean
 ---@field mode? string|string[]
 ---@field cond? boolean|fun():boolean?
 
