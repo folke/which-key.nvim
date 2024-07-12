@@ -1,4 +1,3 @@
-local Buf = require("which-key.buf")
 local Config = require("which-key.config")
 local Icons = require("which-key.icons")
 local Layout = require("which-key.layout")
@@ -106,7 +105,7 @@ function M.valid()
   return M.buf and vim.api.nvim_buf_is_valid(M.buf) and M.win and vim.api.nvim_win_is_valid(M.win) or false
 end
 
----@param opts? {delay?: number, schedule?: boolean}
+---@param opts? {delay?: number, schedule?: boolean, waited?: number}
 function M.update(opts)
   local state = State.state
 
@@ -119,13 +118,12 @@ function M.update(opts)
   if M.valid() then
     M.show()
   elseif opts.schedule ~= false then
-    local delay = opts.delay
-      or type(Config.delay) == "function" and Config.delay({
-        mode = state.mode.mode,
-        keys = state.node.keys,
-        plugin = state.node.plugin,
-      })
-      or Config.delay --[[@as number]]
+    local delay = State.delay({
+      mode = state.mode.mode,
+      keys = state.node.keys,
+      plugin = state.node.plugin,
+      waited = opts.waited,
+    })
     M.timer:start(
       delay,
       0,

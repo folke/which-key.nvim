@@ -10,7 +10,7 @@ local defaults = {
   -- Delay before showing the popup. Can be a number or a function that returns a number.
   ---@type number | fun(ctx: { keys: string, mode: string, plugin?: string }):number
   delay = function(ctx)
-    return ctx.plugin and 0 or 200
+    return ctx.plugin and 0 or 300
   end,
   --- You can add any mappings here, or use `require('which-key').register()` later
   ---@type wk.Spec

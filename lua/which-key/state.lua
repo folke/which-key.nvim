@@ -32,7 +32,7 @@ function M.setup()
     group = group,
     callback = function()
       if M.state then
-        M.stop()
+        -- FIXME: add proper abort functionality
         vim.api.nvim_input("<esc>")
       end
     end,
@@ -194,6 +194,15 @@ function M.update()
   end
   M.state.node = node
   require("which-key.view").update({ schedule = false })
+end
+
+---@param opts {delay?:number, mode:string, keys:string, plugin?:string, waited?: number}
+function M.delay(opts)
+  local delay = opts.delay or type(Config.delay) == "function" and Config.delay(opts) or Config.delay --[[@as number]]
+  if opts.waited then
+    delay = delay - opts.waited
+  end
+  return math.max(0, delay)
 end
 
 return M

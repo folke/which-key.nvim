@@ -85,9 +85,22 @@ function Mode:_attach(node)
     return
   end
   self.triggers[node.keys] = node
+  local delay = require("which-key.state").delay({
+    mode = self.mode,
+    keys = node.keys,
+    plugin = node.plugin,
+  })
+  local waited = vim.o.timeout and delay >= vim.o.timeoutlen and vim.o.timeoutlen or 0
   vim.keymap.set(self.mode, node.keys, function()
-    require("which-key.state").start({ keys = node.keys })
-  end, { buffer = self.buf.buf, nowait = true, desc = "which-key " .. (node.plugin or "trigger") })
+    require("which-key.state").start({
+      keys = node.keys,
+      waited = waited,
+    })
+  end, {
+    buffer = self.buf.buf,
+    nowait = waited == 0,
+    desc = "which-key " .. (node.plugin or "trigger"),
+  })
 end
 
 ---@param node wk.Node
