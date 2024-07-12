@@ -133,7 +133,7 @@ end
 ---@param fn F
 ---@return F
 function M.debounce(ms, fn)
-  local timer = vim.uv.new_timer()
+  local timer = (vim.uv or vim.loop).new_timer()
   return function(...)
     local args = { ... }
     timer:start(

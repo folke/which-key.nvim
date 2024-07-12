@@ -4,7 +4,7 @@ local M = {}
 
 M._queue = {}
 
-local timer = vim.uv.new_timer()
+local timer = (vim.uv or vim.loop).new_timer()
 timer:start(
   500,
   0,

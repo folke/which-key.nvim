@@ -9,7 +9,7 @@ local Util = require("which-key.util")
 local M = {}
 M.buf = nil ---@type number
 M.win = nil ---@type number
-M.timer = vim.uv.new_timer()
+M.timer = (vim.uv or vim.loop).new_timer()
 
 ---@class wk.Item: wk.Node
 ---@field node wk.Node
