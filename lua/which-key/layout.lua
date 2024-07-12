@@ -82,8 +82,10 @@ function Table:cells(opts)
     for r, row in ipairs(self.rows) do
       cells[r] = cells[r] or {}
       local value = row[col.key] or col.default or ""
-      value = vim.fn.strtrans(value)
+      value = tostring(value)
       value = value:gsub("%s*$", "")
+      value = value:gsub("\n", Config.icons.keys.NL)
+      value = vim.fn.strtrans(value)
       if value:find("%S") then
         all_ws = false
       end
@@ -138,9 +140,15 @@ function Table:layout(opts)
       local value = row[c]
       local width = dw(value)
       if width > widths[c] then
-        value = vim.fn.strcharpart(value, 0, widths[c] - 1 - (opts.spacing or 1), true)
-          .. Config.icons.ellipsis
-          .. string.rep(" ", opts.spacing or 1)
+        local old = value
+        value = ""
+        for i = 0, vim.fn.strchars(old) do
+          value = value .. vim.fn.strcharpart(old, i, 1)
+          if dw(value) >= widths[c] - 1 - (opts.spacing or 1) then
+            break
+          end
+        end
+        value = value .. Config.icons.ellipsis .. string.rep(" ", opts.spacing or 1)
       else
         local align = col.align or "left"
         if align == "left" then
