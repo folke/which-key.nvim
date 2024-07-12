@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.1.0](https://github.com/folke/which-key.nvim/compare/v3.0.0...v3.1.0) (2024-07-12)
+
+
+### Features
+
+* allow disabling any trigger ([94b7951](https://github.com/folke/which-key.nvim/commit/94b795154fb213db6ed8aeba3d7f53cbce7c147c))
+
+
+### Bug Fixes
+
+* added support for vim.loop ([54db192](https://github.com/folke/which-key.nvim/commit/54db1928c17ac420e897a40f5ad560ee9f28b186))
+* automatically do setup if setup wasn't called within 500ms. Fixes [#630](https://github.com/folke/which-key.nvim/issues/630) ([632ad41](https://github.com/folke/which-key.nvim/commit/632ad41b5fcf60fac897d0b6530a699eb980748d))
+* **buf:** buffer-local mappings were broken (not keymaps). Fixes [#629](https://github.com/folke/which-key.nvim/issues/629) ([58d7f82](https://github.com/folke/which-key.nvim/commit/58d7f822ecc80ca4b43e9c14fd6ec962483e2168))
+* **colors:** compat with older Neovim vesions. Fixes [#631](https://github.com/folke/which-key.nvim/issues/631) ([4516dc9](https://github.com/folke/which-key.nvim/commit/4516dc9422f571c9e189ff6696853d445a3058d6))
+
 ## [3.0.0](https://github.com/folke/which-key.nvim/compare/v2.1.0...v3.0.0) (2024-07-12)
 
 
