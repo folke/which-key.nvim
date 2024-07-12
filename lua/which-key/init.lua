@@ -9,12 +9,23 @@ function M.show(opts)
   require("which-key.state").start(opts)
 end
 
----@type {spec:wk.Spec, opts?:wk.Mapping}[]
+---@type {spec: wk.Spec, opts?: wk.Parse}[]
 M._queue = {}
 
 ---@param mappings wk.Spec
 ---@param opts? wk.Mapping
 function M.register(mappings, opts)
+  if opts then
+    for k, v in pairs(opts) do
+      mappings[k] = v
+    end
+  end
+  M.add(mappings, { version = 1 })
+end
+
+---@param mappings wk.Spec
+---@param opts? wk.Parse
+function M.add(mappings, opts)
   table.insert(M._queue, { spec = mappings, opts = opts })
 end
 

@@ -2,116 +2,266 @@ local Util = require("which-key.util")
 
 local M = {}
 
+M.VERSION = 2
+M.notifs = {} ---@type {msg:string, level:number, spec?:wk.Spec}[]
+
 ---@class wk.Field
 ---@field transform? string|(fun(value: any, parent:table): (value:any, key:string?))
 ---@field inherit? boolean
+---@field deprecated? boolean
+
+---@class wk.Parse
+---@field version? number
+---@field create? boolean
+---@field notify? boolean
+
+M.notify = true
 
 ---@type table<string, wk.Field>
 M.fields = {
+  -- map args
+  rhs = {},
+  lhs = {},
   buffer = { inherit = true },
   callback = { transform = "rhs" },
-  prefix = { transform = "lhs" },
   desc = {},
-  expr = {},
+  expr = { inherit = true },
   mode = { inherit = true },
   noremap = {
     transform = function(value)
       return not value, "remap"
     end,
-    inherit = true,
   },
   nowait = { inherit = true },
   remap = { inherit = true },
   replace_keycodes = { inherit = true },
   script = {},
   silent = { inherit = true },
-  unique = {},
-  plugin = { inherit = true },
+  unique = { inherit = true },
+  -- wk args
+  plugin = {},
+  group = {},
   hidden = { inherit = true },
   cond = { inherit = true },
   preset = { inherit = true },
-  name = {},
-  cmd = { transform = "rhs" },
-  group = {},
   icon = { inherit = true },
-  rhs = {},
-  lhs = {},
+  -- deprecated
+  name = { transform = "group", deprecated = true },
+  prefix = { inherit = true, deprecated = true },
+  cmd = { transform = "rhs", deprecated = true },
 }
 
----@param value wk.Spec
----@param parent? wk.Mapping
----@param ret? wk.Mapping[]
-function M._parse(value, parent, ret)
-  if type(value) == "string" then
-    value = { desc = value }
+---@param msg string
+---@param spec? wk.Spec
+function M.error(msg, spec)
+  M.log(msg, vim.log.levels.ERROR, spec)
+end
+
+---@param msg string
+---@param spec? wk.Spec
+function M.warn(msg, spec)
+  M.log(msg, vim.log.levels.WARN, spec)
+end
+
+---@param msg string
+---@param level number
+---@param spec? wk.Spec
+function M.log(msg, level, spec)
+  if not M.notify then
+    return
   end
+  M.notifs[#M.notifs + 1] = { msg = msg, level = level, spec = spec }
+  Util.warn({
+    "There were issues reported with your **which-key** mappings.",
+    "Use `:checkhealth which-key` to find out more.",
+  }, { once = true })
+end
+
+---@param spec wk.Spec
+---@param field string|number
+---@param types string|string[]
+function M.expect(spec, field, types)
+  types = type(types) == "string" and { types } or types
+  local ok = false
+  for _, t in ipairs(types) do
+    if type(spec[field]) == t then
+      ok = true
+      break
+    end
+  end
+  if not ok then
+    M.error("Expected `" .. field .. "` to be " .. table.concat(types, ", "), spec)
+  end
+  return ok
+end
+
+---@param spec wk.Spec
+---@param ret? wk.Mapping[]
+---@param opts? wk.Parse
+function M._parse(spec, ret, opts)
+  opts = opts or {}
+  opts.version = opts.version or M.VERSION
+  if spec.version then
+    opts.version = spec.version
+    spec.version = nil
+  end
+
+  if ret == nil and opts.version ~= M.VERSION then
+    M.warn(
+      "You're using an old version of the which-key spec.\n"
+        .. "Your mappings will work, but it's recommended to update them to the new version.\n"
+        .. "Please check the docs for more info.\nMappings",
+      spec
+    )
+  end
+
   ret = ret or {}
-  parent = parent or {}
-  local mapping = vim.deepcopy(parent)
-  ---@type {[1]:string, [2]:wk.Spec}[]
+
+  spec = type(spec) == "string" and { desc = spec } or spec
+
+  ---@type wk.Mapping
+  local mapping = {}
+
+  ---@type wk.Spec[]
   local children = {}
 
-  mapping.lhs = (parent.lhs or "")
+  local keys = vim.tbl_keys(spec)
 
-  local keys = vim.tbl_keys(value)
   table.sort(keys, function(a, b)
-    return tostring(a) < tostring(b)
+    local ta, tb = type(a), type(b)
+    if type(a) == type(b) then
+      return a < b
+    end
+    return ta < tb
   end)
 
   -- process fields
   for _, k in ipairs(keys) do
-    local v = value[k]
-    local field = M.fields[k]
+    local v = spec[k]
+    local field = M.fields[k] ---@type wk.Field?
     if field then
       if type(field.transform) == "string" then
-        k = field.transform
+        k = field.transform --[[@as string]]
       elseif type(field.transform) == "function" then
-        local kk = k
-        v, k = field.transform(v, parent)
-        k = k or kk
+        local vv, kk = field.transform(v, spec)
+        v, k = vv, (kk or k)
       end
       mapping[k] = v
     elseif type(k) == "string" then
-      table.insert(children, { k, v })
+      if opts.version == 1 then
+        if M.expect(spec, k, { "string", "table" }) then
+          if type(v) == "string" then
+            table.insert(children, { prefix = (spec.prefix or "") .. k, desc = v })
+          elseif type(v) == "table" then
+            v.prefix = (spec.prefix or "") .. k
+            table.insert(children, v)
+          end
+        end
+      else
+        M.error("Invalid field `" .. k .. "`", spec)
+      end
     elseif type(k) == "number" and type(v) == "table" then
-      value[k] = nil
-      table.insert(children, { "", v })
+      if opts.version == 1 then
+        v.prefix = spec.prefix or ""
+      end
+      table.insert(children, v)
+      spec[k] = nil
     end
   end
 
-  local count = #value
+  local count = #spec
 
-  if count == 1 then
-    assert(type(value[1]) == "string", "Invalid mapping " .. vim.inspect(value))
-    if mapping.desc then
-      mapping.rhs = value[1] --[[@as string]]
-    else
-      mapping.desc = value[1] --[[@as string]]
+  -- process mapping
+  if opts.version == M.VERSION then
+    if count == 1 then
+      if M.expect(spec, 1, "string") then
+        mapping.lhs = spec[1] --[[@as string]]
+      end
+    elseif count == 2 then
+      if M.expect(spec, 1, "string") and M.expect(spec, 2, { "string", "function" }) then
+        mapping.lhs = spec[1] --[[@as string]]
+        mapping.rhs = spec[2] --[[@as string]]
+      end
+    elseif count > 2 then
+      M.error("expected 1 or 2 elements, got " .. count, spec)
     end
-  elseif count == 2 then
-    if mapping.desc then
-      Util.error("Invalid mapping " .. vim.inspect(value))
-    else
-      mapping.rhs = value[1] --[[@as string]]
-      mapping.desc = value[2] --[[@as string]]
+  elseif opts.version == 1 then
+    if count == 1 then
+      if M.expect(spec, 1, "string") then
+        if mapping.desc then
+          M.warn("overwriting desc", spec)
+        end
+        mapping.desc = spec[1] --[[@as string]]
+      end
+    elseif count == 2 then
+      if M.expect(spec, 1, { "string", "function" }) and M.expect(spec, 2, "string") then
+        if mapping.desc then
+          M.warn("overwriting desc", spec)
+        end
+        mapping.rhs = spec[1] --[[@as string]]
+        mapping.desc = spec[2] --[[@as string]]
+      end
+    elseif count > 2 then
+      M.error("expected 1 or 2 elements, got " .. count, spec)
     end
-  elseif count > 2 then
-    Util.error("Invalid mapping " .. vim.inspect(value))
   end
 
+  -- add mapping
   M.add(mapping, ret)
 
-  parent = {}
-  for k, v in pairs(mapping) do
-    if M.fields[k] and M.fields[k].inherit then
-      parent[k] = v
+  -- process children
+  for _, child in ipairs(children) do
+    for k, v in pairs(mapping) do
+      if M.fields[k] and M.fields[k].inherit and child[k] == nil then
+        child[k] = v
+      end
+    end
+    M._parse(child, ret, opts)
+  end
+
+  return ret
+end
+
+---@param mapping wk.Spec
+---@param ret wk.Mapping[]
+function M.add(mapping, ret)
+  if mapping.cond == false or ((type(mapping.cond) == "function") and not mapping.cond()) then
+    return
+  end
+  mapping.cond = nil
+  if mapping.desc == "which_key_ignore" then
+    mapping.hidden = true
+    mapping.desc = nil
+  end
+  if type(mapping.group) == "string" then
+    mapping.desc = mapping.group --[[@as string]]
+    mapping.group = true
+  end
+  if mapping.plugin then
+    mapping.group = true
+  end
+  if mapping.group and mapping.desc then
+    mapping.desc = mapping.desc:gsub("^%+", "")
+  end
+  if mapping.buffer == 0 then
+    mapping.buffer = vim.api.nvim_get_current_buf()
+  end
+  if mapping.rhs then
+    mapping.silent = mapping.silent ~= false
+  end
+  mapping.lhs = mapping.lhs or mapping.prefix or ""
+  mapping.prefix = nil
+
+  if mapping.desc or mapping.group or mapping.hidden then
+    local modes = mapping.mode or { "n" } --[[@as string|string[] ]]
+    modes = type(modes) == "string" and vim.split(modes, "") or modes
+    assert(type(modes) == "table", "Invalid mode " .. vim.inspect(modes))
+    for _, mode in ipairs(modes) do
+      local m = vim.deepcopy(mapping)
+      m.mode = mode
+      table.insert(ret, m)
     end
   end
-  for _, child in ipairs(children) do
-    parent.lhs = mapping.lhs .. child[1]
-    M._parse(child[2], parent, ret)
-  end
-  return ret
 end
 
 ---@param mapping wk.Mapping
@@ -130,51 +280,13 @@ function M.create(mapping)
   vim.keymap.set(mapping.mode, mapping.lhs, mapping.rhs, opts)
 end
 
----@param mapping wk.Spec
----@param ret wk.Mapping[]
-function M.add(mapping, ret)
-  if mapping.cond == false or ((type(mapping.cond) == "function") and not mapping.cond()) then
-    return
-  end
-  mapping.cond = nil
-  if mapping.desc == "which_key_ignore" then
-    mapping.hidden = true
-    mapping.desc = nil
-  end
-  if mapping.plugin then
-    mapping.group = true
-  end
-  if mapping.name then
-    mapping.desc = mapping.name:gsub("^%+", "")
-    mapping.group = true
-    mapping.name = nil
-  end
-  if mapping.buffer == 0 then
-    mapping.buffer = vim.api.nvim_get_current_buf()
-  end
-  if mapping.rhs then
-    mapping.silent = mapping.silent ~= false
-  end
-
-  if mapping.desc or mapping.group or mapping.hidden then
-    local modes = mapping.mode or { "n" } --[[@as string|string[] ]]
-    modes = type(modes) == "string" and vim.split(modes, "") or modes
-    assert(type(modes) == "table", "Invalid mode " .. vim.inspect(modes))
-    for _, mode in ipairs(modes) do
-      local m = vim.deepcopy(mapping)
-      m.mode = mode
-      table.insert(ret, m)
-    end
-  end
-end
-
----@param value wk.Spec
----@param parent? wk.Mapping
----@param opts? {create?:boolean}
----@return wk.Mapping[]
-function M.parse(value, parent, opts)
+---@param spec wk.Spec
+---@param opts? wk.Parse
+function M.parse(spec, opts)
   opts = opts or {}
-  local ret = M._parse(value, parent)
+  M.notify = opts.notify ~= false
+  local ret = M._parse(spec, nil, opts)
+  M.notify = true
   return vim.tbl_filter(function(v)
     if v.rhs and opts.create then
       M.create(v)

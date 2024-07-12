@@ -33,5 +33,9 @@
 - [x] auto gen docs
 - [x] health
 - [x] `<leader>gh_`
+- [x] devicons support
+- [x] nowait, timeoutlen and delay
 - [ ] more tests
 - [ ] News
+- [ ] hint characters in desc
+- [x] new mappings DSL

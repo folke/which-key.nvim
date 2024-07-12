@@ -1,6 +1,10 @@
 local Mappings = require("which-key.mappings")
 
-describe("specs", function()
+before_each(function()
+  Mappings.notifs = {}
+end)
+
+describe("specs v1", function()
   local tests = {
     {
       spec = {
@@ -68,7 +72,7 @@ describe("specs", function()
         { lhs = "a", desc = "a", rhs = "aa", mode = "n", silent = true },
         { lhs = "b", desc = "b", rhs = "bb", mode = "n", silent = true },
         { lhs = "c", desc = "c", rhs = "cc", mode = "n", silent = true },
-        { lhs = "d", desc = "d", rhs = "dd", mode = "n", silent = true },
+        { lhs = "d", desc = "dd", mode = "n" },
       },
     },
     {
@@ -79,8 +83,8 @@ describe("specs", function()
       },
       mappings = {
         { lhs = "a", desc = "a1", mode = "n" },
-        { lhs = "b", desc = "b1", mode = "n" },
-        { lhs = "c", desc = "c2", mode = "n" },
+        { lhs = "b", desc = "b2", rhs = "b1", mode = "n", silent = true },
+        { lhs = "c", desc = "c1", mode = "n" },
       },
     },
   }
@@ -88,8 +92,12 @@ describe("specs", function()
   -- Function to run the tests
   for t, test in ipairs(tests) do
     it(tostring(t), function()
-      local result = Mappings.parse(test.spec)
+      local result = Mappings.parse(test.spec, { version = 1 })
       assert.same(test.mappings, result)
+      local errors = vim.tbl_filter(function(n)
+        return n.level >= vim.log.levels.ERROR
+      end, Mappings.notifs)
+      assert.same({}, errors)
     end)
   end
 end)

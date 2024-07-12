@@ -45,6 +45,7 @@ end
 ---@param keymap wk.Mapping|wk.Keymap
 ---@param virtual? boolean
 function M:add(keymap, virtual)
+  assert(type(keymap.lhs) == "string", "input must be a string: " .. vim.inspect(keymap))
   local keys = Util.keys(keymap.lhs, { norm = true })
   local node = self.root
   local path = {} ---@type string[]
@@ -67,7 +68,7 @@ function M:add(keymap, virtual)
   node.global = not (keymap.buffer and keymap.buffer ~= 0)
   if virtual then
     ---@cast node wk.Node
-    if node.mapping then
+    if node.mapping and not keymap.preset and not node.mapping.preset then
       local id = keymap.mode .. ":" .. node.keys
       M.dups[id] = M.dups[id] or {}
       M.dups[id][keymap] = true
