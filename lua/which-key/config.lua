@@ -1,8 +1,6 @@
 ---@class wk.Config: wk.Opts
 local M = {}
 
-M.ns = vim.api.nvim_create_namespace("wk")
-
 ---@class wk.Opts
 local defaults = {
   ---@type "classic" | "modern" | "helix"
@@ -12,7 +10,7 @@ local defaults = {
   delay = function(ctx)
     return ctx.plugin and 0 or 300
   end,
-  --- You can add any mappings here, or use `require('which-key').register()` later
+  --- You can add any mappings here, or use `require('which-key').add()` later
   ---@type wk.Spec
   spec = {},
   -- show a warning when issues were detected with your mappings
@@ -133,11 +131,15 @@ M.options = nil
 ---@param opts? wk.Opts
 function M.setup(opts)
   if vim.fn.has("nvim-0.9") == 0 then
-    return vim.notify("whichkey.nvim requires Neovim >= 0.9", vim.log.levels.ERROR)
+    return vim.notify("which-key.nvim requires Neovim >= 0.9", vim.log.levels.ERROR)
   end
   M.options = vim.tbl_deep_extend("force", {}, defaults, opts or {})
 
   local function load()
+    if M.loaded then
+      return
+    end
+
     if M.options.preset then
       local Presets = require("which-key.presets")
       M.options = vim.tbl_deep_extend("force", M.options, Presets[M.options.preset] or {})
@@ -172,6 +174,19 @@ function M.setup(opts)
   else
     vim.api.nvim_create_autocmd("VimEnter", { once = true, callback = load })
   end
+
+  vim.api.nvim_create_user_command("WhichKey", function(cmd)
+    local mode, keys = cmd.args:match("^([nixsotc]?)%s*(.*)$")
+    if not mode then
+      return require("which-key.util").error("Usage: WhichKey [mode] [keys]")
+    end
+    if mode == "" then
+      mode = "n"
+    end
+    require("which-key").show({ mode = mode, keys = keys })
+  end, {
+    nargs = "*",
+  })
 end
 
 ---@param opts? wk.Parse

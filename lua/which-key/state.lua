@@ -40,14 +40,14 @@ function M.setup()
 
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
-    callback = function()
+    callback = function(ev)
       if not Util.safe() then
         return M.stop()
       end
       -- make sure the buffer mode exists
       if Buf.get() and Util.xo() then
         return not M.state and M.start()
-      else
+      elseif not ev.match:find("c") then
         M.stop()
       end
     end,
@@ -146,11 +146,11 @@ function M.start(opts)
   opts.update = true
   local mode = Buf.get(opts)
   if not mode then
-    return
+    return false
   end
   local node = mode.tree:find(opts.keys or {})
   if not node then
-    return
+    return false
   end
 
   local mapmode = mode.mode
@@ -178,6 +178,7 @@ function M.start(opts)
   end
   M.state = nil
   View.hide()
+  return true
 end
 
 function M.update()
@@ -186,11 +187,11 @@ function M.update()
   end
   local mode = Buf.get()
   if not mode or mode.mode ~= M.state.mode.mode then
-    return M.stop()
+    return
   end
   local node = mode.tree:find(M.state.node.path)
   if not node then
-    return M.stop()
+    return
   end
   M.state.node = node
   require("which-key.view").update({ schedule = false })
