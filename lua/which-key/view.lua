@@ -1,3 +1,4 @@
+local Buf = require("which-key.buf")
 local Config = require("which-key.config")
 local Icons = require("which-key.icons")
 local Layout = require("which-key.layout")
@@ -143,6 +144,8 @@ function M.opts()
       scrolloff = 0,
       foldenable = false,
       winhighlight = "Normal:WhichKeyNormal,FloatBorder:WhichKeyBorder,FloatTitle:WhichKeyTitle",
+      winbar = "",
+      statusline = "",
     },
     bo = {
       buftype = "nofile",
@@ -222,6 +225,7 @@ end
 function M.trail(node, opts)
   opts = opts or {}
   local trail = {} ---@type string[][]
+  local did_op = false
   while node do
     local desc = node.desc and (Config.icons.group .. M.replace("desc", node.desc))
       or node.key and M.replace("key", node.key)
@@ -235,6 +239,14 @@ function M.trail(node, opts)
         })
       end
       table.insert(trail, 1, { desc, opts.title and "WhichKeyTitle" or "WhichKeyGroup" })
+    end
+    local m = State.state.mode.mode
+    if not did_op and not node and (m == "x" or m == "o") then
+      did_op = true
+      local mode = Buf.get({ buf = State.state.mode.buf.buf, mode = "n" })
+      if mode then
+        node = mode.tree:find(m == "x" and "v" or vim.v.operator)
+      end
     end
   end
   if #trail > 0 then
@@ -372,7 +384,7 @@ function M.show()
 
   -- top-left
   opts.col = Layout.dim(opts.col, vim.o.columns - opts.width)
-  opts.row = Layout.dim(opts.row, vim.o.lines - opts.height)
+  opts.row = Layout.dim(opts.row, vim.o.lines - opts.height - vim.o.cmdheight)
 
   opts.width = opts.width - bw
   opts.height = opts.height - bw
