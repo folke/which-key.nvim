@@ -44,8 +44,8 @@
 ---@field icon? wk.Icon|string
 
 ---@class wk.Spec: {[number]: wk.Spec} , wk.Mapping
----@field [1]? string|fun()
----@field [2]? string
+---@field [1]? string
+---@field [2]? string|fun()
 ---@field lhs? string
 ---@field group? string
 ---@field buffer? number|boolean
