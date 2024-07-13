@@ -379,11 +379,7 @@ function M.show()
   opts.row = opts.row < 0 and vim.o.lines + opts.row - opts.height or opts.row
   opts.width = opts.width - bw
   opts.height = opts.height - bw
-  local cursor = vim.fn.screenrow()
-  if cursor >= opts.row and cursor <= opts.row + opts.height then
-    opts.row = cursor + 1
-    opts.height = math.max(vim.o.lines - opts.row, 1)
-  end
+  M.check_cursor(opts)
 
   if Config.show_help or show_keys then
     text:nl()
@@ -411,6 +407,17 @@ function M.show()
     vim.fn.winrestview({ topline = 1 })
   end)
   vim.cmd.redraw()
+end
+
+---@param opts wk.Win
+function M.check_cursor(opts)
+  local row, col = vim.fn.screenrow(), vim.fn.screencol()
+  local overlaps = (row >= opts.row and row <= opts.row + opts.height)
+    and (col >= opts.col and col <= opts.col + opts.width)
+  if overlaps then
+    opts.row = row + 1
+    opts.height = math.max(vim.o.lines - opts.row, 1)
+  end
 end
 
 ---@param size wk.Size
