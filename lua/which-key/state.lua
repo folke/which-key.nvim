@@ -133,8 +133,8 @@ function M.step(state)
       return node
     end
   elseif key == "<Esc>" then
-    -- cancel and exit if in op-mode
-    if mode == "o" then
+    -- cancel and exit if in xo mode
+    if xo then
       Util.exit()
     end
     return false
