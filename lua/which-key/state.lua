@@ -89,6 +89,9 @@ function M.setup()
 end
 
 function M.stop()
+  if M.state == nil then
+    return
+  end
   M.state = nil
   vim.schedule(function()
     if not M.state then
