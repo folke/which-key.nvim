@@ -207,6 +207,7 @@ local defaults = {
       return false
     end,
   },
+  debug = false, -- enable wk.log in the current directory
 }
 ```
 
