@@ -10,6 +10,9 @@ return {
       title = true,
       title_pos = "left",
     },
+    layout = {
+      width = { min = 30 },
+    },
   },
   modern = {
     win = {

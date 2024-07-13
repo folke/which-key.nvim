@@ -6,7 +6,7 @@ M.version = "3.2.0" -- x-release-please-version
 ---@class wk.Opts
 local defaults = {
   ---@type false | "classic" | "modern" | "helix"
-  preset = "classic",
+  preset = "helix",
   -- Delay before showing the popup. Can be a number or a function that returns a number.
   ---@type number | fun(ctx: { keys: string, mode: string, plugin?: string }):number
   delay = function(ctx)
@@ -170,7 +170,7 @@ function M.setup(opts)
 
     if M.options.preset then
       local Presets = require("which-key.presets")
-      M.options = vim.tbl_deep_extend("force", {}, Presets[M.options.preset] or {}, M.options)
+      M.options = vim.tbl_deep_extend("force", {}, defaults, Presets[M.options.preset] or {}, opts or {})
     end
     local wk = require("which-key")
 
