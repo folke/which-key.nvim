@@ -189,6 +189,9 @@ function M._parse(spec, ret, opts)
       M.error("expected 1 or 2 elements, got " .. count, spec)
     end
   elseif opts.version == 1 then
+    if mapping.expr and mapping.replace_keycodes == nil then
+      mapping.replace_keycodes = false
+    end
     if count == 1 then
       if M.expect(spec, 1, "string") then
         if mapping.desc then
