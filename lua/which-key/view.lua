@@ -170,9 +170,9 @@ function M.mount(opts)
   end
 
   M.buf = vim.api.nvim_create_buf(false, true)
-  M.set_options("buf", opts.bo)
+  Util.bo(M.buf, opts.bo)
   M.win = vim.api.nvim_open_win(M.buf, false, win_opts)
-  M.set_options("win", opts.wo)
+  Util.wo(M.win, opts.wo)
 end
 
 ---@param field string
@@ -439,22 +439,6 @@ function M.scroll(up)
   vim.api.nvim_win_call(M.win, function()
     vim.fn.winrestview({ topline = top, lnum = top })
   end)
-end
-
----@param type "win" | "buf"
----@param opts vim.wo | vim.bo
-function M.set_options(type, opts)
-  ---@diagnostic disable-next-line: no-unknown
-  for k, v in pairs(opts or {}) do
-    ---@diagnostic disable-next-line: no-unknown
-    local ok, err = pcall(vim.api.nvim_set_option_value, k, v, type == "win" and {
-      scope = "local",
-      win = M.win,
-    } or { buf = M.buf })
-    if not ok then
-      Util.error("Error setting option `" .. k .. "=" .. v .. "`\n\n" .. err)
-    end
-  end
 end
 
 return M

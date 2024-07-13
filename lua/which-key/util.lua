@@ -102,12 +102,7 @@ function M.notify(msg, opts)
   return vim[opts.once and "notify_once" or "notify"](msg, opts.level, {
     title = opts.title or "which-key.nvim",
     on_open = function(win)
-      for k, v in pairs({ conceallevel = 3, spell = false, concealcursor = "n" }) do
-        vim.api.nvim_set_option_value(k, v, {
-          scope = "local",
-          win = win,
-        })
-      end
+      M.wo(win, { conceallevel = 3, spell = false, concealcursor = "n" })
       vim.treesitter.start(vim.api.nvim_win_get_buf(win), "markdown")
     end,
   })
@@ -173,6 +168,32 @@ function M.set_extmark(buf, ns, row, col, opts, debug_info)
         .. vim.inspect({ info = debug_info, row = row, col = col, opts = opts, error = err })
     )
   end
+end
+
+---@param n number buffer or window number
+---@param type "win" | "buf"
+---@param opts vim.wo | vim.bo
+local function set_opts(n, type, opts)
+  ---@diagnostic disable-next-line: no-unknown
+  for k, v in pairs(opts or {}) do
+    ---@diagnostic disable-next-line: no-unknown
+    pcall(vim.api.nvim_set_option_value, k, v, type == "win" and {
+      scope = "local",
+      win = n,
+    } or { buf = n })
+  end
+end
+
+---@param win number
+---@param opts vim.wo
+function M.wo(win, opts)
+  set_opts(win, "win", opts)
+end
+
+---@param buf number
+---@param opts vim.bo
+function M.bo(buf, opts)
+  set_opts(buf, "buf", opts)
 end
 
 local trace_level = 0
