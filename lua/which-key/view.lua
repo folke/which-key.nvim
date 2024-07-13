@@ -11,13 +11,6 @@ M.buf = nil ---@type number
 M.win = nil ---@type number
 M.timer = (vim.uv or vim.loop).new_timer()
 
----@class wk.Item: wk.Node
----@field node wk.Node
----@field key string
----@field desc string
----@field group? boolean
----@field order? number
-
 ---@alias wk.Sorter fun(node:wk.Item): (string|number)
 
 ---@type table<string, wk.Sorter>
@@ -139,8 +132,9 @@ function M.hide()
   try_close()
 end
 
+---@return wk.Win
 function M.opts()
-  return vim.tbl_deep_extend("force", Config.win, {
+  return vim.tbl_deep_extend("force", { col = 0, row = math.huge }, Config.win, {
     relative = "editor",
     style = "minimal",
     focusable = false,
@@ -163,6 +157,7 @@ function M.mount(opts)
   win_opts.wo = nil
   win_opts.bo = nil
   win_opts.padding = nil
+  win_opts.no_overlap = nil
 
   if M.valid() then
     win_opts.noautocmd = nil
@@ -192,8 +187,8 @@ function M.item(node, opts)
   opts.default = opts.default or "count"
   local child_count = Tree.count(node)
   local desc = node.desc
-  if not desc and node.keymap and node.keymap.rhs ~= "" then
-    desc = node.keymap.rhs
+  if not desc and node.keymap and node.keymap.rhs ~= "" and type(node.keymap.rhs) == "string" then
+    desc = node.keymap.rhs --[[@as string]]
   end
   if not desc and opts.default == "count" and child_count > 0 then
     desc = child_count .. " keymap" .. (child_count > 1 and "s" or "")
@@ -202,7 +197,7 @@ function M.item(node, opts)
     desc = node.keys
   end
   desc = M.replace("desc", desc or "")
-  local icon, icon_hl
+  local icon, icon_hl ---@type string?, string?
   if node.mapping and node.mapping.icon then
     icon, icon_hl = Icons.get(node.mapping.icon)
   end
@@ -292,17 +287,17 @@ function M.show()
   if state.node.plugin then
     vim.list_extend(cols, Plugins.cols(state.node.plugin))
   end
-  cols[#cols + 1] = { key = "desc", width = 1 }
+  cols[#cols + 1] = { key = "desc", width = math.huge }
 
   local t = Layout.new({ cols = cols, rows = items })
 
   local opts = M.opts()
   local container = {
-    width = M.dim(opts.width, vim.o.columns),
-    height = M.dim(opts.height, vim.o.lines),
+    width = Layout.dim(vim.o.columns, vim.o.columns, opts.width),
+    height = Layout.dim(vim.o.lines, vim.o.lines, opts.height),
   }
   local _, _, max_row_width = t:cells()
-  local box_width = M.dim(Config.layout.width, container.width, max_row_width)
+  local box_width = Layout.dim(max_row_width, container.width, Config.layout.width)
   local box_count = math.max(math.floor(container.width / (box_width + Config.layout.spacing)), 1)
   box_width = math.floor(container.width / box_count)
   local box_height = math.max(math.ceil(#items / box_count), 2)
@@ -367,19 +362,20 @@ function M.show()
 
   local bw = has_border and 2 or 0
 
-  opts.width = M.dim(opts.width, vim.o.columns, text:width() + bw)
-  opts.height = M.dim(opts.height, vim.o.lines, text:height() + bw)
+  opts.width = Layout.dim(text:width() + bw, vim.o.columns, opts.width)
+  opts.height = Layout.dim(text:height() + bw, vim.o.lines, opts.height)
 
   if Config.show_help then
     opts.height = opts.height + 1
   end
 
   -- top-left
-  opts.col = Layout.dim(opts.col, { parent = vim.o.columns })
-  opts.row = opts.row < 0 and vim.o.lines + opts.row - opts.height or opts.row
+  opts.col = Layout.dim(opts.col, vim.o.columns - opts.width)
+  opts.row = Layout.dim(opts.row, vim.o.lines - opts.height)
+
   opts.width = opts.width - bw
   opts.height = opts.height - bw
-  M.check_cursor(opts)
+  M.check_overlap(opts)
 
   if Config.show_help or show_keys then
     text:nl()
@@ -410,27 +406,23 @@ function M.show()
 end
 
 ---@param opts wk.Win
-function M.check_cursor(opts)
+function M.check_overlap(opts)
+  if Config.win.no_overlap == false then
+    return
+  end
   local row, col = vim.fn.screenrow(), vim.fn.screencol()
   local overlaps = (row >= opts.row and row <= opts.row + opts.height)
     and (col >= opts.col and col <= opts.col + opts.width)
+  -- dd(overlaps and "overlaps" or "no overlap", {
+  --   editor = { lines = vim.o.lines, columns = vim.o.columns },
+  --   cursor = { col = col, row = row },
+  --   win = { row = opts.row, col = opts.col, height = opts.height, width = opts.width },
+  --   overlaps = overlaps,
+  -- })
   if overlaps then
     opts.row = row + 1
     opts.height = math.max(vim.o.lines - opts.row, 1)
   end
-end
-
----@param size wk.Size
----@param parent wk.Size
----@param preferred? wk.Size
-function M.dim(size, parent, preferred)
-  preferred = preferred or parent
-  ---@type {parent?: number, min?: number, max?: number}
-  local opts = type(size) == "table" and size or {}
-  opts.parent = parent
-  size = type(size) == "table" and preferred or size
-  ---@cast size number
-  return Layout.dim(size, opts)
 end
 
 ---@param up boolean

@@ -48,10 +48,12 @@ local defaults = {
   },
   ---@type wk.Win
   win = {
+    -- don't allow the popup to overlap with the cursor
+    no_overlap = true,
     -- width = 1,
     -- height = { min = 4, max = 25 },
     -- col = 0,
-    row = -1,
+    -- row = math.huge,
     -- border = "none",
     padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
     title = true,
@@ -168,7 +170,7 @@ function M.setup(opts)
 
     if M.options.preset then
       local Presets = require("which-key.presets")
-      M.options = vim.tbl_deep_extend("force", Presets[M.options.preset] or {}, M.options)
+      M.options = vim.tbl_deep_extend("force", {}, Presets[M.options.preset] or {}, M.options)
     end
     local wk = require("which-key")
 

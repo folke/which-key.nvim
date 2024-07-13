@@ -181,7 +181,7 @@ function M._get(rules, opts, check_ft)
   end
 end
 
----@param opts {keymap?: wk.Keymap, desc?: string, ft?:string|string[]}|wk.Icon
+---@param opts {keymap?: wk.Keymap, desc?: string, ft?:string|string[]}|wk.Icon|string
 function M.get(opts)
   if type(opts) == "string" then
     opts = { icon = opts }

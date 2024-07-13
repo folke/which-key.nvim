@@ -9,7 +9,9 @@ require("lazy.minit").setup({
   spec = {
     {
       dir = vim.uv.cwd(),
-      -- opts = {},
+      opts = {
+        notify = false,
+      },
     },
   },
 })

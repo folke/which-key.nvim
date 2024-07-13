@@ -54,11 +54,24 @@
 ---@field cond? boolean|fun():boolean?
 
 ---@class wk.Win: vim.api.keyset.win_config
----@field width? wk.Size
----@field height? wk.Size
+---@field width? wk.Dim
+---@field height? wk.Dim
 ---@field wo? vim.wo
 ---@field bo? vim.bo
 ---@field padding? {[1]: number, [2]:number}
+---@field no_overlap? boolean
+
+---@class wk.Col
+---@field key string
+---@field hl? string
+---@field width? number
+---@field padding? number[]
+---@field default? string
+---@field align? "left"|"right"|"center"
+
+---@class wk.Table.opts
+---@field cols wk.Col[]
+---@field rows table<string, string>[]
 
 ---@class wk.Plugin.item
 ---@field key string
@@ -79,3 +92,12 @@
 ---@field actions wk.Plugin.action[]
 ---@field expand fun():wk.Plugin.item[]
 ---@field setup fun(opts: table<string, any>)
+
+---@class wk.Item: wk.Node
+---@field node wk.Node
+---@field key string
+---@field desc string
+---@field group? boolean
+---@field order? number
+---@field icon? string
+---@field icon_hl? string

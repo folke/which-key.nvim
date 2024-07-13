@@ -3,55 +3,30 @@ local M = {}
 
 local dw = vim.fn.strdisplaywidth
 
----@alias wk.Size number|{min:number, max:number}
+--- When `size` is a number, it is returned as is (fixed dize).
+--- Otherwise, it is a percentage of `parent` (relative size).
+--- If `size` is negative, it is subtracted from `parent`.
+--- If `size` is a table, it is a range of values.
+---@alias wk.Dim number|{min:number, max:number}
 
 ---@param size number
----@param opts? {parent?: number, min?: number, max?: number}
+---@param parent number
+---@param ... wk.Dim
 ---@return number
-function M.dim(size, opts)
-  opts = opts or {}
-
-  if opts.parent then
-    assert(type(opts.parent) == "number", "parent must be a number")
-    assert(opts.parent > 1, "parent must be greater than 1")
+function M.dim(size, parent, ...)
+  size = math.abs(size) < 1 and parent * size or size
+  size = size < 0 and parent + size or size
+  for _, dim in ipairs({ ... } --[[ @as wk.Dim[] ]]) do
+    if type(dim) == "number" then
+      size = M.dim(dim, parent)
+    else
+      local min = dim.min and M.dim(dim.min, parent) or 0
+      local max = dim.max and M.dim(dim.max, parent) or parent
+      size = math.max(min, math.min(max, size))
+    end
   end
-
-  if math.abs(size) <= 1 then
-    assert(opts.parent, "parent is required for relative sizes")
-    size = math.floor(size * opts.parent + 0.5)
-  end
-
-  if size < 0 then
-    assert(opts.parent, "parent is required for relative sizes")
-    size = opts.parent + size
-  end
-
-  if opts.min then
-    local min = M.dim(opts.min, { parent = opts.parent })
-    size = math.max(size, min) ---@type number
-  end
-
-  if opts.max then
-    local max = M.dim(opts.max, { parent = opts.parent })
-    size = math.min(size, max) ---@type number
-  end
-
-  size = math.max(size, 0)
-  size = math.min(size, opts.parent or size)
-  return size
+  return math.floor(math.max(0, math.min(parent, size)) + 0.5)
 end
-
----@class wk.Col
----@field key string
----@field hl? string
----@field width? number
----@field padding? number[]
----@field default? string
----@field align? "left"|"right"|"center"
-
----@class wk.Table.opts
----@field cols wk.Col[]
----@field rows table<string, string>[]
 
 ---@class wk.Table: wk.Table.opts
 local Table = {}
@@ -125,7 +100,7 @@ function Table:layout(opts)
 
   for c, col in ipairs(self.cols) do
     if col.width then
-      widths[c] = M.dim(widths[c], { parent = free, max = col.width })
+      widths[c] = M.dim(widths[c], free, { max = col.width })
       free = free - widths[c]
     end
   end
