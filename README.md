@@ -19,6 +19,7 @@ in a popup as you type.
 - ⏱️ **Delay**: delay is independent of `timeoutlen`
 - 🌐 **Plugins**: built-in plugins for marks, registers, presets, and spelling suggestions
 - 🚀 **Operators, Motions, Text Objects**: help for operators, motions and text objects
+- 🐙 **Hydra Mode**: keep the popup open until you hit `<esc>`
 
 ## ⚡️ Requirements
 
@@ -299,6 +300,18 @@ When the **WhichKey** popup is open, you can use the following key bindings (the
 - `<c-d>` scroll down
 - `<c-u>` scroll up
 
+## 🐙 Hydra Mode
+
+Hydra mode is a special mode that keeps the popup open until you hit `<esc>`.
+
+```lua
+-- Show hydra mode for changing windows
+require("which-key").show({
+  keys = "<c-w>",
+  loop = true, -- this will keep the popup open until you hit <esc>
+})
+```
+
 ## 🔥 Plugins
 
 Four built-in plugins are included with **WhichKey**.
@@ -331,25 +344,25 @@ The table below shows all the highlight groups defined for **WhichKey** with the
 
 <!-- colors:start -->
 
-| Highlight Group | Default Group | Description |
-| --- | --- | --- |
-| **WhichKey** | ***Function*** |  |
-| **WhichKeyBorder** | ***FloatBorder*** | Border of the which-key window |
-| **WhichKeyDesc** | ***Identifier*** | description |
-| **WhichKeyGroup** | ***Keyword*** | group name |
-| **WhichKeyIcon** | ***@markup.link*** | icons |
-| **WhichKeyIconAzure** | ***Function*** |  |
-| **WhichKeyIconBlue** | ***DiagnosticInfo*** |  |
-| **WhichKeyIconCyan** | ***DiagnosticHint*** |  |
-| **WhichKeyIconGreen** | ***DiagnosticOk*** |  |
-| **WhichKeyIconGrey** | ***Normal*** |  |
-| **WhichKeyIconOrange** | ***DiagnosticWarn*** |  |
-| **WhichKeyIconPurple** | ***Constant*** |  |
-| **WhichKeyIconRed** | ***DiagnosticError*** |  |
-| **WhichKeyIconYellow** | ***DiagnosticWarn*** |  |
-| **WhichKeyNormal** | ***NormalFloat*** | Normal in th which-key window |
-| **WhichKeySeparator** | ***Comment*** | the separator between the key and its description |
-| **WhichKeyTitle** | ***FloatTitle*** | Title of the which-key window |
-| **WhichKeyValue** | ***Comment*** | values by plugins (like marks, registers, etc) |
+| Highlight Group        | Default Group         | Description                                       |
+| ---------------------- | --------------------- | ------------------------------------------------- |
+| **WhichKey**           | **_Function_**        |                                                   |
+| **WhichKeyBorder**     | **_FloatBorder_**     | Border of the which-key window                    |
+| **WhichKeyDesc**       | **_Identifier_**      | description                                       |
+| **WhichKeyGroup**      | **_Keyword_**         | group name                                        |
+| **WhichKeyIcon**       | **_@markup.link_**    | icons                                             |
+| **WhichKeyIconAzure**  | **_Function_**        |                                                   |
+| **WhichKeyIconBlue**   | **_DiagnosticInfo_**  |                                                   |
+| **WhichKeyIconCyan**   | **_DiagnosticHint_**  |                                                   |
+| **WhichKeyIconGreen**  | **_DiagnosticOk_**    |                                                   |
+| **WhichKeyIconGrey**   | **_Normal_**          |                                                   |
+| **WhichKeyIconOrange** | **_DiagnosticWarn_**  |                                                   |
+| **WhichKeyIconPurple** | **_Constant_**        |                                                   |
+| **WhichKeyIconRed**    | **_DiagnosticError_** |                                                   |
+| **WhichKeyIconYellow** | **_DiagnosticWarn_**  |                                                   |
+| **WhichKeyNormal**     | **_NormalFloat_**     | Normal in th which-key window                     |
+| **WhichKeySeparator**  | **_Comment_**         | the separator between the key and its description |
+| **WhichKeyTitle**      | **_FloatTitle_**      | Title of the which-key window                     |
+| **WhichKeyValue**      | **_Comment_**         | values by plugins (like marks, registers, etc)    |
 
 <!-- colors:end -->
