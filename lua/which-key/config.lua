@@ -48,6 +48,7 @@ local defaults = {
   },
   ---@type wk.Win
   win = {
+    dynamic_height = true,
     -- width = 1,
     -- height = { min = 4, max = 25 },
     -- col = 0,

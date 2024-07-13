@@ -380,10 +380,11 @@ function M.show()
   opts.width = opts.width - bw
   opts.height = opts.height - bw
   local cursor = vim.fn.screenrow()
-  if cursor >= opts.row and cursor <= opts.row + opts.height then
+  if cursor >= opts.row and cursor <= opts.row + opts.height and opts.dynamic_height then
     opts.row = cursor + 1
     opts.height = math.max(vim.o.lines - opts.row, 1)
   end
+  opts.dynamic_height = nil
 
   if Config.show_help or show_keys then
     text:nl()
