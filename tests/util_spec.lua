@@ -102,7 +102,7 @@ describe("modes", function()
     ["aa"] = "i",
     ["ciw"] = "o",
     ["c"] = "n",
-    ["<cmd>terminal exit<cr>"] = "t",
+    ["<cmd>terminal exit<cr>"] = "n",
   }
 
   local inputs = vim.tbl_keys(tests)

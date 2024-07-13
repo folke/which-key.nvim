@@ -73,9 +73,6 @@ function M.mapmode(mode)
   if mode:sub(1, 2) == "no" then
     return "o"
   end
-  if mode:sub(1, 2) == "nt" then
-    return "t"
-  end
   if mode:sub(1, 1) == "v" then
     return "x" -- mapmode is actually "x" for visual only mappings
   end
