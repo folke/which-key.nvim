@@ -364,9 +364,6 @@ their default link.
 
   WhichKeyDesc            Identifier              description
 
-  WhichKeyFloat           NormalFloat             Normal in th which-key
-                                                  window
-
   WhichKeyGroup           Keyword                 group name
 
   WhichKeyIcon            @markup.link            icons
@@ -388,6 +385,9 @@ their default link.
   WhichKeyIconRed         DiagnosticError         
 
   WhichKeyIconYellow      DiagnosticWarn          
+
+  WhichKeyNormal          NormalFloat             Normal in th which-key
+                                                  window
 
   WhichKeySeparator       Comment                 the separator between
                                                   the key and its
