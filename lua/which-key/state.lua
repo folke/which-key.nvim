@@ -39,12 +39,16 @@ function M.setup()
     end,
   })
 
-  vim.api.nvim_create_autocmd("FocusLost", {
+  local hide = (vim.uv or vim.loop).new_timer()
+  vim.api.nvim_create_autocmd({ "FocusLost", "FocusGained" }, {
     group = group,
-    callback = function()
-      if M.state then
-        -- FIXME: add proper abort functionality
-        vim.api.nvim_input("<esc>")
+    callback = function(ev)
+      if ev.event == "FocusGained" then
+        hide:stop()
+      elseif M.state then
+        hide:start(1000, 0, function()
+          vim.api.nvim_input("<esc>")
+        end)
       end
     end,
   })
