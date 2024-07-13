@@ -291,13 +291,12 @@ function M.parse(spec, opts)
   M.notify = opts.notify ~= false
   local ret = M._parse(spec, nil, opts)
   M.notify = true
-  return vim.tbl_filter(function(v)
-    if v.rhs and opts.create then
-      M.create(v)
-      return false
+  for _, m in ipairs(ret) do
+    if m.rhs and opts.create then
+      M.create(m)
     end
-    return true
-  end, ret)
+  end
+  return ret
 end
 
 return M
