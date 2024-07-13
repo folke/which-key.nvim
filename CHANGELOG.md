@@ -1,5 +1,29 @@
 # Changelog
 
+## [3.2.0](https://github.com/folke/which-key.nvim/compare/v3.1.0...v3.2.0) (2024-07-13)
+
+
+### Features
+
+* added `opts.debug` that writes to wk.log in the current directory ([c23df71](https://github.com/folke/which-key.nvim/commit/c23df711884d97963d0c17ed29f5d8c1064d4adc))
+* hydra mode. will document later ([65f2e72](https://github.com/folke/which-key.nvim/commit/65f2e7236a3bc278dd163d7c98c9ea5d9ab6e42e))
+* **icons:** add telescope icon ([#643](https://github.com/folke/which-key.nvim/issues/643)) ([fca3d9e](https://github.com/folke/which-key.nvim/commit/fca3d9eaef57ddb3ce438d208ebc32e23c9f290a))
+
+
+### Bug Fixes
+
+* layout stuff ([7423096](https://github.com/folke/which-key.nvim/commit/742309697cff6aa7f377b72e2f54d34afef09ee1))
+* **mappings:** always use mapping even when it's creating a keymap. Fixes [#637](https://github.com/folke/which-key.nvim/issues/637) ([2d744cb](https://github.com/folke/which-key.nvim/commit/2d744cb824c0f310be420bf33688bc005f164f46))
+* **mappings:** make replace_keycodes default to false in v1 spec ([6ec0a1e](https://github.com/folke/which-key.nvim/commit/6ec0a1ef89209680c799269227b4d0c28de1d877))
+* **state:** dont start which-key during dot repeat. Fixes [#636](https://github.com/folke/which-key.nvim/issues/636) ([5971ecd](https://github.com/folke/which-key.nvim/commit/5971ecdf4465425d6bc6e2277101c6fc896cbe06))
+* **state:** dont start which-key more than once during the same tick in xo mode. Fixes [#635](https://github.com/folke/which-key.nvim/issues/635) ([0218fce](https://github.com/folke/which-key.nvim/commit/0218fce1c3d54307217391215db28e63de9b8980))
+* **state:** dont start wk when chars are pending. Fixes [#658](https://github.com/folke/which-key.nvim/issues/658). Fixes [#655](https://github.com/folke/which-key.nvim/issues/655). Fixes [#648](https://github.com/folke/which-key.nvim/issues/648) ([877ce16](https://github.com/folke/which-key.nvim/commit/877ce163d764bbe7c82a7fec5671c32188607754))
+* **state:** only hide on focus lost when still hidden after 1s. Fixes [#638](https://github.com/folke/which-key.nvim/issues/638) ([649a51b](https://github.com/folke/which-key.nvim/commit/649a51bc81b09443c326d390e3d182e0cdf98c15))
+* **types:** spec field types ([#645](https://github.com/folke/which-key.nvim/issues/645)) ([c6ffb1c](https://github.com/folke/which-key.nvim/commit/c6ffb1ce63959d5f1effe5924712f36eac1e940e))
+* **util:** set local window opts for notify. Fixes [#641](https://github.com/folke/which-key.nvim/issues/641) ([63f2112](https://github.com/folke/which-key.nvim/commit/63f2112361a53b0cf68245868977773f210bb5cd))
+* **view:** check for real overlap instead of just row overlap. See [#649](https://github.com/folke/which-key.nvim/issues/649) ([0427e91](https://github.com/folke/which-key.nvim/commit/0427e91dbbd9c37eb20e6fbc2386f890dc0d7e2a))
+* **view:** disable folds. Fixes [#99](https://github.com/folke/which-key.nvim/issues/99) ([6860e3b](https://github.com/folke/which-key.nvim/commit/6860e3b681b40e3620049f714ae53a6bad594701))
+
 ## [3.1.0](https://github.com/folke/which-key.nvim/compare/v3.0.0...v3.1.0) (2024-07-12)
 
 
