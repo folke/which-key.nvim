@@ -109,7 +109,7 @@ function M.stop()
 end
 
 ---@param state wk.State
----@return wk.Node?
+---@return false|wk.Node?
 function M.step(state)
   local View = require("which-key.view")
   vim.cmd.redraw()
@@ -117,7 +117,7 @@ function M.step(state)
   local ok, char = pcall(vim.fn.getcharstr)
   if not ok then
     Util.debug("nok", char)
-    return
+    return false
   end
   local key = vim.fn.keytrans(char)
   Util.debug("got", key)
@@ -140,7 +140,10 @@ function M.step(state)
     end
   elseif key == "<Esc>" then
     -- cancel and exit if in op-mode
-    return mode == "o" and Util.exit() or nil
+    if mode == "o" then
+      Util.exit()
+    end
+    return false
   elseif key == "<BS>" then
     return state.node.parent or state.mode.tree.root
   elseif View.valid() and key:lower() == Config.keys.scroll_down then
@@ -172,6 +175,7 @@ function M.step(state)
   Util.debug("feedkeys", tostring(state.mode), keystr)
   local feed = vim.api.nvim_replace_termcodes(keystr, true, true, true)
   vim.api.nvim_feedkeys(feed, "mit", false)
+  return key ~= "<Esc>"
 end
 
 ---@param opts? wk.Filter
@@ -197,7 +201,9 @@ function M.start(opts)
     filter = opts,
   }
 
-  Util.trace("State(start)", tostring(mode), "Node(" .. node.keys .. ")")
+  Util.trace("State(start)", tostring(mode), "Node(" .. node.keys .. ")", opts)
+
+  local exit = false
 
   while M.state do
     mode = Buf.get(opts)
@@ -206,14 +212,24 @@ function M.start(opts)
     end
     View.update(opts)
     local child = M.step(M.state)
-    if child and M.state then
+    if type(child) == "table" and M.state then
       M.state.node = child
     else
+      exit = child == false
       break
     end
   end
-  M.state = nil
-  View.hide()
+
+  if opts.loop and not exit then
+    -- NOTE: flush pending keys to prevent a trigger loop
+    vim.api.nvim_feedkeys("", "x", false)
+    vim.schedule(function()
+      M.start(opts)
+    end)
+  else
+    M.state = nil
+    View.hide()
+  end
   Util.trace()
   return true
 end

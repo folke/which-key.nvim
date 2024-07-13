@@ -10,6 +10,7 @@
 ---@field local? boolean
 ---@field update? boolean
 ---@field delay? number
+---@field loop? boolean
 
 ---@class wk.Icon
 ---@field icon? string
