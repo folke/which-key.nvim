@@ -11,6 +11,7 @@ Table of Contents                           *which-key.nvim-table-of-contents*
   - Setup                                     |which-key.nvim-which-key-setup|
   - Icons                                     |which-key.nvim-which-key-icons|
   - Usage                                     |which-key.nvim-which-key-usage|
+  - Hydra Mode                           |which-key.nvim-which-key-hydra-mode|
   - Plugins                                 |which-key.nvim-which-key-plugins|
   - Colors                                   |which-key.nvim-which-key-colors|
 2. Links                                                |which-key.nvim-links|
@@ -36,6 +37,7 @@ FEATURES                                   *which-key.nvim-which-key-features*
 - **Delay**delay is independent of `timeoutlen`
 - **Plugins**built-in plugins for marks, registers, presets, and spelling suggestions
 - **Operators, Motions, Text Objects**help for operators, motions and text objects
+- **Hydra Mode**keep the popup open until you hit `<esc>`
 
 
 REQUIREMENTS                           *which-key.nvim-which-key-requirements*
@@ -319,6 +321,19 @@ When the **WhichKey** popup is open, you can use the following key bindings
 - `<bs>` go up one level
 - `<c-d>` scroll down
 - `<c-u>` scroll up
+
+
+HYDRA MODE                               *which-key.nvim-which-key-hydra-mode*
+
+Hydra mode is a special mode that keeps the popup open until you hit `<esc>`.
+
+>lua
+    -- Show hydra mode for changing windows
+    require("which-key").show({
+      keys = "<c-w>",
+      loop = true, -- this will keep the popup open until you hit <esc>
+    })
+<
 
 
 PLUGINS                                     *which-key.nvim-which-key-plugins*
