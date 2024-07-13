@@ -102,9 +102,12 @@ function M.notify(msg, opts)
   return vim[opts.once and "notify_once" or "notify"](msg, opts.level, {
     title = opts.title or "which-key.nvim",
     on_open = function(win)
-      vim.wo.conceallevel = 3
-      vim.wo.concealcursor = "n"
-      vim.wo.spell = false
+      for k, v in pairs({ conceallevel = 3, spell = false, concealcursor = "n" }) do
+        vim.api.nvim_set_option_value(k, v, {
+          scope = "local",
+          win = win,
+        })
+      end
       vim.treesitter.start(vim.api.nvim_win_get_buf(win), "markdown")
     end,
   })
