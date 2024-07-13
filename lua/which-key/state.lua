@@ -16,22 +16,16 @@ M.state = nil
 function M.setup()
   local group = vim.api.nvim_create_augroup("wk", { clear = true })
 
-  local dot_repeat = false
-
-  vim.on_key(function(raw, key)
-    if raw == "." then
-      dot_repeat = true
-      vim.schedule(function()
-        dot_repeat = false
-      end)
-    end
-    if Config.debug and key and #key > 0 then
-      key = vim.fn.keytrans(key)
-      if not key:find("Scroll") then
-        Util.debug("on_key", key)
+  if Config.debug then
+    vim.on_key(function(_raw, key)
+      if key and #key > 0 then
+        key = vim.fn.keytrans(key)
+        if not key:find("Scroll") then
+          Util.debug("on_key", key)
+        end
       end
-    end
-  end)
+    end)
+  end
 
   vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
     group = group,
@@ -56,21 +50,17 @@ function M.setup()
   })
 
   -- this prevents restarting which-key in the same tick
-  local cooldown = false
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
     callback = function(ev)
       Util.debug("ModeChanged(" .. ev.match .. ")")
       if not Util.safe() then
+        -- dont start when recording or when chars are pending
         M.stop()
         -- make sure the buffer mode exists
       elseif Buf.get() and Util.xo() then
-        if not M.state and not cooldown and not dot_repeat then
-          cooldown = true
+        if not M.state then
           M.start()
-          vim.schedule(function()
-            cooldown = false
-          end)
         end
       elseif not ev.match:find("c") then
         M.stop()
