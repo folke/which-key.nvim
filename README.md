@@ -336,7 +336,6 @@ The table below shows all the highlight groups defined for **WhichKey** with the
 | **WhichKey** | ***Function*** |  |
 | **WhichKeyBorder** | ***FloatBorder*** | Border of the which-key window |
 | **WhichKeyDesc** | ***Identifier*** | description |
-| **WhichKeyFloat** | ***NormalFloat*** | Normal in th which-key window |
 | **WhichKeyGroup** | ***Keyword*** | group name |
 | **WhichKeyIcon** | ***@markup.link*** | icons |
 | **WhichKeyIconAzure** | ***Function*** |  |
@@ -348,6 +347,7 @@ The table below shows all the highlight groups defined for **WhichKey** with the
 | **WhichKeyIconPurple** | ***Constant*** |  |
 | **WhichKeyIconRed** | ***DiagnosticError*** |  |
 | **WhichKeyIconYellow** | ***DiagnosticWarn*** |  |
+| **WhichKeyNormal** | ***NormalFloat*** | Normal in th which-key window |
 | **WhichKeySeparator** | ***Comment*** | the separator between the key and its description |
 | **WhichKeyTitle** | ***FloatTitle*** | Title of the which-key window |
 | **WhichKeyValue** | ***Comment*** | values by plugins (like marks, registers, etc) |

@@ -142,6 +142,7 @@ function M.opts()
     wo = {
       scrolloff = 0,
       foldenable = false,
+      winhighlight = "Normal:WhichKeyNormal,FloatBorder:WhichKeyBorder,FloatTitle:WhichKeyTitle",
     },
     bo = {
       buftype = "nofile",
