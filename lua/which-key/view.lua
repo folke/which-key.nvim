@@ -147,6 +147,7 @@ function M.opts()
     noautocmd = true,
     wo = {
       scrolloff = 0,
+      foldenable = false,
     },
     bo = {
       buftype = "nofile",
