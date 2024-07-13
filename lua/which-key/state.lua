@@ -49,15 +49,21 @@ function M.setup()
     end,
   })
 
+  -- this prevents restarting which-key in the same tick
+  local cooldown = false
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
     callback = function(ev)
       if not Util.safe() then
         M.stop()
-      -- make sure the buffer mode exists
+        -- make sure the buffer mode exists
       elseif Buf.get() and Util.xo() then
         if not M.state and not cooldown and not dot_repeat then
+          cooldown = true
           M.start()
+          vim.schedule(function()
+            cooldown = false
+          end)
         end
       elseif not ev.match:find("c") then
         M.stop()
