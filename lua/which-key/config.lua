@@ -48,7 +48,12 @@ local defaults = {
   },
   ---@type wk.Win
   win = {
-    dynamic_height = true,
+    --- Control dyamic height (try to avoid hiding cursor)
+    --- Can either be a boolean or configured per mode
+    ---@type boolean|table
+    dynamic_height = {
+      x = true,
+    },
     -- width = 1,
     -- height = { min = 4, max = 25 },
     -- col = 0,

@@ -380,7 +380,15 @@ function M.show()
   opts.width = opts.width - bw
   opts.height = opts.height - bw
   local cursor = vim.fn.screenrow()
-  if cursor >= opts.row and cursor <= opts.row + opts.height and opts.dynamic_height then
+  local mode = Util.mapmode()
+  local dynamic_height = (function()
+    if type(opts.dynamic_height) == "boolean" then
+      return opts.dynamic_height
+    else
+      return opts.dynamic_height[mode]
+    end
+  end)()
+  if cursor >= opts.row and cursor <= opts.row + opts.height and dynamic_height then
     opts.row = cursor + 1
     opts.height = math.max(vim.o.lines - opts.row, 1)
   end
