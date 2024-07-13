@@ -304,6 +304,9 @@ actual icon, or an `wk.Icon` object, which can have the following attributes:
 - `name` (`string`): the name of the icon in the specified category **(optional)**
 
 
+  [!TIP] If you’d rather not use icons, you can disable them by setting
+  `opts.icons.rules` to `false`.
+
 USAGE                                         *which-key.nvim-which-key-usage*
 
 When the **WhichKey** popup is open, you can use the following key bindings
