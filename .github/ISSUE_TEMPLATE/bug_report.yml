@@ -6,7 +6,10 @@ body:
   - type: markdown
     attributes:
       value: |
-        **Before** reporting an issue, make sure to read the [documentation](https://github.com/folke/which-key.nvim) and search [existing issues](https://github.com/folke/which-key.nvim/issues). Usage questions such as ***"How do I...?"*** belong in [Discussions](https://github.com/folke/which-key.nvim/discussions) and will be closed.
+        **Before** reporting an issue, make sure to read the [documentation](https://github.com/folke/which-key.nvim)
+        and search [existing issues](https://github.com/folke/which-key.nvim/issues).
+
+        Usage questions such as ***"How do I...?"*** belong in [Discussions](https://github.com/folke/which-key.nvim/discussions) and will be closed.
   - type: checkboxes
     attributes:
       label: Did you check docs and existing issues?
@@ -52,6 +55,14 @@ body:
       description: A concise description of what you expected to happen.
     validations:
       required: true
+  - type: textarea
+    attributes:
+      label: Health
+      description: Attach the output of `:checkhealth which-key` here
+  - type: textarea
+    attributes:
+      label: Log
+      description: Please enable logging with `opts.debug = true` and attach the contents of `./wk.log` here
   - type: textarea
     attributes:
       label: Repro
