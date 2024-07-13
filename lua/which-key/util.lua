@@ -175,20 +175,49 @@ function M.set_extmark(buf, ns, row, col, opts, debug_info)
   end
 end
 
----@param data any
-function M.debug(data)
+local trace_level = 0
+---@param msg? string
+---@param ...? any
+function M.trace(msg, ...)
+  if not msg then
+    trace_level = trace_level - 1
+    return
+  end
+  trace_level = math.max(trace_level, 0)
+  M.debug(msg, ...)
+  trace_level = trace_level + 1
+end
+
+---@param msg? string
+---@param ...? any
+function M.debug(msg, ...)
+  if not require("which-key.config").debug then
+    return
+  end
+  local data = { ... }
+  if #data == 0 then
+    data = nil
+  elseif #data == 1 then
+    data = data[1]
+  end
   if type(data) == "function" then
     data = data()
   end
-  if type(data) ~= "string" then
-    data = vim.inspect(data)
+  if data and type(data) ~= "string" then
+    data = vim.inspect(data):gsub("%s+", " ")
   end
+  msg = data and ("%s: %s"):format(msg, data) or msg
+  msg = string.rep("  ", trace_level) .. msg
+  M.log(msg .. "\n")
+end
+
+function M.log(msg)
   local file = "./wk.log"
   local fd = io.open(file, "a+")
   if not fd then
     error(("Could not open file %s for writing"):format(file))
   end
-  fd:write(data .. "\n")
+  fd:write(msg)
   fd:close()
 end
 

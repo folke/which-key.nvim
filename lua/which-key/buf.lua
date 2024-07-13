@@ -27,6 +27,10 @@ local function needs_trigger(node)
   return true
 end
 
+function Mode:__tostring()
+  return string.format("Mode(%s)", self.mode)
+end
+
 ---@param buf wk.Buffer
 ---@param mode string
 function Mode.new(buf, mode)
@@ -67,11 +71,14 @@ end
 
 ---@param node wk.Node
 function Mode:reattach(node)
+  Util.debug("reattach", node.keys, self.mode)
   while node do
     if self:is_trigger(node.keys) then
       local trigger = node
+      Util.debug("detach", trigger.keys)
       self:_detach(trigger)
       vim.schedule(function()
+        Util.debug("attach", trigger.keys, self.mode)
         self:_attach(trigger)
       end)
     end

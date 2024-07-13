@@ -25,6 +25,12 @@ function M.setup()
         dot_repeat = false
       end)
     end
+    if Config.debug and key and #key > 0 then
+      key = vim.fn.keytrans(key)
+      if not key:find("Scroll") then
+        Util.debug("on_key", key)
+      end
+    end
   end)
 
   vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
@@ -54,6 +60,7 @@ function M.setup()
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
     callback = function(ev)
+      Util.debug("ModeChanged(" .. ev.match .. ")")
       if not Util.safe() then
         M.stop()
         -- make sure the buffer mode exists
@@ -92,6 +99,7 @@ function M.stop()
   if M.state == nil then
     return
   end
+  Util.debug("state:stop")
   M.state = nil
   vim.schedule(function()
     if not M.state then
@@ -105,11 +113,14 @@ end
 function M.step(state)
   local View = require("which-key.view")
   vim.cmd.redraw()
+  Util.debug("getchar")
   local ok, char = pcall(vim.fn.getcharstr)
   if not ok then
+    Util.debug("nok", char)
     return
   end
   local key = vim.fn.keytrans(char)
+  Util.debug("got", key)
   local node = (state.node.children or {})[key] ---@type wk.Node?
 
   local mode = state.mode.mode
@@ -124,6 +135,7 @@ function M.step(state)
     local is_action = node.action ~= nil
     local is_keymap = node.keymap ~= nil
     if is_group and not is_nowait and not is_action then
+      Util.debug("continue", node.keys, tostring(state.mode))
       return node
     end
   elseif key == "<Esc>" then
@@ -157,6 +169,7 @@ function M.step(state)
       keystr = '"' .. vim.v.register .. keystr
     end
   end
+  Util.debug("feedkeys", tostring(state.mode), keystr)
   local feed = vim.api.nvim_replace_termcodes(keystr, true, true, true)
   vim.api.nvim_feedkeys(feed, "mit", false)
 end
@@ -184,6 +197,8 @@ function M.start(opts)
     filter = opts,
   }
 
+  Util.trace("State(start)", tostring(mode), "Node(" .. node.keys .. ")")
+
   while M.state do
     mode = Buf.get(opts)
     if not mode or mode.mode ~= mapmode then
@@ -199,6 +214,7 @@ function M.start(opts)
   end
   M.state = nil
   View.hide()
+  Util.trace()
   return true
 end
 

@@ -2,6 +2,7 @@
 local M = {}
 
 M.version = "3.1.0" -- x-release-please-version
+
 ---@class wk.Opts
 local defaults = {
   ---@type false | "classic" | "modern" | "helix"
@@ -142,6 +143,7 @@ local defaults = {
       return false
     end,
   },
+  debug = false, -- enable wk.log in the current directory
 }
 
 M.loaded = false
@@ -188,6 +190,10 @@ function M.setup(opts)
     -- setup colors and start which-key
     require("which-key.colors").setup()
     require("which-key.state").setup()
+
+    if M.options.debug then
+      require("which-key.util").debug("\n\nDebug Started for v" .. M.version)
+    end
 
     M.loaded = true
   end
