@@ -16,6 +16,17 @@ M.state = nil
 function M.setup()
   local group = vim.api.nvim_create_augroup("wk", { clear = true })
 
+  local dot_repeat = false
+
+  vim.on_key(function(raw, key)
+    if raw == "." then
+      dot_repeat = true
+      vim.schedule(function()
+        dot_repeat = false
+      end)
+    end
+  end)
+
   vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
     group = group,
     callback = function(ev)
@@ -45,7 +56,7 @@ function M.setup()
         M.stop()
       -- make sure the buffer mode exists
       elseif Buf.get() and Util.xo() then
-        if not M.state then
+        if not M.state and not cooldown and not dot_repeat then
           M.start()
         end
       elseif not ev.match:find("c") then
