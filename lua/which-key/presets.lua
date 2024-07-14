@@ -3,7 +3,7 @@ return {
   helix = {
     win = {
       width = { min = 30, max = 60 },
-      height = { min = 4, max = 0.5 },
+      height = { min = 4, max = 0.75 },
       col = -1,
       row = -1,
       border = "rounded",
