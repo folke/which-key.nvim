@@ -239,4 +239,25 @@ function M.log(msg)
   fd:close()
 end
 
+--- Returns a function that returns true if the cooldown is active.
+--- The cooldown will be active for the given duration or 0 if no duration is given.
+--- Runs in the main loop.
+--- cooldown(true) will wait till the next tick.
+---@return fun(cooldown?: number|boolean): boolean
+function M.cooldown()
+  local waiting = false
+  ---@param cooldown? number|boolean
+  return function(cooldown)
+    if waiting then
+      return true
+    elseif cooldown then
+      waiting = true
+      vim.defer_fn(function()
+        waiting = false
+      end, type(cooldown) == "number" and cooldown or 0)
+    end
+    return false
+  end
+end
+
 return M

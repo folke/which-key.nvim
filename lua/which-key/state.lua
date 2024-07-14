@@ -53,13 +53,19 @@ function M.setup()
     end,
   })
 
+  local cooldown = Util.cooldown()
   -- this prevents restarting which-key in the same tick
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
     callback = function(ev)
       Util.debug("ModeChanged(" .. ev.match .. ")")
+      if cooldown() then
+        return
+      end
       if not Util.safe() then
         -- dont start when recording or when chars are pending
+        Util.debug("not safe")
+        cooldown(true) -- cooldown till next tick
         M.stop()
         -- make sure the buffer mode exists
       elseif Buf.get() and Util.xo() then
