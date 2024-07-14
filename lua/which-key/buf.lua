@@ -143,7 +143,7 @@ function Mode:update()
   for _, mapping in ipairs(mappings) do
     if mapping.rhs == "" or mapping.rhs == "<Nop>" then
       self.tree:add(mapping, true)
-    elseif mapping.lhs:sub(1, 6) ~= "<Plug>" then
+    elseif mapping.lhs:sub(1, 6) ~= "<Plug>" and mapping.lhs:sub(1, 5) ~= "<SNR>" then
       self.tree:add(mapping)
     end
   end
