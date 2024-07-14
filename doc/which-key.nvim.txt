@@ -98,6 +98,12 @@ Default Options ~
       delay = function(ctx)
         return ctx.plugin and 0 or 200
       end,
+      ---@param mapping wk.Mapping
+      filter = function(mapping)
+        -- example to exclude mappings without a description
+        -- return mapping.desc and mapping.desc ~= ""
+        return true
+      end,
       --- You can add any mappings here, or use `require('which-key').add()` later
       ---@type wk.Spec
       spec = {},
@@ -256,9 +262,9 @@ A mapping has the following attributes:
 
 - **[1]**(`string`) lhs **(required)**
 - **[2]**(`string|fun()`) rhs **(optional)**when present, it will create the mapping
-- **desc**(`string`) description **(required)**
-- **mode**(`string|string[]`) mode **(optional, defaults to "n")**
+- **desc**(`string`) description **(required for non-groups)**
 - **group**(`string`) group name **(optional)**
+- **mode**(`string|string[]`) mode **(optional, defaults to "n")**
 - **cond**(`boolean|fun():boolean`) condition to enable the mapping **(optional)**
 - **hidden**(`boolean`) hide the mapping **(optional)**
 - **icon**(`string|wk.Icon`) icon spec **(optional)**
