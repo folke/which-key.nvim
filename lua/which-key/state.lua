@@ -188,6 +188,9 @@ function M.step(state)
   Util.debug("got", key)
 
   local node = M.check(state, key)
+  if node == state.node then
+    return M.step(state) -- same node, so try again (scrolling)
+  end
   return node, key == "<Esc>"
 end
 
