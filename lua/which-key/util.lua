@@ -32,6 +32,11 @@ end
 
 -- Default register
 function M.reg()
+  -- this will be set to 2 if there is a non-empty clipboard
+  -- tool available
+  if vim.g.loaded_clipboard_provider ~= 2 then
+    return '"'
+  end
   local cb = vim.o.clipboard
   return cb:find("unnamedplus") and "+" or cb:find("unnamed") and "*" or '"'
 end
