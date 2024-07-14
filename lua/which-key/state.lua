@@ -109,26 +109,16 @@ function M.stop()
 end
 
 ---@param state wk.State
----@return false|wk.Node?
-function M.step(state)
+---@param key? string
+---@return wk.Node? node
+function M.check(state, key)
   local View = require("which-key.view")
-  vim.cmd.redraw()
-  Util.debug("getchar")
-  local ok, char = pcall(vim.fn.getcharstr)
-  if not ok then
-    Util.debug("nok", char)
-    return false
-  end
-  local key = vim.fn.keytrans(char)
-  Util.debug("got", key)
-  local node = (state.node.children or {})[key] ---@type wk.Node?
-
-  local mode = state.mode.mode
-  local xo = mode:find("[xo]") ~= nil
+  local node = key == nil and state.node or (state.node.children or {})[key] ---@type wk.Node?
 
   if node then
     -- NOTE: a node can be both a keymap and a group
     -- We always prefer the group and only use the keymap if it is nowait
+    -- FIXME: implement proper timeoutlen
 
     local is_group = Tree.is_group(node)
     local is_nowait = node.keymap and node.keymap.nowait == 1
@@ -139,23 +129,30 @@ function M.step(state)
       return node
     end
   elseif key == "<Esc>" then
-    -- cancel and exit if in xo mode
-    if xo then
-      Util.exit()
+    if state.mode:xo() then
+      Util.exit() -- cancel and exit if in xo mode
     end
-    return false
+    return
   elseif key == "<BS>" then
     return state.node.parent or state.mode.tree.root
-  elseif View.valid() and key:lower() == Config.keys.scroll_down then
+  elseif View.valid() and key and key:lower() == Config.keys.scroll_down then
     View.scroll(false)
-    return M.step(state)
-  elseif View.valid() and key:lower() == Config.keys.scroll_up then
+    return state.node
+  elseif View.valid() and key and key:lower() == Config.keys.scroll_up then
     View.scroll(true)
-    return M.step(state)
+    return state.node
   end
+  M.execute(state, key, node)
+end
 
+---@param state wk.State
+---@param key? string
+---@param node? wk.Node
+---@return false|wk.Node?
+function M.execute(state, key, node)
   state.mode:reattach(node or state.node)
 
+  Util.debug("plugin", node and node.plugin, key)
   if node and node.action then
     return node.action()
   end
@@ -164,18 +161,34 @@ function M.step(state)
   keys[#keys + 1] = key
 
   local keystr = table.concat(keys)
-  if not xo then
+  if not state.mode:xo() then
     if vim.v.count > 0 then
       keystr = vim.v.count .. keystr
     end
-    if vim.v.register ~= Util.reg() and mode ~= "i" and mode ~= "c" then
+    if vim.v.register ~= Util.reg() and state.mode.mode ~= "i" and state.mode.mode ~= "c" then
       keystr = '"' .. vim.v.register .. keystr
     end
   end
   Util.debug("feedkeys", tostring(state.mode), keystr)
   local feed = vim.api.nvim_replace_termcodes(keystr, true, true, true)
   vim.api.nvim_feedkeys(feed, "mit", false)
-  return key ~= "<Esc>"
+end
+
+---@param state wk.State
+---@return wk.Node? node, boolean? exit
+function M.step(state)
+  vim.cmd.redraw()
+  Util.debug("getchar")
+  local ok, char = pcall(vim.fn.getcharstr)
+  if not ok then
+    Util.debug("nok", char)
+    return nil, true
+  end
+  local key = vim.fn.keytrans(char)
+  Util.debug("got", key)
+
+  local node = M.check(state, key)
+  return node, key == "<Esc>"
 end
 
 ---@param opts? wk.Filter
@@ -203,6 +216,10 @@ function M.start(opts)
 
   Util.trace("State(start)", tostring(mode), "Node(" .. node.keys .. ")", opts)
 
+  if not M.check(M.state) then
+    return true
+  end
+
   local exit = false
 
   while M.state do
@@ -211,11 +228,11 @@ function M.start(opts)
       break
     end
     View.update(opts)
-    local child = M.step(M.state)
-    if type(child) == "table" and M.state then
+    local child, _exit = M.step(M.state)
+    if child and M.state then
       M.state.node = child
     else
-      exit = child == false
+      exit = _exit or false
       break
     end
   end

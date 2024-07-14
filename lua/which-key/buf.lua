@@ -86,6 +86,10 @@ function Mode:reattach(node)
   end
 end
 
+function Mode:xo()
+  return self.mode:find("[xo]") ~= nil
+end
+
 ---@param node wk.Node
 function Mode:_attach(node)
   if not self.buf:valid() then
