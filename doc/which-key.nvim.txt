@@ -266,13 +266,16 @@ A mapping has the following attributes:
 
 - **[1]**(`string`) lhs **(required)**
 - **[2]**(`string|fun()`) rhs **(optional)**when present, it will create the mapping
-- **desc**(`string`) description **(required for non-groups)**
-- **group**(`string`) group name **(optional)**
+- **desc**(`string|fun():string`) description **(required for non-groups)**
+- **group**(`string|fun():string`) group name **(optional)**
 - **mode**(`string|string[]`) mode **(optional, defaults to "n")**
 - **cond**(`boolean|fun():boolean`) condition to enable the mapping **(optional)**
 - **hidden**(`boolean`) hide the mapping **(optional)**
-- **icon**(`string|wk.Icon`) icon spec **(optional)**
+- **icon**(`string|wk.Icon|fun():(wk.Icon|string)`) icon spec **(optional)**
 - any other option valid for `vim.keymap.set`. These are only used for creating mappings.
+
+When `desc`, `group`, or `icon` are functions, they are evaluated every time
+the popup is shown.
 
 >lua
     local wk = require("which-key")
