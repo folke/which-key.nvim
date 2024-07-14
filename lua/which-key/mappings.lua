@@ -240,7 +240,7 @@ function M.add(mapping, ret)
     mapping.hidden = true
     mapping.desc = nil
   end
-  if type(mapping.group) == "string" then
+  if type(mapping.group) == "string" or type(mapping.group) == "function" then
     mapping.desc = mapping.group --[[@as string]]
     mapping.group = true
   end
@@ -248,7 +248,10 @@ function M.add(mapping, ret)
     mapping.group = true
   end
   if mapping.group and mapping.desc then
-    mapping.desc = mapping.desc:gsub("^%+", "")
+    mapping.desc = mapping.desc
+    if type(mapping.desc) == "string" then
+      mapping.desc = mapping.desc:gsub("^%+", "")
+    end
   end
   if mapping.buffer == 0 or mapping.buffer == true then
     mapping.buffer = vim.api.nvim_get_current_buf()
@@ -259,7 +262,10 @@ function M.add(mapping, ret)
   mapping.lhs = mapping.lhs or mapping.prefix or ""
   mapping.prefix = nil
 
-  if mapping.desc or mapping.group or mapping.hidden then
+  local has_desc = mapping.desc ~= nil
+  Util.getters(mapping, { "desc", "icon" })
+
+  if has_desc or mapping.group or mapping.hidden then
     local modes = mapping.mode or { "n" } --[[@as string|string[] ]]
     modes = type(modes) == "string" and vim.split(modes, "") or modes
     assert(type(modes) == "table", "Invalid mode " .. vim.inspect(modes))

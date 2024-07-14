@@ -260,4 +260,28 @@ function M.cooldown()
   end
 end
 
+---@generic T: table
+---@param t T
+---@param fields string[]
+---@return T
+function M.getters(t, fields)
+  local getters = {} ---@type table<string, fun():any>
+  for _, prop in ipairs(fields) do
+    if type(t[prop]) == "function" then
+      getters[prop] = t[prop]
+      rawset(t, prop, nil)
+    end
+  end
+
+  if not vim.tbl_isempty(getters) then
+    setmetatable(t, {
+      __index = function(_, key)
+        if getters[key] then
+          return getters[key](t)
+        end
+      end,
+    })
+  end
+end
+
 return M
