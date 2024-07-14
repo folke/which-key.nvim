@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.3.0](https://github.com/folke/which-key.nvim/compare/v3.2.0...v3.3.0) (2024-07-14)
+
+
+### Features
+
+* **expand:** allow expand to be a function. Closes [#670](https://github.com/folke/which-key.nvim/issues/670) ([dfaa10c](https://github.com/folke/which-key.nvim/commit/dfaa10cd24badb321a4667fb9135f242393e5680))
+* **mappings:** mapping `desc` and `icon` can now be a function that is evaluated when which-key is show. Fixes [#666](https://github.com/folke/which-key.nvim/issues/666) ([c634af1](https://github.com/folke/which-key.nvim/commit/c634af1295512dc2062fbec38f563f5793de245c))
+* **mappings:** opts.filter to exclude certain mappings from showing up in which-key. ([763ea00](https://github.com/folke/which-key.nvim/commit/763ea000cce9589124515ba34f6d9a6347a02891))
+* **view:** add operator to trail in op mode ([5a6eaaa](https://github.com/folke/which-key.nvim/commit/5a6eaaa4ebc072625b9fc906943e3798028bd817))
+* **view:** when in visual mode, propagate esc. See [#656](https://github.com/folke/which-key.nvim/issues/656) ([30ef44a](https://github.com/folke/which-key.nvim/commit/30ef44a13065a157f97d3fb5bbf23a5c23e513eb))
+
+
+### Bug Fixes
+
+* default preset ([38987d3](https://github.com/folke/which-key.nvim/commit/38987d3f18a8ffc5eaa404d746fd8ee4017b5f37))
+* **mappings:** don't show `&lt;SNR&gt;` mappings ([d700244](https://github.com/folke/which-key.nvim/commit/d700244acc1f1474b34737e14a45df2aa3a324ba))
+* **presets:** max 1 column in helix mode. Fixes [#665](https://github.com/folke/which-key.nvim/issues/665) ([b2a6910](https://github.com/folke/which-key.nvim/commit/b2a6910e9e97526f2327327d2751834049cbd334))
+* **presets:** shorter descriptions ([9a73d6a](https://github.com/folke/which-key.nvim/commit/9a73d6a0b0d5f456a9768d434a83d6d4cdb83efa))
+* **state:** cooldown till next tick when not safe to open which-key. Fixes [#672](https://github.com/folke/which-key.nvim/issues/672) ([bdf3b27](https://github.com/folke/which-key.nvim/commit/bdf3b272ea34ac137af3cb1ebcd5cf8c9745abbb))
+* **util:** nt mode should map to n ([969afc9](https://github.com/folke/which-key.nvim/commit/969afc95d374bc0d6ce397d3d2357d8faa38041a))
+* **view:** set nowrap for the which-key window ([6e1c098](https://github.com/folke/which-key.nvim/commit/6e1c0987024adf63ab91f281f8f9c355abf3f3d8))
+* **view:** set winhl groups. Fixes [#661](https://github.com/folke/which-key.nvim/issues/661) ([baff8ea](https://github.com/folke/which-key.nvim/commit/baff8ea846cbb613dee79333aad7a1d2b912a5bc))
+
 ## [3.2.0](https://github.com/folke/which-key.nvim/compare/v3.1.0...v3.2.0) (2024-07-13)
 
 
