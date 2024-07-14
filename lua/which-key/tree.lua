@@ -1,3 +1,4 @@
+local Config = require("which-key.config")
 local Util = require("which-key.util")
 
 ---@class wk.Node
@@ -46,6 +47,9 @@ end
 ---@param virtual? boolean
 function M:add(keymap, virtual)
   assert(type(keymap.lhs) == "string", "input must be a string: " .. vim.inspect(keymap))
+  if not Config.filter(keymap) then
+    return
+  end
   local keys = Util.keys(keymap.lhs, { norm = true })
   local node = self.root
   local path = {} ---@type string[]
@@ -63,6 +67,7 @@ function M:add(keymap, virtual)
     end
     node = node.children[key]
   end
+
   node.desc = keymap.desc or node.desc
   node.plugin = node.plugin or keymap.plugin
   node.global = not (keymap.buffer and keymap.buffer ~= 0)

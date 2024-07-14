@@ -12,6 +12,12 @@ local defaults = {
   delay = function(ctx)
     return ctx.plugin and 0 or 200
   end,
+  ---@param mapping wk.Mapping
+  filter = function(mapping)
+    -- example to exclude mappings without a description
+    -- return mapping.desc and mapping.desc ~= ""
+    return true
+  end,
   --- You can add any mappings here, or use `require('which-key').add()` later
   ---@type wk.Spec
   spec = {},
