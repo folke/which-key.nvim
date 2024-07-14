@@ -251,8 +251,8 @@ function M.trail(node, opts)
     end
   end
   if #trail > 0 then
-    table.insert(trail, 1, { " " })
-    table.insert(trail, { " " })
+    table.insert(trail, 1, { " ", opts.title and "WhichKeyTitle" or "WhichKeyGroup" })
+    table.insert(trail, { " ", opts.title and "WhichKeyTitle" or "WhichKeyGroup" })
     return trail
   end
 end
