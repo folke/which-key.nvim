@@ -1,7 +1,7 @@
 ---@class wk.Config: wk.Opts
 local M = {}
 
-M.version = "3.2.0" -- x-release-please-version
+M.version = "3.3.0" -- x-release-please-version
 
 ---@class wk.Opts
 local defaults = {
