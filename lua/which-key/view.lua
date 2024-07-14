@@ -279,8 +279,12 @@ function M.show()
       use = false
     end
     if use then
-      local child_count = Tree.count(node)
-      if child_count > 0 and child_count <= Config.expand then
+      local expand = type(Config.expand) == "function" and Config.expand
+        or function()
+          local child_count = Tree.count(node)
+          return child_count > 0 and child_count <= Config.expand
+        end
+      if expand(node) then
         for _, child in ipairs(vim.tbl_values(node.children or {})) do
           table.insert(items, M.item(child, { parent_key = node.key }))
         end

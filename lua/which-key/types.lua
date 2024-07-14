@@ -35,6 +35,20 @@
 ---@field lhsraw? string
 ---@field buffer? number
 
+--- Represents a node in the which-key tree
+---@class wk.Node
+---@field key string single key of the node
+---@field path string[] path to the node (all keys leading to this node)
+---@field keys string full key sequence
+---@field parent? wk.Node parent node
+---@field desc? string description
+---@field plugin? string plugin name (used internally)
+---@field global? boolean global or buffer local keymap?
+---@field keymap? wk.Keymap Real keymap
+---@field mapping? wk.Mapping Mapping info supplied by user
+---@field children? table<string, wk.Node> child nodes
+---@field action? fun() action to execute when node is selected (used by plugins)
+
 ---@class wk.Mapping: wk.Keymap
 ---@field idx? number
 ---@field plugin? string

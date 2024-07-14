@@ -1,19 +1,6 @@
 local Config = require("which-key.config")
 local Util = require("which-key.util")
 
----@class wk.Node
----@field key string
----@field path string[]
----@field keys string
----@field parent? wk.Node
----@field desc? string
----@field plugin? string
----@field global? boolean
----@field keymap? wk.Keymap Real keymap
----@field mapping? wk.Mapping Mapping info supplied by user
----@field children? table<string, wk.Node>
----@field action? fun()
-
 ---@class wk.Tree
 ---@field root wk.Node
 local M = {}

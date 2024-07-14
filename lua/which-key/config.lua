@@ -84,7 +84,11 @@ local defaults = {
   --- Add "manual" as the first element to use the order the mappings were registered
   --- Other sorters: "desc"
   sort = { "local", "order", "group", "alphanum", "mod", "lower", "icase" },
+  ---@type number|fun(node: wk.Node):boolean?
   expand = 1, -- expand groups when <= n mappings
+  -- expand = function(node)
+  --   return not node.desc -- expand all nodes without a description
+  -- end,
   ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
   replace = {
     key = {
