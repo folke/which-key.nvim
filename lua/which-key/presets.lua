@@ -32,7 +32,6 @@ return {
       col = 0,
       row = -1,
       border = "none",
-      title = false,
     },
   },
 }
