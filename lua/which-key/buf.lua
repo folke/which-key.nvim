@@ -84,6 +84,13 @@ function Mode:reattach(node)
     end
     node = node.parent
   end
+  local reg = self.triggers['"']
+  if reg then
+    self:_detach(reg)
+    vim.schedule(function()
+      self:_attach(reg)
+    end)
+  end
 end
 
 function Mode:xo()
