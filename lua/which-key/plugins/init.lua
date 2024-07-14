@@ -50,6 +50,7 @@ end
 ---@class wk.Node.plugin.item: wk.Node,wk.Plugin.item
 
 ---@class wk.Node.plugin: wk.Node
+---@field _children table<string, wk.Node>
 local PluginNode = {}
 
 function PluginNode:__index(k)
@@ -58,6 +59,9 @@ function PluginNode:__index(k)
     local plugin = M.plugins[self.plugin or ""]
     assert(plugin, "plugin not found")
     local ret = {} ---@type table<string, wk.Node>
+    for kk, vv in pairs(self._children or {}) do
+      ret[kk] = vv
+    end
     for i, item in ipairs(plugin.expand()) do
       ---@type string[]
       local child_path = vim.list_extend({}, self.path)

@@ -70,9 +70,11 @@ function M:add(keymap, virtual)
   else
     node.keymap = keymap
   end
-  -- node.keymap = not keymap.group and keymap or nil
   if node.plugin then
-    setmetatable(node, require("which-key.plugins").PluginNode)
+    local plugin_node = setmetatable(node, require("which-key.plugins").PluginNode) --[[@as wk.Node.plugin]]
+    -- add existing children to the plugin node
+    plugin_node._children = plugin_node.children
+    plugin_node.children = nil
   end
 end
 

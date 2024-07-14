@@ -98,7 +98,7 @@
 
 ---@class wk.Plugin.action
 ---@field trigger string
----@field mode string
+---@field mode string|string[]
 ---@field label? string
 ---@field delay? boolean
 
