@@ -33,8 +33,8 @@ local defaults = {
     t = true, -- Terminal mode
     c = true, -- Command mode
     -- Start hidden and wait for a key to be pressed before showing the popup
-    -- Only used by xo mapping modes.
-    -- Set to false to show the popup immediately.
+    -- Only used by enabled xo mapping modes.
+    -- Set to false to show the popup immediately (after the delay)
     defer = {
       ["<C-V>"] = true,
       V = true,

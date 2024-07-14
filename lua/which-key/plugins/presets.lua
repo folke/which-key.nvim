@@ -14,6 +14,7 @@ M.operators = {
   { "gU", desc = "Uppercase" },
   { "gu", desc = "Lowercase" },
   { "g~", desc = "Toggle case" },
+  { "gw", desc = "Format" },
   { "r", desc = "Replace" },
   { "v", desc = "Visual" },
   { "y", desc = "Yank" },
