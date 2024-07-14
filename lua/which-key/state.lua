@@ -61,6 +61,18 @@ function M.setup()
     end,
   })
 
+  local defer_modes = {} ---@type table<string, boolean>
+  for k, v in pairs(Config.modes.defer) do
+    if v then
+      defer_modes[Util.norm(k)] = true
+    end
+  end
+
+  local function defer()
+    local mode_keys = Util.keys(vim.api.nvim_get_mode().mode)
+    return mode_keys[1] and defer_modes[mode_keys[1]]
+  end
+
   local cooldown = Util.cooldown()
   -- this prevents restarting which-key in the same tick
   vim.api.nvim_create_autocmd("ModeChanged", {
@@ -78,7 +90,7 @@ function M.setup()
         -- make sure the buffer mode exists
       elseif Buf.get() and Util.xo() then
         if not M.state then
-          M.start()
+          M.start({ defer = defer() })
         end
       elseif not ev.match:find("c") then
         M.stop()
@@ -233,12 +245,17 @@ function M.start(opts)
 
   local exit = false
 
+  local show = opts.defer ~= true
+
   while M.state do
     mode = Buf.get(opts)
     if not mode or mode.mode ~= mapmode then
       break
     end
-    View.update(opts)
+    if show then
+      View.update(opts)
+    end
+    show = true
     local child, _exit = M.step(M.state)
     if child and M.state then
       M.state.node = child

@@ -32,6 +32,13 @@ local defaults = {
     o = true, -- Operator pending mode
     t = true, -- Terminal mode
     c = true, -- Command mode
+    -- Start hidden and wait for a key to be pressed before showing the popup
+    -- Only used by xo mapping modes.
+    -- Set to false to show the popup immediately.
+    defer = {
+      ["<C-V>"] = true,
+      V = true,
+    },
   },
   plugins = {
     marks = true, -- shows a list of your marks on ' and `

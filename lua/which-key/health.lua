@@ -64,8 +64,10 @@ function M.check()
   ---@type table<string, boolean>
   local reported = {}
 
+  local mapmodes = vim.split("nixsotc", "")
+
   for _, buf in pairs(Buf.bufs) do
-    for mapmode in pairs(Config.modes) do
+    for _, mapmode in ipairs(mapmodes) do
       local mode = buf:get({ mode = mapmode })
       if mode then
         mode.tree:walk(function(node)
