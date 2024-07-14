@@ -20,7 +20,7 @@ function M.setup()
     vim.on_key(function(_raw, key)
       if key and #key > 0 then
         key = vim.fn.keytrans(key)
-        if not key:find("Scroll") then
+        if not key:find("ScrollWheel") and not key:find("Mouse") then
           Util.debug("on_key", key)
         end
       end
