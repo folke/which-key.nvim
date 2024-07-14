@@ -393,20 +393,20 @@ function M.show()
 
   if Config.show_help or show_keys then
     text:nl()
-  end
-  if show_keys then
-    text:append(" ")
-    for _, segment in ipairs(M.trail(state.node) or {}) do
-      text:append(segment[1], segment[2])
+    if show_keys then
+      text:append(" ")
+      for _, segment in ipairs(M.trail(state.node) or {}) do
+        text:append(segment[1], segment[2])
+      end
     end
-  end
-  if Config.show_help then
-    local col = text:col({ display = true })
-    local ws = string.rep(" ", math.floor((opts.width - 30) / 2) - col)
-    text:append(ws)
-    text:append("<esc>", "WhichKey"):append(" close", "WhichKeySeparator")
-    text:append(" ")
-    text:append("<bs>", "WhichKey"):append(" go up a level", "WhichKeySeparator")
+    if Config.show_help then
+      local col = text:col({ display = true })
+      local ws = string.rep(" ", math.floor((opts.width - 30) / 2) - col)
+      text:append(ws)
+      text:append("<esc>", "WhichKey"):append(" close", "WhichKeySeparator")
+      text:append(" ")
+      text:append("<bs>", "WhichKey"):append(" go up a level", "WhichKeySeparator")
+    end
   end
   text:trim()
 
