@@ -13,6 +13,14 @@ local M = {}
 ---@type wk.State?
 M.state = nil
 
+function M.safe(mode_change)
+  local old, _new = unpack(vim.split(mode_change, ":", { plain = true }))
+  if old == "c" then
+    return false
+  end
+  return vim.fn.reg_recording() == "" and vim.fn.reg_executing() == "" and vim.fn.getcharstr(1) == ""
+end
+
 function M.setup()
   local group = vim.api.nvim_create_augroup("wk", { clear = true })
 
@@ -62,7 +70,7 @@ function M.setup()
       if cooldown() then
         return
       end
-      if not Util.safe() then
+      if not M.safe(ev.match) then
         -- dont start when recording or when chars are pending
         Util.debug("not safe")
         cooldown(true) -- cooldown till next tick

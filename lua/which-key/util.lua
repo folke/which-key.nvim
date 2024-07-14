@@ -88,10 +88,6 @@ function M.xo()
   return M.mapmode():find("[xo]") ~= nil
 end
 
-function M.safe()
-  return vim.fn.reg_recording() == "" and vim.fn.reg_executing() == "" and vim.fn.getcharstr(1) == ""
-end
-
 ---@alias NotifyOpts {level?: number, title?: string, once?: boolean, id?:string}
 
 ---@param msg string|string[]
