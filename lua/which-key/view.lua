@@ -146,6 +146,7 @@ function M.opts()
       winhighlight = "Normal:WhichKeyNormal,FloatBorder:WhichKeyBorder,FloatTitle:WhichKeyTitle",
       winbar = "",
       statusline = "",
+      wrap = false,
     },
     bo = {
       buftype = "nofile",
