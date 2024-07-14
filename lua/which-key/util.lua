@@ -74,12 +74,18 @@ end
 ---@param mode? string
 function M.mapmode(mode)
   mode = mode or vim.api.nvim_get_mode().mode
-  mode = mode:gsub(M.t("<C-V>"), "v"):gsub(M.t("<C-S>"), "s"):lower()
+  mode = mode:gsub(M.t("<C-V>"), "<c-v>"):gsub(M.t("<C-S>"), "s"):lower()
   if mode:sub(1, 2) == "no" then
     return "o"
   end
   if mode:sub(1, 1) == "v" then
-    return "x" -- mapmode is actually "x" for visual only mappings
+    return "v"
+  end
+  if mode:sub(1, 1) == "V" then
+    return "V"
+  end
+  if #mode == 5 and mode:sub(1, 5) == "<c-v>" then
+    return "<c-v>"
   end
   return mode:sub(1, 1):match("[ncits]") or "n"
 end
