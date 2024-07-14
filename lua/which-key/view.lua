@@ -186,11 +186,11 @@ function M.replace(field, value)
 end
 
 ---@param node wk.Node
----@param opts? {default?: "count"|"path", parent_key?: string}
+---@param opts? {default?: "count"|"path", parent_key?: string, group?: boolean}
 function M.item(node, opts)
   opts = opts or {}
   opts.default = opts.default or "count"
-  local child_count = Tree.count(node)
+  local child_count = opts.group == false and 0 or Tree.count(node)
   local desc = node.desc
   if not desc and node.keymap and node.keymap.rhs ~= "" and type(node.keymap.rhs) == "string" then
     desc = node.keymap.rhs --[[@as string]]
@@ -268,17 +268,16 @@ function M.show()
   ---@type wk.Node[]
   local children = vim.tbl_values(state.node.children or {})
 
+  ---@param node wk.Node
+  local function filter(node)
+    return not (state.filter.global == false and node.global)
+      and not (state.filter["local"] == false and not node.global)
+  end
+
   ---@type wk.Item[]
   local items = {}
   for _, node in ipairs(children) do
-    local use = true
-    if state.filter.global == false and node.global then
-      use = false
-    end
-    if state.filter["local"] == false and not node.global then
-      use = false
-    end
-    if use then
+    if filter(node) then
       local expand = type(Config.expand) == "function" and Config.expand
         or function()
           local child_count = Tree.count(node)
@@ -286,7 +285,13 @@ function M.show()
         end
       if expand(node) then
         for _, child in ipairs(vim.tbl_values(node.children or {})) do
-          table.insert(items, M.item(child, { parent_key = node.key }))
+          if filter(child) then
+            table.insert(items, M.item(child, { parent_key = node.key }))
+          end
+        end
+        -- also add the node if it is a keymap
+        if node.keymap then
+          table.insert(items, M.item(node, { group = false }))
         end
       else
         table.insert(items, M.item(node))
