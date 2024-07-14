@@ -225,6 +225,12 @@ end
 ---@param opts? {title?: boolean}
 function M.trail(node, opts)
   opts = opts or {}
+
+  ---@param group? string
+  local function hl(group)
+    return opts.title and "WhichKeyTitle" or (group and ("WhichKey" .. group) or "WhichKeyGroup")
+  end
+
   local trail = {} ---@type string[][]
   local did_op = false
   while node do
@@ -234,12 +240,9 @@ function M.trail(node, opts)
     node = node.parent
     if desc ~= "" then
       if node and #trail > 0 then
-        table.insert(trail, 1, {
-          " " .. Config.icons.breadcrumb .. " ",
-          opts.title and "WhichKeyTitle" or "WhichKeySeparator",
-        })
+        table.insert(trail, 1, { " " .. Config.icons.breadcrumb .. " ", hl("Separator") })
       end
-      table.insert(trail, 1, { desc, opts.title and "WhichKeyTitle" or "WhichKeyGroup" })
+      table.insert(trail, 1, { desc, hl() })
     end
     local m = State.state.mode.mode
     if not did_op and not node and (m == "x" or m == "o") then
@@ -251,8 +254,8 @@ function M.trail(node, opts)
     end
   end
   if #trail > 0 then
-    table.insert(trail, 1, { " ", opts.title and "WhichKeyTitle" or "WhichKeyGroup" })
-    table.insert(trail, { " ", opts.title and "WhichKeyTitle" or "WhichKeyGroup" })
+    table.insert(trail, 1, { " ", hl() })
+    table.insert(trail, { " ", hl() })
     return trail
   end
 end
