@@ -73,7 +73,7 @@ function M:add(keymap, virtual)
   if node.plugin then
     local plugin_node = setmetatable(node, require("which-key.plugins").PluginNode) --[[@as wk.Node.plugin]]
     -- add existing children to the plugin node
-    plugin_node._children = plugin_node.children
+    plugin_node._children = rawget(plugin_node, "children")
     plugin_node.children = nil
   end
 end
