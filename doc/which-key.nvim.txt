@@ -42,7 +42,7 @@ FEATURES                                   *which-key.nvim-which-key-features*
 
 REQUIREMENTS                           *which-key.nvim-which-key-requirements*
 
-- **Neovim** >= 0.9.0
+- **Neovim** >= 0.9.4
 - for proper icons support:
     - mini.icons <https://github.com/echasnovski/mini.icons> _(optional)_
     - nvim-web-devicons <https://github.com/nvim-tree/nvim-web-devicons> _(optional)_
