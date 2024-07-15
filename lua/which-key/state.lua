@@ -3,12 +3,15 @@ local Config = require("which-key.config")
 local Tree = require("which-key.tree")
 local Util = require("which-key.util")
 
+local uv = vim.uv or vim.loop
+
 local M = {}
 
 ---@class wk.State
 ---@field mode wk.Mode
 ---@field node wk.Node
 ---@field filter wk.Filter
+---@field started number
 
 ---@type wk.State?
 M.state = nil
@@ -47,7 +50,7 @@ function M.setup()
     end,
   })
 
-  local hide = (vim.uv or vim.loop).new_timer()
+  local hide = uv.new_timer()
   vim.api.nvim_create_autocmd({ "FocusLost", "FocusGained" }, {
     group = group,
     callback = function(ev)
@@ -135,15 +138,15 @@ function M.check(state, key)
   local View = require("which-key.view")
   local node = key == nil and state.node or (state.node.children or {})[key] ---@type wk.Node?
 
+  local delta = uv.hrtime() / 1e6 - state.started
+  local timedout = vim.o.timeout and delta > vim.o.timeoutlen
+
   if node then
     -- NOTE: a node can be both a keymap and a group
-    -- We always prefer the group and only use the keymap if it is nowait
-    -- FIXME: implement proper timeoutlen
-
+    -- when it's both, we honor timeoutlen and nowait to decide what to do
     local is_group = Tree.is_group(node)
-    local is_nowait = node.keymap and node.keymap.nowait == 1
+    local is_nowait = node.keymap and (node.keymap.nowait == 1 or not timedout)
     local is_action = node.action ~= nil
-    local is_keymap = node.keymap ~= nil
     if is_group and not is_nowait and not is_action then
       Util.debug("continue", node.keys, tostring(state.mode))
       return node
@@ -235,6 +238,7 @@ function M.start(opts)
     mode = mode,
     node = node,
     filter = opts,
+    started = uv.hrtime() / 1e6 - (opts.waited or 0),
   }
 
   Util.trace("State(start)", tostring(mode), "Node(" .. node.keys .. ")", opts)
