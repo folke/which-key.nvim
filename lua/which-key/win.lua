@@ -79,6 +79,7 @@ function M:show(opts)
   win_opts.bo = nil
   win_opts.padding = nil
   win_opts.no_overlap = nil
+  win_opts.footer = nil
 
   if self:valid() then
     win_opts.noautocmd = nil
