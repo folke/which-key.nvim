@@ -1,5 +1,47 @@
 # Changelog
 
+## [3.4.0](https://github.com/folke/which-key.nvim/compare/v3.3.0...v3.4.0) (2024-07-15)
+
+
+### Features
+
+* added icons for function keys ([9222280](https://github.com/folke/which-key.nvim/commit/9222280970e8a7d74b4e0f6dab06c2f7a54d668d))
+* **mode:** allow certain modes to start hidden and only show after keypress. See [#690](https://github.com/folke/which-key.nvim/issues/690) ([b4fa48f](https://github.com/folke/which-key.nvim/commit/b4fa48f473796f5d9e3c9c31e6c9d7d509e51ca6))
+* **presets:** added gw ([09b80a6](https://github.com/folke/which-key.nvim/commit/09b80a68085c1fc792b595a851f702bc071d6310))
+* **presets:** better padding defaults for helix preset ([4c36b9b](https://github.com/folke/which-key.nvim/commit/4c36b9b8c722bcf51d038dcfba8b967f0ee818b8))
+* **presets:** increase default height for helix ([df0ad20](https://github.com/folke/which-key.nvim/commit/df0ad205ebd661ef101666ae21a62b77b3024a83))
+* simplified/documented/fixed mappings sorting. Closes [#694](https://github.com/folke/which-key.nvim/issues/694) ([eb73f7c](https://github.com/folke/which-key.nvim/commit/eb73f7c05785a83e07f1ea155b3b2833d8bbb532))
+* **state:** skip mouse keys in debug ([5f85b77](https://github.com/folke/which-key.nvim/commit/5f85b770c386c9435eb8da5db3081aa19078211a))
+* **ui:** show keys/help in an overlay and added scrolling hint ([50b2c43](https://github.com/folke/which-key.nvim/commit/50b2c43532e6ea5cca3ef4c2838d5a8bb535757f))
+* **view:** get parent icon if possible ([b9de927](https://github.com/folke/which-key.nvim/commit/b9de9278bdc57adfa69a67d8a3309f07c83951d0))
+
+
+### Bug Fixes
+
+* **buf:** always detach " when executing keys. Fixes [#689](https://github.com/folke/which-key.nvim/issues/689) ([d36f722](https://github.com/folke/which-key.nvim/commit/d36f722f114dfdafc8098496e9b5dcbd9f8fc3e8))
+* **config:** set expand=0 by default. Fixes [#693](https://github.com/folke/which-key.nvim/issues/693) ([89434aa](https://github.com/folke/which-key.nvim/commit/89434aa356abd4a694d2b89eccb203e0742bc0d7))
+* **config:** warn when deprecated config options were used. Fixes [#696](https://github.com/folke/which-key.nvim/issues/696) ([81413ef](https://github.com/folke/which-key.nvim/commit/81413ef02dffbe6e4c73f418e4acc920e68b3aa7))
+* **health:** move deprecated option check to health ([af7a30f](https://github.com/folke/which-key.nvim/commit/af7a30fa24ce0a13dba00cbd7b836330facf9f1a))
+* **mappings:** allow creating keymaps without desc. Fixes [#695](https://github.com/folke/which-key.nvim/issues/695) ([c442aaa](https://github.com/folke/which-key.nvim/commit/c442aaa6aafe2742c2e92df7ee127df90099ce17))
+* **plugins:** add existing keymaps to plugin view. Fixes [#681](https://github.com/folke/which-key.nvim/issues/681) ([26f6fd2](https://github.com/folke/which-key.nvim/commit/26f6fd258b66e9656bb86c7269c6497a9ce8a5fa))
+* **presets:** don't override title setting for classic. See [#649](https://github.com/folke/which-key.nvim/issues/649) ([9a53c1f](https://github.com/folke/which-key.nvim/commit/9a53c1ff46421450b5563baab1599591d81de111))
+* **presets:** shorter descriptions ([20600e4](https://github.com/folke/which-key.nvim/commit/20600e422277b383e8c921feec2111a281935217))
+* **state:** always do full update on BufReadPost since buffer-local keymaps would be deleted. Fixes [#709](https://github.com/folke/which-key.nvim/issues/709) ([6068887](https://github.com/folke/which-key.nvim/commit/60688872f4ecc552a5e2bcbd01e7629a155f377f))
+* **state:** don't show when coming from cmdline mode. Fixes [#692](https://github.com/folke/which-key.nvim/issues/692) ([8cba66b](https://github.com/folke/which-key.nvim/commit/8cba66b5a1a0ea8fe8dd5d3d55a42755924e47d8))
+* **state:** honor timeoutlen and nowait. Fixes [#648](https://github.com/folke/which-key.nvim/issues/648). Closes [#697](https://github.com/folke/which-key.nvim/issues/697) ([80f20ee](https://github.com/folke/which-key.nvim/commit/80f20ee62311505fe6d675212f7b246900570450))
+* **state:** properly disable which-key when recording macros. Fixes [#702](https://github.com/folke/which-key.nvim/issues/702) ([b506275](https://github.com/folke/which-key.nvim/commit/b506275acfb4383f678b9ba3aa8db88787c24680))
+* **state:** scrolling ([dce9167](https://github.com/folke/which-key.nvim/commit/dce9167025a0801e4bab146a2856508a9af52ea2))
+* **tree:** rawget for existing plugin node children ([c77cda8](https://github.com/folke/which-key.nvim/commit/c77cda8cd2f54965e4316699f1d124a2b3bf9d49))
+* **util:** when no clipboard provider exists, use the " register as default. Fixes [#687](https://github.com/folke/which-key.nvim/issues/687) ([d077a3f](https://github.com/folke/which-key.nvim/commit/d077a3f36d4b4d29eccc7feb1ba8e78a421df920))
+* **view:** disable footer on Neovim &lt; 0.10 ([6d544a4](https://github.com/folke/which-key.nvim/commit/6d544a43a21a228482155d65c3ca18fd7038b422))
+* **view:** ensure highlights get set for title padding ([#684](https://github.com/folke/which-key.nvim/issues/684)) ([2e4f7af](https://github.com/folke/which-key.nvim/commit/2e4f7afa4aa444483d8ade5989d524c7f4131368))
+* **view:** hide existing title/footer when no trail ([4f589a1](https://github.com/folke/which-key.nvim/commit/4f589a1368e100a6e33aabd904f34716b75360f6))
+* **view:** include group keymaps in expand results. See [#682](https://github.com/folke/which-key.nvim/issues/682) ([39e703c](https://github.com/folke/which-key.nvim/commit/39e703ceaa9a05dcc664e0ab0ea88c03c3b6bf90))
+* **view:** overlap protection should keep at least 4 lines ([0d89475](https://github.com/folke/which-key.nvim/commit/0d89475f87756199efc2bc52537fc4d11b0f695a))
+* **view:** padding & column spacing. Fixes [#704](https://github.com/folke/which-key.nvim/issues/704) ([11eec49](https://github.com/folke/which-key.nvim/commit/11eec49509490c023bf0272efef955f86f18c1d2))
+* **view:** spacing when more than one box ([89568f3](https://github.com/folke/which-key.nvim/commit/89568f3438f1fbc6c340a8af05ea67feac494c46))
+* **view:** special handling of `&lt;NL&gt;/<C-J>`. Fixes [#706](https://github.com/folke/which-key.nvim/issues/706) ([f8c91b2](https://github.com/folke/which-key.nvim/commit/f8c91b2b4a2d239d3b1d49f901a393e7326a5da8))
+
 ## [3.3.0](https://github.com/folke/which-key.nvim/compare/v3.2.0...v3.3.0) (2024-07-14)
 
 
