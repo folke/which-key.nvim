@@ -37,11 +37,14 @@ M.fields = {
   mod = function(item)
     return item.key:find("^<.*>$") and 0 or 1
   end,
-  lower = function(item)
-    return item.key:lower()
-  end,
-  icase = function(item)
+  case = function(item)
     return item.key:lower() == item.key and 0 or 1
+  end,
+  natural = function(item)
+    local ret = item.key:gsub("%d+", function(d)
+      return ("%09d"):format(tonumber(d))
+    end)
+    return ret:lower()
   end,
 }
 
@@ -60,8 +63,10 @@ function M.format(key)
 end
 
 ---@param nodes wk.Item[]
----@param fields (string|wk.Sorter)[]
+---@param fields? (string|wk.Sorter)[]
 function M.sort(nodes, fields)
+  fields = vim.deepcopy(fields or Config.sort)
+  vim.list_extend(fields, { "natural", "case" })
   table.sort(nodes, function(a, b)
     for _, f in ipairs(fields) do
       local field = type(f) == "function" and f or M.fields[f]
@@ -73,7 +78,7 @@ function M.sort(nodes, fields)
         end
       end
     end
-    return a.key < b.key
+    return a.raw_key < b.raw_key
   end)
 end
 
@@ -216,6 +221,7 @@ function M.item(node, opts)
     icon = icon,
     icon_hl = icon_hl,
     key = parent_key .. M.replace("key", node.key),
+    raw_key = (opts.parent_key or "") .. node.key,
     desc = child_count > 0 and Config.icons.group .. desc or desc,
     group = child_count > 0,
   }, { __index = node })
@@ -302,7 +308,7 @@ function M.show()
     end
   end
 
-  M.sort(items, Config.sort)
+  M.sort(items)
 
   ---@type wk.Col[]
   local cols = {

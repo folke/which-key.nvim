@@ -153,9 +153,16 @@ local defaults = {
     scroll_up = "<c-u>", -- binding to scroll up inside the popup
   },
   ---@type (string|wk.Sorter)[]
-  --- Add "manual" as the first element to use the order the mappings were registered
-  --- Other sorters: "desc"
-  sort = { "local", "order", "group", "alphanum", "mod", "lower", "icase" },
+  --- Mappings are sorted using confgured sorters and natural sort of the keys
+  --- Available sorters:
+  --- * local: buffer-local mappings first
+  --- * order: order of the items (Used by plugins like marks / registers)
+  --- * group: groups last
+  --- * alphanum: alpha-numerical first
+  --- * mod: special modifier keys last
+  --- * manual: the order the mappings were added
+  --- * case: lower-case first
+  sort = { "local", "order", "group", "alphanum", "mod" },
   ---@type number|fun(node: wk.Node):boolean?
   expand = 1, -- expand groups when <= n mappings
   -- expand = function(node)

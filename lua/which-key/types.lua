@@ -113,6 +113,7 @@
 ---@class wk.Item: wk.Node
 ---@field node wk.Node
 ---@field key string
+---@field raw_key string
 ---@field desc string
 ---@field group? boolean
 ---@field order? number
