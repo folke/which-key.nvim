@@ -193,6 +193,17 @@ function M.item(node, opts)
   if not icon and not (node.parent and node.parent.plugin) then
     icon, icon_hl = Icons.get({ keymap = node.keymap, desc = node.desc })
   end
+  if not icon then
+    local p = node.parent
+    while p do
+      if p.mapping and p.mapping.icon then
+        icon, icon_hl = Icons.get(p.mapping.icon)
+        break
+      end
+      p = p.parent
+    end
+  end
+
   local parent_key = opts.parent_key and M.replace("key", opts.parent_key) or ""
   ---@type wk.Item
   return setmetatable({
