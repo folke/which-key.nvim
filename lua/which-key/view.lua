@@ -324,7 +324,7 @@ function M.show()
       local i = (b - 1) * box_height + l
       local item = items[i]
       local row = rows[i]
-      if b ~= 1 then
+      if b ~= 1 or box_count > 1 then
         text:append(string.rep(" ", Config.layout.spacing))
       end
       if item then
