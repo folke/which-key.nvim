@@ -265,7 +265,7 @@ function M.add(mapping, ret)
   local has_desc = mapping.desc ~= nil
   Util.getters(mapping, { "desc", "icon" })
 
-  if has_desc or mapping.group or mapping.hidden then
+  if has_desc or mapping.group or mapping.hidden or mapping.rhs then
     local modes = mapping.mode or { "n" } --[[@as string|string[] ]]
     modes = type(modes) == "string" and vim.split(modes, "") or modes
     assert(type(modes) == "table", "Invalid mode " .. vim.inspect(modes))
