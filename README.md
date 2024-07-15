@@ -124,7 +124,7 @@ local defaults = {
       g = true, -- bindings for prefixed with g
     },
   },
-  ---@type wk.Win
+  ---@type wk.Win.opts
   win = {
     -- don't allow the popup to overlap with the cursor
     no_overlap = true,
