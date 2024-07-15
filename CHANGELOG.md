@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.5.0](https://github.com/folke/which-key.nvim/compare/v3.4.0...v3.5.0) (2024-07-15)
+
+
+### Features
+
+* **api:** using wk.show() always assumes you want to see the group, and not the actual mapping in case of overlap. Fixes [#714](https://github.com/folke/which-key.nvim/issues/714) ([f5067d2](https://github.com/folke/which-key.nvim/commit/f5067d2b244c19eca38b5b495b6eb3e361ac565d))
+
+
+### Bug Fixes
+
+* **state:** attach on BufNew as well. Fixes [#681](https://github.com/folke/which-key.nvim/issues/681) ([0f58176](https://github.com/folke/which-key.nvim/commit/0f581764dc2c89c0ac3d8363369152735ae265ab))
+* **state:** make sure mode always exists even when not safe. See [#681](https://github.com/folke/which-key.nvim/issues/681) ([7915964](https://github.com/folke/which-key.nvim/commit/7915964e73c30ba5657e9a762c6570925dad421b))
+
+
+### Performance Improvements
+
+* **plugin:** only expand plugins when needed ([1fcfc72](https://github.com/folke/which-key.nvim/commit/1fcfc72374c705d68f0607a1dcbbbce13873b4e2))
+* **view:** set buf/win opts with eventignore ([e81e55b](https://github.com/folke/which-key.nvim/commit/e81e55b647a781f306453734834eb543e1f43c20))
+
 ## [3.4.0](https://github.com/folke/which-key.nvim/compare/v3.3.0...v3.4.0) (2024-07-15)
 
 
