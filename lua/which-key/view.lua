@@ -459,7 +459,7 @@ function M.check_overlap(opts)
   -- })
   if overlaps then
     opts.row = row + 1
-    opts.height = math.max(vim.o.lines - opts.row, 1)
+    opts.height = math.max(vim.o.lines - opts.row, 4)
   end
 end
 
