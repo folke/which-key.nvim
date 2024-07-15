@@ -324,7 +324,9 @@ function M.show()
       local i = (b - 1) * box_height + l
       local item = items[i]
       local row = rows[i]
-      text:append(string.rep(" ", Config.layout.spacing))
+      if b ~= 1 then
+        text:append(string.rep(" ", Config.layout.spacing))
+      end
       if item then
         for c, col in ipairs(row) do
           local hl = col.hl
@@ -338,6 +340,7 @@ function M.show()
         end
       end
     end
+    text:append(string.rep(" ", Config.win.padding[2]))
     text:nl()
   end
   text:trim()
