@@ -71,7 +71,7 @@
 ---@field mode? string|string[]
 ---@field cond? boolean|fun():boolean?
 
----@class wk.Win: vim.api.keyset.win_config
+---@class wk.Win.opts: vim.api.keyset.win_config
 ---@field width? wk.Dim
 ---@field height? wk.Dim
 ---@field wo? vim.wo

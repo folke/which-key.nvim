@@ -4,12 +4,16 @@ local Icons = require("which-key.icons")
 local Layout = require("which-key.layout")
 local Plugins = require("which-key.plugins")
 local State = require("which-key.state")
+local Text = require("which-key.text")
 local Tree = require("which-key.tree")
 local Util = require("which-key.util")
+local Win = require("which-key.win")
+
+---@alias
 
 local M = {}
-M.buf = nil ---@type number
-M.win = nil ---@type number
+M.view = nil ---@type wk.Win?
+M.footer = nil ---@type wk.Win?
 M.timer = (vim.uv or vim.loop).new_timer()
 
 ---@alias wk.Sorter fun(node:wk.Item): (string|number)
@@ -48,18 +52,22 @@ M.fields = {
   end,
 }
 
----@param key string
-function M.format(key)
-  local inner = key:match("^<(.*)>$")
-  if not inner then
-    return key
-  end
-  local parts = vim.split(inner, "-", { plain = true })
-  parts[1] = Config.icons.keys[parts[1]] or parts[1]
-  if parts[2] and not parts[2]:match("^%w$") then
-    parts[2] = Config.icons.keys[parts[2]] or parts[2]
-  end
-  return table.concat(parts, "")
+---@param lhs string
+function M.format(lhs)
+  local keys = Util.keys(lhs)
+  local ret = vim.tbl_map(function(key)
+    local inner = key:match("^<(.*)>$")
+    if not inner then
+      return key
+    end
+    local parts = vim.split(inner, "-", { plain = true })
+    parts[1] = Config.icons.keys[parts[1]] or parts[1]
+    if parts[2] and not parts[2]:match("^%w$") then
+      parts[2] = Config.icons.keys[parts[2]] or parts[2]
+    end
+    return table.concat(parts, "")
+  end, keys)
+  return table.concat(ret, "")
 end
 
 ---@param nodes wk.Item[]
@@ -83,7 +91,7 @@ function M.sort(nodes, fields)
 end
 
 function M.valid()
-  return M.buf and vim.api.nvim_buf_is_valid(M.buf) and M.win and vim.api.nvim_win_is_valid(M.win) or false
+  return M.view and M.view:valid()
 end
 
 ---@param opts? {delay?: number, schedule?: boolean, waited?: number}
@@ -117,28 +125,17 @@ function M.update(opts)
 end
 
 function M.hide()
-  if not (M.buf or M.win) then
-    return
+  if M.view then
+    M.view:hide()
+    M.view = nil
   end
-
-  ---@type number?, number?
-  local buf, win = M.buf, M.win
-  M.buf, M.win = nil, nil
-
-  local function try_close()
-    pcall(vim.api.nvim_win_close, win, true)
-    pcall(vim.api.nvim_buf_delete, buf, { force = true })
-    win = win and vim.api.nvim_win_is_valid(win) and win or nil
-    buf = buf and vim.api.nvim_buf_is_valid(buf) and buf or nil
-    if win or buf then
-      vim.schedule(try_close)
-    end
+  if M.footer then
+    M.footer:hide()
+    M.footer = nil
   end
-
-  try_close()
 end
 
----@return wk.Win
+---@return wk.Win.opts
 function M.opts()
   return vim.tbl_deep_extend("force", { col = 0, row = math.huge }, Config.win, {
     relative = "editor",
@@ -159,25 +156,6 @@ function M.opts()
       filetype = "wk",
     },
   })
-end
-
----@param opts wk.Win
-function M.mount(opts)
-  local win_opts = vim.deepcopy(opts)
-  win_opts.wo = nil
-  win_opts.bo = nil
-  win_opts.padding = nil
-  win_opts.no_overlap = nil
-
-  if M.valid() then
-    win_opts.noautocmd = nil
-    return vim.api.nvim_win_set_config(M.win, win_opts)
-  end
-
-  M.buf = vim.api.nvim_create_buf(false, true)
-  Util.bo(M.buf, opts.bo)
-  M.win = vim.api.nvim_open_win(M.buf, false, win_opts)
-  Util.wo(M.win, opts.wo)
 end
 
 ---@param field string
@@ -272,7 +250,7 @@ function M.show()
     M.hide()
     return
   end
-  local text = require("which-key.text").new()
+  local text = Text.new()
 
   ---@type wk.Node[]
   local children = vim.tbl_values(state.node.children or {})
@@ -323,7 +301,7 @@ function M.show()
 
   local t = Layout.new({ cols = cols, rows = items })
 
-  local opts = M.opts()
+  local opts = Win.defaults(Config.win)
   local container = {
     width = Layout.dim(vim.o.columns, vim.o.columns, opts.width),
     height = Layout.dim(vim.o.lines, vim.o.lines, opts.height),
@@ -409,35 +387,63 @@ function M.show()
   opts.height = opts.height - bw
   M.check_overlap(opts)
 
+  M.view = M.view or Win.new(opts)
+  M.view:show(opts)
+
   if Config.show_help or show_keys then
     text:nl()
+    local footer = Text.new()
     if show_keys then
-      text:append(" ")
+      footer:append(" ")
       for _, segment in ipairs(M.trail(state.node) or {}) do
-        text:append(segment[1], segment[2])
+        footer:append(segment[1], segment[2])
       end
     end
     if Config.show_help then
-      local col = text:col({ display = true })
-      local ws = string.rep(" ", math.floor((opts.width - 30) / 2) - col)
-      text:append(ws)
-      text:append("<esc>", "WhichKey"):append(" close", "WhichKeySeparator")
-      text:append(" ")
-      text:append("<bs>", "WhichKey"):append(" go up a level", "WhichKeySeparator")
+      ---@type {key: string, desc: string}[]
+      local keys = {
+        { key = "<esc>", desc = "close" },
+      }
+      if state.node.parent then
+        keys[#keys + 1] = { key = "<bs>", desc = "back" }
+      end
+      if opts.height < text:height() then
+        keys[#keys + 1] = { key = "<c-d>/<c-u>", desc = "scroll" }
+      end
+      local help = Text.new()
+      for k, key in ipairs(keys) do
+        help:append(M.replace("key", Util.norm(key.key)), "WhichKey"):append(" " .. key.desc, "WhichKeySeparator")
+        if k < #keys then
+          help:append("  ")
+        end
+      end
+      local col = footer:col({ display = true })
+      local ws = string.rep(" ", math.floor((opts.width - help:width()) / 2) - col)
+      footer:append(ws)
+      footer:append(help._lines[1])
     end
+    footer:trim()
+    M.footer = M.footer or Win.new()
+    M.footer:show({
+      relative = "win",
+      win = M.view.win,
+      col = 0,
+      row = opts.height - 1,
+      width = opts.width,
+      height = 1,
+      zindex = M.view.opts.zindex + 1,
+    })
+    footer:render(M.footer.buf)
   end
-  text:trim()
 
-  M.mount(opts)
-
-  text:render(M.buf)
-  vim.api.nvim_win_call(M.win, function()
+  text:render(M.view.buf)
+  vim.api.nvim_win_call(M.view.win, function()
     vim.fn.winrestview({ topline = 1 })
   end)
   vim.cmd.redraw()
 end
 
----@param opts wk.Win
+---@param opts wk.Win.opts
 function M.check_overlap(opts)
   if Config.win.no_overlap == false then
     return
@@ -459,17 +465,7 @@ end
 
 ---@param up boolean
 function M.scroll(up)
-  assert(M.valid(), "invalid view")
-  local height = vim.api.nvim_win_get_height(M.win)
-  local delta = math.ceil((up and -1 or 1) * height / 2)
-  local view = vim.api.nvim_win_call(M.win, vim.fn.winsaveview)
-  local top = view.topline ---@type number
-  top = top + delta
-  top = math.max(top, 1)
-  top = math.min(top, vim.api.nvim_buf_line_count(M.buf) - height + 1)
-  vim.api.nvim_win_call(M.win, function()
-    vim.fn.winrestview({ topline = top, lnum = top })
-  end)
+  return M.view and M.view:scroll(up)
 end
 
 return M
