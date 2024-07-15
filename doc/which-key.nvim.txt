@@ -174,7 +174,7 @@ Default Options ~
         scroll_up = "<c-u>", -- binding to scroll up inside the popup
       },
       ---@type (string|wk.Sorter)[]
-      --- Mappings are sorted using confgured sorters and natural sort of the keys
+      --- Mappings are sorted using configured sorters and natural sort of the keys
       --- Available sorters:
       --- * local: buffer-local mappings first
       --- * order: order of the items (Used by plugins like marks / registers)
