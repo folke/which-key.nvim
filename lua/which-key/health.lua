@@ -24,6 +24,24 @@ function M.check()
       .. "WARNINGS should be treated as a warning, and don't necessarily indicate a problem with your config.\n"
       .. "Please |DON't| report these warnings as an issue."
   )
+
+  start("Checking your config")
+
+  local deprecated = Config.deprecated()
+  if #deprecated > 0 then
+    local msg = {
+      "Your config uses deprecated options:",
+    }
+    vim.list_extend(
+      msg,
+      vim.tbl_map(function(o)
+        return "- `" .. o .. "`"
+      end, deprecated)
+    )
+    msg[#msg + 1] = "Please refer to the docs for more info."
+    warn(table.concat(msg, "\n"))
+  end
+
   local have_icons = false
   for _, provider in ipairs(Icons.providers) do
     if provider.available == nil then

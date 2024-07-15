@@ -192,6 +192,22 @@ M.mappings = {}
 ---@type wk.Opts
 M.options = nil
 
+function M.deprecated()
+  return vim.tbl_filter(function(k)
+    return M.options[k] ~= nil
+  end, {
+    "operators",
+    "key_labels",
+    "motions",
+    "popup_mappings",
+    "window",
+    "ignore_missing",
+    "hidden",
+    "triggers_nowait",
+    "triggers_blacklist",
+  })
+end
+
 ---@param opts? wk.Opts
 function M.setup(opts)
   if vim.fn.has("nvim-0.9") == 0 then
@@ -210,32 +226,13 @@ function M.setup(opts)
       M.options = vim.tbl_deep_extend("force", {}, defaults, Presets[M.options.preset] or {}, opts or {})
     end
 
-    local used_old = vim.tbl_filter(function(k)
-      return M.options[k] ~= nil
-    end, {
-      "operators",
-      "key_labels",
-      "motions",
-      "popup_mappings",
-      "window",
-      "ignore_missing",
-      "hidden",
-      "triggers_nowait",
-      "triggers_blacklist",
-    })
-    if #used_old > 0 then
-      local msg = {
-        "Your config uses deprecated options:",
-      }
-      vim.list_extend(
-        msg,
-        vim.tbl_map(function(o)
-          return "- `" .. o .. "`"
-        end, used_old)
-      )
-      msg[#msg + 1] = "\nPlease refer to the docs for the new options."
-      Util.warn(msg)
+    if #M.deprecated() > 0 then
+      Util.warn({
+        "Your config uses deprecated options.",
+        "Use `:checkhealth which-key` to find out more.",
+      }, { once = true })
     end
+
     local wk = require("which-key")
 
     -- replace by the real add function
