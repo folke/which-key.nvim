@@ -80,6 +80,10 @@ function M:show(opts)
   win_opts.padding = nil
   win_opts.no_overlap = nil
 
+  if vim.fn.has("nvim-0.10") == 0 then
+    win_opts.footer = nil
+  end
+
   if self:valid() then
     win_opts.noautocmd = nil
     return vim.api.nvim_win_set_config(self.win, win_opts)
