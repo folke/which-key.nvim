@@ -109,7 +109,7 @@ function M.setup()
     end,
   })
 
-  vim.api.nvim_create_autocmd({ "BufReadPost" }, {
+  vim.api.nvim_create_autocmd({ "BufReadPost", "BufNew" }, {
     group = group,
     callback = function(ev)
       Util.debug(ev.event)
