@@ -210,8 +210,8 @@ end
 
 ---@param opts? wk.Opts
 function M.setup(opts)
-  if vim.fn.has("nvim-0.9") == 0 then
-    return vim.notify("which-key.nvim requires Neovim >= 0.9", vim.log.levels.ERROR)
+  if vim.fn.has("nvim-0.9.4") == 0 then
+    return vim.notify("which-key.nvim requires Neovim >= 0.9.4", vim.log.levels.ERROR)
   end
   M.options = vim.tbl_deep_extend("force", {}, defaults, opts or {})
 
