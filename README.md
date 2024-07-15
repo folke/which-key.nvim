@@ -164,7 +164,7 @@ local defaults = {
   --- * case: lower-case first
   sort = { "local", "order", "group", "alphanum", "mod" },
   ---@type number|fun(node: wk.Node):boolean?
-  expand = 1, -- expand groups when <= n mappings
+  expand = 0, -- expand groups when <= n mappings
   -- expand = function(node)
   --   return not node.desc -- expand all nodes without a description
   -- end,
