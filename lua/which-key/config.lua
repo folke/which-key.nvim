@@ -203,10 +203,38 @@ function M.setup(opts)
     if M.loaded then
       return
     end
+    local Util = require("which-key.util")
 
     if M.options.preset then
       local Presets = require("which-key.presets")
       M.options = vim.tbl_deep_extend("force", {}, defaults, Presets[M.options.preset] or {}, opts or {})
+    end
+
+    local used_old = vim.tbl_filter(function(k)
+      return M.options[k] ~= nil
+    end, {
+      "operators",
+      "key_labels",
+      "motions",
+      "popup_mappings",
+      "window",
+      "ignore_missing",
+      "hidden",
+      "triggers_nowait",
+      "triggers_blacklist",
+    })
+    if #used_old > 0 then
+      local msg = {
+        "Your config uses deprecated options:",
+      }
+      vim.list_extend(
+        msg,
+        vim.tbl_map(function(o)
+          return "- `" .. o .. "`"
+        end, used_old)
+      )
+      msg[#msg + 1] = "\nPlease refer to the docs for the new options."
+      Util.warn(msg)
     end
     local wk = require("which-key")
 
@@ -230,7 +258,7 @@ function M.setup(opts)
     require("which-key.state").setup()
 
     if M.options.debug then
-      require("which-key.util").debug("\n\nDebug Started for v" .. M.version)
+      Util.debug("\n\nDebug Started for v" .. M.version)
     end
 
     M.loaded = true
