@@ -41,8 +41,9 @@ function M.setup()
   vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
     group = group,
     callback = function(ev)
+      Util.debug(ev.event)
       if ev.event == "RecordingEnter" then
-        Buf.clear({ buf = ev.buf })
+        Buf.clear({ buf = ev.buf, check = false })
         M.stop()
       else
         Buf.check()
