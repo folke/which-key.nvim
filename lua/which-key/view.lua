@@ -174,7 +174,7 @@ end
 function M.item(node, opts)
   opts = opts or {}
   opts.default = opts.default or "count"
-  local child_count = opts.group == false and 0 or Tree.count(node)
+  local child_count = (node.plugin or opts.group == false) and 0 or Tree.count(node)
   local desc = node.desc
   if not desc and node.keymap and node.keymap.rhs ~= "" and type(node.keymap.rhs) == "string" then
     desc = node.keymap.rhs --[[@as string]]
@@ -258,7 +258,7 @@ end
 
 function M.show()
   local state = State.state
-  if not state or not state.node.children then
+  if not state or not Tree.is_group(state.node) then
     M.hide()
     return
   end
@@ -282,7 +282,7 @@ function M.show()
           local child_count = Tree.count(node)
           return child_count > 0 and child_count <= Config.expand
         end
-      if expand(node) then
+      if not node.plugin and expand(node) then
         for _, child in ipairs(vim.tbl_values(node.children or {})) do
           if filter(child) then
             table.insert(items, M.item(child, { parent_key = node.key }))

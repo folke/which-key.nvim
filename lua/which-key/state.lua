@@ -58,7 +58,7 @@ function M.setup()
       if ev.event == "FocusGained" then
         hide:stop()
       elseif M.state then
-        hide:start(1000, 0, function()
+        hide:start(5000, 0, function()
           vim.api.nvim_input("<esc>")
         end)
       end
@@ -158,7 +158,7 @@ function M.check(state, key)
     local is_nowait = node.keymap and (node.keymap.nowait == 1 or not timedout)
     local is_action = node.action ~= nil
     if is_group and not is_nowait and not is_action then
-      Util.debug("continue", node.keys, tostring(state.mode))
+      Util.debug("continue", node.keys, tostring(state.mode), node.plugin)
       return node
     end
   elseif key == "<Esc>" then
@@ -262,6 +262,7 @@ function M.start(opts)
   local show = opts.defer ~= true
 
   while M.state do
+    Util.debug("loop")
     mode = Buf.get(opts)
     if not mode or mode.mode ~= mapmode then
       break

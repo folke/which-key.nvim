@@ -27,13 +27,12 @@ end
 
 ---@param node wk.Node
 function M.is_group(node)
-  return M.count(node) > 0
+  return node.plugin or M.count(node) > 0
 end
 
 ---@param keymap wk.Mapping|wk.Keymap
 ---@param virtual? boolean
 function M:add(keymap, virtual)
-  assert(type(keymap.lhs) == "string", "input must be a string: " .. vim.inspect(keymap))
   if not Config.filter(keymap) then
     return
   end
@@ -47,7 +46,7 @@ function M:add(keymap, virtual)
       node.children[key] = {
         key = key,
         keys = node.keys .. key,
-        path = vim.deepcopy(path),
+        path = vim.list_extend({}, path),
         parent = node,
         global = true,
       }

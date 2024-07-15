@@ -1,4 +1,5 @@
 local Config = require("which-key.config")
+local Util = require("which-key.util")
 
 local M = {}
 
@@ -58,6 +59,8 @@ function PluginNode:__index(k)
     assert(self.plugin, "node must be a plugin node")
     local plugin = M.plugins[self.plugin or ""]
     assert(plugin, "plugin not found")
+    Util.debug(("Plugin(%q).expand"):format(self.plugin))
+
     local ret = {} ---@type table<string, wk.Node>
     for kk, vv in pairs(self._children or {}) do
       ret[kk] = vv

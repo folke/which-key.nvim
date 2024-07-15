@@ -267,8 +267,7 @@ function M.add(mapping, ret)
 
   if has_desc or mapping.group or mapping.hidden or mapping.rhs then
     local modes = mapping.mode or { "n" } --[[@as string|string[] ]]
-    modes = type(modes) == "string" and vim.split(modes, "") or modes
-    assert(type(modes) == "table", "Invalid mode " .. vim.inspect(modes))
+    modes = type(modes) == "string" and vim.split(modes, "") or modes --[[@as string[] ]]
     for _, mode in ipairs(modes) do
       local m = vim.deepcopy(mapping)
       m.mode = mode
