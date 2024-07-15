@@ -9,8 +9,6 @@ local Tree = require("which-key.tree")
 local Util = require("which-key.util")
 local Win = require("which-key.win")
 
----@alias
-
 local M = {}
 M.view = nil ---@type wk.Win?
 M.footer = nil ---@type wk.Win?

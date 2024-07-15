@@ -233,6 +233,10 @@ function M.setup(opts)
       }, { once = true })
     end
 
+    if M.options.debug then
+      Util.debug("\n\nDebug Started for v" .. M.version)
+    end
+
     local wk = require("which-key")
 
     -- replace by the real add function
@@ -253,10 +257,6 @@ function M.setup(opts)
     -- setup colors and start which-key
     require("which-key.colors").setup()
     require("which-key.state").setup()
-
-    if M.options.debug then
-      Util.debug("\n\nDebug Started for v" .. M.version)
-    end
 
     M.loaded = true
   end

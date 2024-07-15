@@ -109,9 +109,18 @@ function M.setup()
     end,
   })
 
-  vim.api.nvim_create_autocmd({ "BufReadPost", "BufEnter" }, {
+  vim.api.nvim_create_autocmd({ "BufReadPost" }, {
     group = group,
-    callback = function()
+    callback = function(ev)
+      Util.debug(ev.event)
+      Buf.get({ buf = ev.buf, update = true })
+    end,
+  })
+
+  vim.api.nvim_create_autocmd({ "BufEnter" }, {
+    group = group,
+    callback = function(ev)
+      Util.debug(ev.event)
       Buf.check()
     end,
   })
