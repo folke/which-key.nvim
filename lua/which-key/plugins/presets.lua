@@ -116,7 +116,7 @@ M.windows = {
 
 M.z = {
   preset = true,
-  { "z<CR>", desc = "Top this line, 1st non-blank col" },
+  { "z<CR>", desc = "Top this line" },
   { "z=", desc = "Spelling suggestions" },
   { "zA", desc = "Toggle all folds under cursor" },
   { "zC", desc = "Close all folds under cursor" },
@@ -172,11 +172,11 @@ M.g = {
   { "gN", desc = "Search backwards and select" },
   { "gT", desc = "Go to previous tab page" },
   { "gf", desc = "Go to file under cursor" },
-  { "gi", desc = "Move to the last insertion and INSERT" },
+  { "gi", desc = "Go to last insert" },
   { "gn", desc = "Search forwards and select" },
   { "gt", desc = "Go to next tab page" },
-  { "gv", desc = "Switch to VISUAL using last selection" },
-  { "gx", desc = "Open the file under cursor with system app" },
+  { "gv", desc = "Last visual selection" },
+  { "gx", desc = "Open file with system app" },
 }
 
 function M.setup(opts)
