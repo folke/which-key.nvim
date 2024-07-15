@@ -362,11 +362,11 @@ function M.show()
     show_keys = false
   end
   if not opts.title then
-    opts.title = nil
+    opts.title = ""
     opts.title_pos = nil
   end
   if not opts.footer then
-    opts.footer = nil
+    opts.footer = ""
     opts.footer_pos = nil
   end
 
