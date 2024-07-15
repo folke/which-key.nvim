@@ -89,10 +89,15 @@ function M:show(opts)
     return vim.api.nvim_win_set_config(self.win, win_opts)
   end
 
+  local ei = vim.go.eventignore
+  vim.go.eventignore = "all"
+
   self.buf = vim.api.nvim_create_buf(false, true)
   Util.bo(self.buf, self.opts.bo or {})
   self.win = vim.api.nvim_open_win(self.buf, false, win_opts)
   Util.wo(self.win, self.opts.wo or {})
+
+  vim.go.eventignore = ei
 end
 
 ---@param up boolean
