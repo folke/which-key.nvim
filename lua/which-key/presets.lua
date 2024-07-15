@@ -4,6 +4,7 @@ return {
     win = {
       width = { min = 30, max = 60 },
       height = { min = 4, max = 0.75 },
+      padding = { 0, 1 },
       col = -1,
       row = -1,
       border = "rounded",
