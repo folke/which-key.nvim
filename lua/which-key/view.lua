@@ -60,6 +60,9 @@ function M.format(lhs)
     if not inner then
       return key
     end
+    if inner == "NL" then
+      inner = "C-J"
+    end
     local parts = vim.split(inner, "-", { plain = true })
     parts[1] = Config.icons.keys[parts[1]] or parts[1]
     if parts[2] and not parts[2]:match("^%w$") then
