@@ -16,12 +16,21 @@ local M = {}
 ---@type wk.State?
 M.state = nil
 
+---@return boolean safe, string? reason
 function M.safe(mode_change)
   local old, _new = unpack(vim.split(mode_change, ":", { plain = true }))
   if old == "c" then
-    return false
+    return false, "command-mode"
+  elseif vim.fn.reg_recording() ~= "" then
+    return false, "recording"
+  elseif vim.fn.reg_executing() ~= "" then
+    return false, "executing"
   end
-  return vim.fn.reg_recording() == "" and vim.fn.reg_executing() == "" and vim.fn.getcharstr(1) == ""
+  local pending = vim.fn.getcharstr(1)
+  if pending ~= "" then
+    return false, "pending " .. ("%q"):format(vim.fn.strtrans(pending))
+  end
+  return true
 end
 
 function M.setup()
@@ -83,16 +92,19 @@ function M.setup()
     group = group,
     callback = function(ev)
       Util.debug("ModeChanged(" .. ev.match .. ")")
+
       if cooldown() then
         return
       end
-      if not M.safe(ev.match) then
+      local mode = Buf.get()
+      local safe, reason = M.safe(ev.match)
+      Util.debug(safe and "Safe(true)" or ("Safe(false):" .. reason))
+      if not safe then
         -- dont start when recording or when chars are pending
-        Util.debug("not safe")
         cooldown(true) -- cooldown till next tick
         M.stop()
         -- make sure the buffer mode exists
-      elseif Buf.get() and Util.xo() then
+      elseif mode and Util.xo() then
         if not M.state then
           M.start({ defer = defer() })
         end
