@@ -28,7 +28,7 @@ local function needs_trigger(node)
 end
 
 function Mode:__tostring()
-  return string.format("Mode(%s)", self.mode)
+  return string.format("Mode(%s:%d)", self.mode, self.buf.buf)
 end
 
 ---@param buf wk.Buffer
@@ -226,8 +226,10 @@ function Buf:get(opts)
   local ret = self.modes[mode]
   if not ret then
     self.modes[mode] = Mode.new(self, mode)
+    Util.debug("new " .. tostring(self.modes[mode]))
     return self.modes[mode]
   elseif opts.update then
+    Util.debug("update " .. tostring(ret))
     ret:update()
   end
   return ret

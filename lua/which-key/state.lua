@@ -120,15 +120,18 @@ function M.setup()
   vim.api.nvim_create_autocmd({ "LspAttach", "LspDetach" }, {
     group = group,
     callback = function(ev)
+      Util.trace("Event(" .. ev.event .. ")")
       Buf.clear({ buf = ev.buf })
+      Util.trace()
     end,
   })
 
   vim.api.nvim_create_autocmd({ "BufReadPost", "BufNew" }, {
     group = group,
     callback = function(ev)
-      Util.debug(ev.event)
       Buf.get({ buf = ev.buf, update = true })
+      Util.trace("Event(" .. ev.event .. ")")
+      Util.trace()
     end,
   })
 
@@ -200,7 +203,6 @@ end
 function M.execute(state, key, node)
   state.mode:reattach(node or state.node)
 
-  Util.debug("plugin", node and node.plugin, key)
   if node and node.action then
     return node.action()
   end
@@ -277,7 +279,6 @@ function M.start(opts)
   local show = opts.defer ~= true
 
   while M.state do
-    Util.debug("loop")
     mode = Buf.get(opts)
     if not mode or mode.mode ~= mapmode then
       break
