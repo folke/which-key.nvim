@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.6.0](https://github.com/folke/which-key.nvim/compare/v3.5.0...v3.6.0) (2024-07-16)
+
+
+### Features
+
+* added icons for &lt;D mappings ([aaf71ab](https://github.com/folke/which-key.nvim/commit/aaf71ab078d86a48a26fafb5d451af609fd19c64))
+* added option to disable all mapping icons. Fixes [#721](https://github.com/folke/which-key.nvim/issues/721) ([33f6ac0](https://github.com/folke/which-key.nvim/commit/33f6ac04bdbce855ce43eecacb4c421876e246d7))
+* make which-key work without setup or calling add/register ([9ca5f4a](https://github.com/folke/which-key.nvim/commit/9ca5f4ab7cb541ef48dcaa4f03d3cd914a5e62fb))
+* **presets:** added some missing mappings ([6e1b3f2](https://github.com/folke/which-key.nvim/commit/6e1b3f290a3f89ffca68148aa639c866c24e2b77))
+* **state:** improve trigger/mode logic. Fixes [#715](https://github.com/folke/which-key.nvim/issues/715) ([3617e47](https://github.com/folke/which-key.nvim/commit/3617e47673d027989e9c3caa645edb6412c7fa30))
+
+
+### Bug Fixes
+
+* **config:** replacement for plug mappings ([495f9d9](https://github.com/folke/which-key.nvim/commit/495f9d953a86d630ef308f555ed452e332f417ee))
+* **icons:** get icons from parent nodes when needed ([3f0a7ed](https://github.com/folke/which-key.nvim/commit/3f0a7ed4401b98764740cbe8e1b954ac6adeca1b))
+* **icons:** use nerdfont symbol for BS. Fixes [#722](https://github.com/folke/which-key.nvim/issues/722) ([18c1ff5](https://github.com/folke/which-key.nvim/commit/18c1ff5ccb813d95c86f4ead6dac7e6cc5728f08))
+* **mode:** never create triggers for xo mode ([15d3a70](https://github.com/folke/which-key.nvim/commit/15d3a70304607417b2dc1df3da4992d5b8ce077a))
+* **presets:** motions in normal mode ([e2ffc26](https://github.com/folke/which-key.nvim/commit/e2ffc263fc05bf20f090ccaae7a06f88fd6e2fee))
+* tmp fix for op mode ([91641e2](https://github.com/folke/which-key.nvim/commit/91641e2a3af116ffaf739302a65cdb2865fb2415))
+* **view:** fix format for keymaps with 3+ keys ([#723](https://github.com/folke/which-key.nvim/issues/723)) ([0db7896](https://github.com/folke/which-key.nvim/commit/0db7896057d046576c829a87e2ff2de37c49e0fe))
+
 ## [3.5.0](https://github.com/folke/which-key.nvim/compare/v3.4.0...v3.5.0) (2024-07-15)
 
 
