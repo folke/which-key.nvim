@@ -207,6 +207,7 @@ local defaults = {
       Right = " ",
       C = "󰘴 ",
       M = "󰘵 ",
+      D = "󰘳 ",
       S = "󰘶 ",
       CR = "󰌑 ",
       Esc = "󱊷 ",

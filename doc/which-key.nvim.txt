@@ -228,6 +228,7 @@ Default Options ~
           Right = " ",
           C = "󰘴 ",
           M = "󰘵 ",
+          D = "󰘳 ",
           S = "󰘶 ",
           CR = "󰌑 ",
           Esc = "󱊷 ",
