@@ -1,12 +1,13 @@
 local Config = require("which-key.config")
 local Tree = require("which-key.tree")
+local Triggers = require("which-key.triggers")
 local Util = require("which-key.util")
 
 ---@class wk.Mode
 ---@field buf wk.Buffer
 ---@field mode string
 ---@field tree wk.Tree
----@field triggers table<string, wk.Node>
+---@field triggers wk.Node[]
 local Mode = {}
 Mode.__index = Mode
 
@@ -44,115 +45,58 @@ function Mode.new(buf, mode)
 end
 
 function Mode:attach()
+  local triggers = {} ---@type wk.Node[]
   -- NOTE: order is important for nowait to work!
   -- * first add plugin mappings
   -- * then add triggers
   self.tree:walk(function(node)
     if node.plugin then
-      self:_attach(node)
+      table.insert(triggers, node)
       return false
     end
   end)
   if Config.triggers and not self:xo() then
     self.tree:walk(function(node)
       if needs_trigger(node) then
-        self:_attach(node)
+        table.insert(triggers, node)
         return false
       end
     end)
   end
-end
-
-function Mode:detach()
-  for _, node in pairs(self.triggers) do
-    self:_detach(node)
-  end
-end
-
----@param node wk.Node
-function Mode:reattach(node)
-  Util.debug("reattach", node.keys, self.mode)
-  while node do
-    if self:is_trigger(node.keys) then
-      local trigger = node
-      Util.debug("detach", trigger.keys)
-      self:_detach(trigger)
-      vim.schedule(function()
-        Util.debug("attach", trigger.keys, self.mode)
-        self:_attach(trigger)
-      end)
+  self.triggers = {}
+  for _, node in ipairs(triggers) do
+    local ctx = {
+      mode = self.mode,
+      keys = node.keys,
+      plugin = node.plugin,
+    }
+    if not Config.disable.trigger(ctx) then
+      table.insert(self.triggers, node)
     end
-    node = node.parent
   end
-  local reg = self.triggers['"']
-  if reg then
-    self:_detach(reg)
-    vim.schedule(function()
-      self:_attach(reg)
-    end)
-  end
+  Triggers.schedule(self)
 end
 
 function Mode:xo()
   return self.mode:find("[xo]") ~= nil
 end
 
----@param node wk.Node
-function Mode:_attach(node)
-  if not self.buf:valid() then
-    return
-  end
-  local ctx = {
-    mode = self.mode,
-    keys = node.keys,
-    plugin = node.plugin,
-  }
-  if Config.disable.trigger(ctx) then
-    return
-  end
-  self.triggers[node.keys] = node
-  local delay = require("which-key.state").delay(ctx)
-  local waited = vim.o.timeout and delay >= vim.o.timeoutlen and vim.o.timeoutlen or 0
-  vim.keymap.set(self.mode, node.keys, function()
-    require("which-key.state").start({
-      keys = node.keys,
-      waited = waited,
-    })
-  end, {
-    buffer = self.buf.buf,
-    nowait = waited == 0,
-    desc = "which-key " .. (node.plugin or "trigger"),
-  })
-end
-
----@param node wk.Node
-function Mode:_detach(node)
-  if not self:is_trigger(node.keys) then
-    return false
-  end
-  self.triggers[node.keys] = nil
-  pcall(vim.keymap.del, self.mode, node.keys, { buffer = self.buf.buf })
-  return true
-end
-
-function Mode:is_trigger(lhs)
-  return self.triggers[lhs] ~= nil
-end
-
 function Mode:clear()
-  self:detach()
+  Triggers.detach(self)
   self.tree:clear()
 end
 
 function Mode:update()
-  self:clear()
+  self.tree:clear()
 
   local mappings = vim.api.nvim_get_keymap(self.mode)
   vim.list_extend(mappings, vim.api.nvim_buf_get_keymap(self.buf.buf, self.mode))
   ---@cast mappings wk.Keymap[]
 
   for _, mapping in ipairs(mappings) do
-    if mapping.rhs == "" or mapping.rhs == "<Nop>" then
+    if mapping.desc and mapping.desc:find("which-key-trigger", 1, true) then
+      -- ignore which-key triggers
+    elseif mapping.rhs == "" or mapping.rhs == "<Nop>" then
       self.tree:add(mapping, true)
     elseif mapping.lhs:sub(1, 6) ~= "<Plug>" and mapping.lhs:sub(1, 5) ~= "<SNR>" then
       self.tree:add(mapping)

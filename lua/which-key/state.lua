@@ -1,6 +1,7 @@
 local Buf = require("which-key.buf")
 local Config = require("which-key.config")
 local Tree = require("which-key.tree")
+local Triggers = require("which-key.triggers")
 local Util = require("which-key.util")
 
 local uv = vim.uv or vim.loop
@@ -129,8 +130,8 @@ function M.setup()
   vim.api.nvim_create_autocmd({ "BufReadPost", "BufNew" }, {
     group = group,
     callback = function(ev)
-      Buf.get({ buf = ev.buf, update = true })
       Util.trace("Event(" .. ev.event .. ")")
+      Buf.clear({ buf = ev.buf })
       Util.trace()
     end,
   })
@@ -138,8 +139,9 @@ function M.setup()
   vim.api.nvim_create_autocmd({ "BufEnter" }, {
     group = group,
     callback = function(ev)
-      Util.debug(ev.event)
-      Buf.check()
+      Util.trace("Event(" .. ev.event .. ")")
+      Buf.get()
+      Util.trace()
     end,
   })
 
@@ -201,7 +203,7 @@ end
 ---@param node? wk.Node
 ---@return false|wk.Node?
 function M.execute(state, key, node)
-  state.mode:reattach(node or state.node)
+  Triggers.suspend(state.mode)
 
   if node and node.action then
     return node.action()
@@ -249,6 +251,7 @@ function M.start(opts)
   opts = opts or {}
   opts.update = true
   local mode = Buf.get(opts)
+  opts.update = nil
   if not mode then
     return false
   end
