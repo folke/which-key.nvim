@@ -171,6 +171,24 @@ function M.replace(field, value)
 end
 
 ---@param node wk.Node
+function M.icon(node)
+  -- plugin items should not get icons
+  if node.parent and node.parent.plugin then
+    return
+  end
+  if node.mapping and node.mapping.icon then
+    return Icons.get(node.mapping.icon)
+  end
+  local icon, icon_hl = Icons.get({ keymap = node.keymap, desc = node.desc })
+  if icon then
+    return icon, icon_hl
+  end
+  if node.parent then
+    return M.icon(node.parent)
+  end
+end
+
+---@param node wk.Node
 ---@param opts? {default?: "count"|"path", parent_key?: string, group?: boolean}
 function M.item(node, opts)
   opts = opts or {}
@@ -187,23 +205,7 @@ function M.item(node, opts)
     desc = node.keys
   end
   desc = M.replace("desc", desc or "")
-  local icon, icon_hl ---@type string?, string?
-  if node.mapping and node.mapping.icon then
-    icon, icon_hl = Icons.get(node.mapping.icon)
-  end
-  if not icon and not (node.parent and node.parent.plugin) then
-    icon, icon_hl = Icons.get({ keymap = node.keymap, desc = node.desc })
-  end
-  if not icon then
-    local p = node.parent
-    while p do
-      if p.mapping and p.mapping.icon then
-        icon, icon_hl = Icons.get(p.mapping.icon)
-        break
-      end
-      p = p.parent
-    end
-  end
+  local icon, icon_hl = M.icon(node)
 
   local parent_key = opts.parent_key and M.replace("key", opts.parent_key) or ""
   ---@type wk.Item
