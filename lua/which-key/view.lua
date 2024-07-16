@@ -62,9 +62,10 @@ function M.format(lhs)
       inner = "C-J"
     end
     local parts = vim.split(inner, "-", { plain = true })
-    parts[1] = Config.icons.keys[parts[1]] or parts[1]
-    if parts[2] and not parts[2]:match("^%w$") then
-      parts[2] = Config.icons.keys[parts[2]] or parts[2]
+    for i, part in ipairs(parts) do
+      if i == 1 or i ~= #parts or not part:match("^%w$") then
+        parts[i] = Config.icons.keys[part] or parts[i]
+      end
     end
     return table.concat(parts, "")
   end, keys)
