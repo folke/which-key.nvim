@@ -192,8 +192,12 @@ local defaults = {
     separator = "➜", -- symbol used between a key and it's label
     group = "+", -- symbol prepended to a group
     ellipsis = "…",
+    -- set to false to disable all mapping icons,
+    -- both those explicitely added in a mapping
+    -- and those from rules
+    mappings = true,
     --- See `lua/which-key/icons.lua` for more details
-    --- Set to `false` to disable keymap icons
+    --- Set to `false` to disable keymap icons from rules
     ---@type wk.IconRule[]|false
     rules = {},
     -- use the highlights from mini.icons
@@ -328,7 +332,7 @@ or an `wk.Icon` object, which can have the following attributes:
 
 > [!TIP]
 > If you'd rather not use icons, you can disable them
-> by setting `opts.icons.rules` to `false`.
+> by setting `opts.icons.mappings` to `false`.
 
 ## 🚀 Usage
 

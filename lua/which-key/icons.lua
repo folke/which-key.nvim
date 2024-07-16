@@ -183,6 +183,9 @@ end
 
 ---@param opts {keymap?: wk.Keymap, desc?: string, ft?:string|string[]}|wk.Icon|string
 function M.get(opts)
+  if not Config.icons.mappings then
+    return
+  end
   if type(opts) == "string" then
     opts = { icon = opts }
   end
