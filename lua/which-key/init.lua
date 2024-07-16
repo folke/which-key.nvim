@@ -3,15 +3,7 @@
 local M = {}
 
 M._queue = {}
-
-local timer = (vim.uv or vim.loop).new_timer()
-timer:start(
-  500,
-  0,
-  vim.schedule_wrap(function()
-    M.setup()
-  end)
-)
+M.did_setup = false
 
 --- Open which-key
 ---@param opts? wk.Filter|string
@@ -30,7 +22,7 @@ end
 
 ---@param opts? wk.Opts
 function M.setup(opts)
-  timer:stop()
+  M.did_setup = true
   require("which-key.config").setup(opts)
 end
 
