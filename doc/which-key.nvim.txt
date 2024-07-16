@@ -234,7 +234,7 @@ Default Options ~
           ScrollWheelDown = "󱕐 ",
           ScrollWheelUp = "󱕑 ",
           NL = "󰌑 ",
-          BS = "⌫",
+          BS = "󰁮",
           Space = "󱁐 ",
           Tab = "󰌒 ",
           F1 = "󱊫",
