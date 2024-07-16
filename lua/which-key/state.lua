@@ -96,8 +96,11 @@ function M.setup()
       if cooldown() then
         return
       end
-      local mode = Buf.get()
       local safe, reason = M.safe(ev.match)
+      if not safe and ev.match:find("o") then
+        return
+      end
+      local mode = Buf.get()
       Util.debug(safe and "Safe(true)" or ("Safe(false):" .. reason))
       if not safe then
         -- dont start when recording or when chars are pending
