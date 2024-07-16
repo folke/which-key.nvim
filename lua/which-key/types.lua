@@ -99,16 +99,10 @@
 ---@field order? number
 ---@field action? fun()
 
----@class wk.Plugin.action
----@field trigger string
----@field mode string|string[]
----@field label? string
----@field delay? boolean
-
 ---@class wk.Plugin
 ---@field name string
 ---@field cols? wk.Col[]
----@field actions wk.Plugin.action[]
+---@field mappings? wk.Spec
 ---@field expand fun():wk.Plugin.item[]
 ---@field setup fun(opts: table<string, any>)
 

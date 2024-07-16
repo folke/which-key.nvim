@@ -4,7 +4,14 @@ local M = {}
 
 M.name = "spelling"
 
-M.actions = { { trigger = "z=", mode = "n" } }
+M.mappings = {
+  {
+    "z=",
+    icon = { icon = " ", color = "red" },
+    plugin = "spelling",
+    desc = "Spelling Suggestions",
+  },
+}
 
 ---@type table<string, any>
 M.opts = {}

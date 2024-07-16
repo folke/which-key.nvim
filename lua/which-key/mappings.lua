@@ -40,7 +40,7 @@ M.fields = {
   silent = { inherit = true },
   unique = { inherit = true },
   -- wk args
-  plugin = {},
+  plugin = { inherit = true },
   group = {},
   hidden = { inherit = true },
   cond = { inherit = true },
@@ -259,7 +259,10 @@ function M.add(mapping, ret)
   if mapping.rhs then
     mapping.silent = mapping.silent ~= false
   end
-  mapping.lhs = mapping.lhs or mapping.prefix or ""
+  mapping.lhs = mapping.lhs or mapping.prefix
+  if not mapping.lhs then
+    return
+  end
   mapping.prefix = nil
 
   local has_desc = mapping.desc ~= nil

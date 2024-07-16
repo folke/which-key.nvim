@@ -24,13 +24,8 @@ end
 
 ---@param plugin wk.Plugin
 function M._setup(plugin, opts)
-  if plugin.actions then
-    for _, trigger in pairs(plugin.actions) do
-      local prefix = trigger.trigger
-      local mode = trigger.mode or "n"
-      local label = trigger.label or plugin.name
-      Config.add({ prefix, desc = label, plugin = plugin.name, mode = mode })
-    end
+  if plugin.mappings then
+    Config.add(plugin.mappings)
   end
 
   if plugin.setup then

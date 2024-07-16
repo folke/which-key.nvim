@@ -4,10 +4,11 @@ local M = {}
 
 M.name = "registers"
 
-M.actions = {
-  { trigger = '"', mode = { "n", "v" } },
-  -- { trigger = "@", mode = "n" },
-  { trigger = "<c-r>", mode = { "i", "c" } },
+M.mappings = {
+  icon = { icon = "󰅍 ", color = "blue" },
+  plugin = "registers",
+  { '"', mode = { "n", "v" }, desc = "registers" },
+  { "<c-r>", mode = { "i", "c" }, desc = "registers" },
 }
 
 M.registers = '*+"-:.%/#=_abcdefghijklmnopqrstuvwxyz0123456789'

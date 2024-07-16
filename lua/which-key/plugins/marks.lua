@@ -4,11 +4,13 @@ local M = {}
 
 M.name = "marks"
 
-M.actions = {
-  { trigger = "`", mode = "n" },
-  { trigger = "'", mode = "n" },
-  { trigger = "g`", mode = "n" },
-  { trigger = "g'", mode = "n" },
+M.mappings = {
+  icon = { icon = "󰸕 ", color = "orange" },
+  plugin = "marks",
+  { "`", desc = "marks" },
+  { "'", desc = "marks" },
+  { "g`", desc = "marks" },
+  { "g'", desc = "marks" },
 }
 
 local labels = {
