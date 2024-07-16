@@ -28,7 +28,7 @@ M.rules = {
   { plugin = "neotest", cat = "filetype", name = "neotest-summary" },
   { plugin = "lazy.nvim", cat = "filetype", name = "lazy" },
   { plugin = "CopilotChat.nvim", icon = " ", color = "orange" },
-  { pattern = "git", cat = "filetype", name = "git" },
+  { pattern = "%f[%a]git", cat = "filetype", name = "git" },
   { pattern = "terminal", icon = " ", color = "red" },
   { pattern = "find", icon = " ", color = "green" },
   { pattern = "search", icon = " ", color = "green" },
