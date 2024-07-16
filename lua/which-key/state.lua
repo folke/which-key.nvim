@@ -93,17 +93,17 @@ function M.setup()
     group = group,
     callback = function(ev)
       Util.debug("ModeChanged(" .. ev.match .. ")")
+      local mode = Buf.get()
 
       if cooldown() then
         return
       end
       local safe, reason = M.safe(ev.match)
-      if not safe and ev.match:find("o") then
-        return
-      end
-      local mode = Buf.get()
       Util.debug(safe and "Safe(true)" or ("Safe(false):" .. reason))
       if not safe then
+        if mode then
+          Triggers.suspend(mode)
+        end
         -- dont start when recording or when chars are pending
         cooldown(true) -- cooldown till next tick
         M.stop()

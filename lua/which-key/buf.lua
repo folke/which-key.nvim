@@ -55,7 +55,7 @@ function Mode:attach()
       return false
     end
   end)
-  if Config.triggers and not self:xo() then
+  if Config.triggers then
     self.tree:walk(function(node)
       if needs_trigger(node) then
         table.insert(triggers, node)
