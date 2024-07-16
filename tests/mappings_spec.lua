@@ -41,9 +41,7 @@ describe("specs v1", function()
     },
     {
       spec = { desc = "foo", noremap = true },
-      mappings = {
-        { lhs = "", desc = "foo", remap = false, mode = "n" },
-      },
+      mappings = {},
     },
     {
       spec = { a = { desc = "which_key_ignore" } },
