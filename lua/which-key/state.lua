@@ -26,6 +26,8 @@ function M.safe(mode_change)
     return false, "recording"
   elseif vim.fn.reg_executing() ~= "" then
     return false, "executing"
+  elseif mode_change:lower() == "v:v" then
+    return false, "visual-block"
   end
   local pending = vim.fn.getcharstr(1)
   if pending ~= "" then
