@@ -45,6 +45,13 @@ M.motions = {
   { "w", desc = "Next word" },
   { "{", desc = "Prev empty line" },
   { "}", desc = "Next empty line" },
+  { ";", desc = "Next ftFT" },
+  { ",", desc = "Prev ftFT" },
+  { "/", desc = "Search forward" },
+  { "?", desc = "Search backward" },
+  { "B", desc = "Prev WORD" },
+  { "E", desc = "Next end of WORD" },
+  { "W", desc = "Next WORD" },
 }
 
 M.text_objects = {
