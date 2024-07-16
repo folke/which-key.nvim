@@ -222,6 +222,14 @@ function M.debug(msg, ...)
   if type(data) == "function" then
     data = data()
   end
+  if type(data) == "table" then
+    data = table.concat(
+      vim.tbl_map(function(value)
+        return type(value) == "string" and value or vim.inspect(value):gsub("%s+", " ")
+      end, data),
+      " "
+    )
+  end
   if data and type(data) ~= "string" then
     data = vim.inspect(data):gsub("%s+", " ")
   end

@@ -92,12 +92,10 @@ function M.update(mode, triggers)
     end
   end
   if #adds > 0 then
-    -- table.sort(adds)
-    Util.debug("Trigger(add) " .. tostring(mode) .. table.concat(adds, " "))
+    Util.debug("Trigger(add) " .. tostring(mode) .. " " .. table.concat(adds, " "))
   end
   if #dels > 0 then
-    -- table.sort(dels)
-    Util.debug("Trigger(del) " .. tostring(mode) .. table.concat(dels, " "))
+    Util.debug("Trigger(del) " .. tostring(mode) .. " " .. table.concat(dels, " "))
   end
 end
 

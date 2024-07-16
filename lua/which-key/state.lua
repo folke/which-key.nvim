@@ -92,14 +92,17 @@ function M.setup()
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
     callback = function(ev)
-      Util.debug("ModeChanged(" .. ev.match .. ")")
+      Util.trace("ModeChanged(" .. ev.match .. ")")
       local mode = Buf.get()
 
       if cooldown() then
+        Util.debug("cooldown")
+        Util.trace()
         return
       end
+
       local safe, reason = M.safe(ev.match)
-      Util.debug(safe and "Safe(true)" or ("Safe(false):" .. reason))
+      Util.debug(safe and "Safe(true)" or ("Unsafe(" .. reason .. ")"))
       if not safe then
         if mode then
           Triggers.suspend(mode)
@@ -115,13 +118,14 @@ function M.setup()
       elseif not ev.match:find("c") then
         M.stop()
       end
+      Util.trace()
     end,
   })
 
   vim.api.nvim_create_autocmd({ "LspAttach", "LspDetach" }, {
     group = group,
     callback = function(ev)
-      Util.trace("Event(" .. ev.event .. ")")
+      Util.trace(ev.event .. "(" .. ev.buf .. ")")
       Buf.clear({ buf = ev.buf })
       Util.trace()
     end,
@@ -130,7 +134,7 @@ function M.setup()
   vim.api.nvim_create_autocmd({ "BufReadPost", "BufNew" }, {
     group = group,
     callback = function(ev)
-      Util.trace("Event(" .. ev.event .. ")")
+      Util.trace(ev.event .. "(" .. ev.buf .. ")")
       Buf.clear({ buf = ev.buf })
       Util.trace()
     end,
@@ -139,7 +143,7 @@ function M.setup()
   vim.api.nvim_create_autocmd({ "BufEnter" }, {
     group = group,
     callback = function(ev)
-      Util.trace("Event(" .. ev.event .. ")")
+      Util.trace(ev.event .. "(" .. ev.buf .. ")")
       Buf.get()
       Util.trace()
     end,
@@ -248,15 +252,26 @@ end
 
 ---@param opts? wk.Filter
 function M.start(opts)
+  Util.trace("State(start)", function()
+    local mode = opts and opts.mode or Util.mapmode()
+    local buf = opts and opts.buf or 0
+    local keys = opts and opts.keys or ""
+    return { "Mode(" .. mode .. ":" .. buf .. ") Node(" .. keys .. ")", opts }
+  end)
+
   opts = opts or {}
   opts.update = true
   local mode = Buf.get(opts)
   opts.update = nil
   if not mode then
+    Util.debug("no mode")
+    Util.trace()
     return false
   end
   local node = mode.tree:find(opts.keys or {})
   if not node then
+    Util.debug("no node")
+    Util.trace()
     return false
   end
 
@@ -271,9 +286,9 @@ function M.start(opts)
     started = uv.hrtime() / 1e6 - (opts.waited or 0),
   }
 
-  Util.trace("State(start)", tostring(mode), "Node(" .. node.keys .. ")", opts)
-
   if not M.check(M.state) then
+    Util.debug("executed")
+    Util.trace()
     return true
   end
 
