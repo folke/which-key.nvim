@@ -23,7 +23,7 @@ M.operators = {
 }
 
 M.motions = {
-  mode = { "o", "x" },
+  mode = { "o", "x", "n" },
   preset = true,
   { "$", desc = "End of line" },
   { "%", desc = "Matching (){}[]" },
