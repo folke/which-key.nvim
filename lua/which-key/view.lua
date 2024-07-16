@@ -64,10 +64,7 @@ function M.format(lhs)
     local parts = vim.split(inner, "-", { plain = true })
     for i, part in ipairs(parts) do
       if i == 1 or i ~= #parts or not part:match("^%w$") then
-        local icon = Config.icons.keys[part]
-        if icon then
-          parts[i] = icon
-        end
+        parts[i] = Config.icons.keys[part] or parts[i]
       end
     end
     return table.concat(parts, "")
