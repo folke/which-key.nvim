@@ -53,7 +53,7 @@ function Mode:attach()
       return false
     end
   end)
-  if Config.triggers then
+  if Config.triggers and not self:xo() then
     self.tree:walk(function(node)
       if needs_trigger(node) then
         self:_attach(node)
