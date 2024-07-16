@@ -189,6 +189,7 @@ Default Options ~
       -- expand = function(node)
       --   return not node.desc -- expand all nodes without a description
       -- end,
+      -- Functions/Lua Patterns for formatting the labels
       ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
       replace = {
         key = {
