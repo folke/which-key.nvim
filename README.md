@@ -299,8 +299,8 @@ the popup is shown.
 The `expand` property allows to create dynamic mappings.
 Two examples are included in `which-key.extras`:
 
-- `require("which-key.extras").exapand.buf`: creates numerical key to buffer mappings
-- `require("which-key.extras").exapand.win`: creates numerical key to window mappings
+- `require("which-key.extras").expand.buf`: creates numerical key to buffer mappings
+- `require("which-key.extras").expand.win`: creates numerical key to window mappings
 
 ```lua
 local wk = require("which-key")
