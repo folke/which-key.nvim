@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.8.0](https://github.com/folke/which-key.nvim/compare/v3.7.0...v3.8.0) (2024-07-17)
+
+
+### Features
+
+* **mappings:** added health check for invalid modes ([640724a](https://github.com/folke/which-key.nvim/commit/640724a541af75e6bbfe98f78cdebbec701d23a8))
+
+
+### Bug Fixes
+
+* **buf:** never create proxy/plugin mappings when a keymap exists. Fixes [#738](https://github.com/folke/which-key.nvim/issues/738) ([b4c4e36](https://github.com/folke/which-key.nvim/commit/b4c4e3648261399a97bfdc44bb8fa31b485fd3b9))
+* **registers:** use x instead of v ([#742](https://github.com/folke/which-key.nvim/issues/742)) ([5c3b3e8](https://github.com/folke/which-key.nvim/commit/5c3b3e834852a44efb26725f9c08917145f2c0c6))
+* **state:** schedule redraw. Fixes [#740](https://github.com/folke/which-key.nvim/issues/740) ([09f21a1](https://github.com/folke/which-key.nvim/commit/09f21a133104b66a5cede8fc0a8082b85b0eee9b))
+* **triggers:** allow overriding keymaps with empty rhs or &lt;Nop&gt;. Fixes [#748](https://github.com/folke/which-key.nvim/issues/748) ([843a93f](https://github.com/folke/which-key.nvim/commit/843a93fac6bca58167aafa392e6f7fd5a77633c9))
+* **triggers:** make sure no keymaps exists for triggers ([e8b454f](https://github.com/folke/which-key.nvim/commit/e8b454fb03e3cab398c894e5d462c84595ee57ca))
+* **typo:** replace 'exras' for 'extras' in README. ([#745](https://github.com/folke/which-key.nvim/issues/745)) ([af48cdc](https://github.com/folke/which-key.nvim/commit/af48cdc4bb8f1982a6124bf6bb5570349f690822))
+
 ## [3.7.0](https://github.com/folke/which-key.nvim/compare/v3.6.0...v3.7.0) (2024-07-17)
 
 
