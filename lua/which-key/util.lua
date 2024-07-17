@@ -81,7 +81,7 @@ function M.mapmode(mode)
   if mode:sub(1, 1) == "v" then
     return "x" -- mapmode is actually "x" for visual only mappings
   end
-  return mode:sub(1, 1):match("[ncits]") or "n"
+  return mode:sub(1, 1):match("[ncitsxo]") or "n"
 end
 
 function M.xo()
