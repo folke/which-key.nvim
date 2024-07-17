@@ -1,4 +1,3 @@
-local Config = require("which-key.config")
 local Util = require("which-key.util")
 
 ---@class wk.Trigger
@@ -13,8 +12,18 @@ M.suspended = {} ---@type table<wk.Mode, boolean>
 
 M.timer = (vim.uv or vim.loop).new_timer()
 
+--- Checks if a mapping already exists that is not a which-key trigger.
+---@param trigger wk.Trigger
+function M.is_mapped(trigger)
+  local km = vim.fn.maparg(trigger.keys, trigger.mode, false, true) --[[@as wk.Keymap]]
+  return not vim.tbl_isempty(km) and not (km.desc and km.desc:find("which-key-trigger", 1, true))
+end
+
 ---@param trigger wk.Trigger
 function M.add(trigger)
+  if M.is_mapped(trigger) then
+    return
+  end
   local ctx = {
     mode = trigger.mode,
     keys = trigger.keys,
@@ -41,6 +50,9 @@ end
 
 ---@param trigger wk.Trigger
 function M.del(trigger)
+  if M.is_mapped(trigger) then
+    return
+  end
   pcall(vim.keymap.del, trigger.mode, trigger.keys, { buffer = trigger.buf })
   M._triggers[M.id(trigger)] = nil
 end
