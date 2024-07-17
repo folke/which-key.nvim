@@ -47,12 +47,12 @@ function M.expand()
       value = "OSC 52 detected, register not checked to maintain compatibility"
     else
       local ok, reg_value = pcall(vim.fn.getreg, key, 1)
-      value = ok and reg_value or ""
+      value = (ok and reg_value or "") --[[@as string]]
     end
     if value ~= "" then
-      value = vim.fn.keytrans(value)
+      value = vim.fn.keytrans(value) --[[@as string]]
       for k, v in pairs(M.replace) do
-        value = value:gsub(k, v)
+        value = value:gsub(k, v) --[[@as string]]
       end
       table.insert(items, { key = key, desc = labels[key] or "", value = value })
     end

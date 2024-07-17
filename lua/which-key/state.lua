@@ -176,7 +176,7 @@ end
 ---@return wk.Node? node
 function M.check(state, key)
   local View = require("which-key.view")
-  local node = key == nil and state.node or (state.node.children or {})[key] ---@type wk.Node?
+  local node = key == nil and state.node or (key and state.node:find(key, { expand = true }))
 
   local delta = uv.hrtime() / 1e6 - state.started
   local timedout = vim.o.timeout and delta > vim.o.timeoutlen
@@ -184,10 +184,10 @@ function M.check(state, key)
   if node then
     -- NOTE: a node can be both a keymap and a group
     -- when it's both, we honor timeoutlen and nowait to decide what to do
-    local is_group = Tree.is_group(node)
+    local has_children = node:count() > 0
     local is_nowait = node.keymap and (node.keymap.nowait == 1 or not timedout)
     local is_action = node.action ~= nil
-    if is_group and not is_nowait and not is_action then
+    if node:is_proxy() or node:is_plugin() or (has_children and not is_nowait and not is_action) then
       Util.debug("continue", node.keys, tostring(state.mode), node.plugin)
       return node
     end
@@ -219,10 +219,7 @@ function M.execute(state, key, node)
     return node.action()
   end
 
-  local keys = vim.deepcopy(state.node.path)
-  keys[#keys + 1] = key
-
-  local keystr = table.concat(keys)
+  local keystr = node and node.keys or (state.node.keys .. (key or ""))
   if not state.mode:xo() then
     if vim.v.count > 0 then
       keystr = vim.v.count .. keystr
@@ -274,7 +271,7 @@ function M.start(opts)
     Util.trace()
     return false
   end
-  local node = mode.tree:find(opts.keys or {})
+  local node = mode.tree:find(opts.keys or {}, { expand = true })
   if not node then
     Util.debug("no node")
     Util.trace()

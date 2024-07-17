@@ -93,7 +93,7 @@ function M.check()
           if not km or km.rhs == "" or km.rhs == "<Nop>" or node.keys:sub(1, 6) == "<Plug>" then
             return
           end
-          if node.keymap and Tree.is_group(node) then
+          if node.keymap and node:count() > 0 then
             local id = mode.mode .. ":" .. node.keys
             if reported[id] then
               return
@@ -104,7 +104,7 @@ function M.check()
             if node.desc and node.desc ~= "" then
               descs[#descs + 1] = "- <" .. node.keys .. ">: " .. node.desc
             end
-            local queue = vim.tbl_values(node.children)
+            local queue = node:children()
             while #queue > 0 do
               local child = table.remove(queue)
               if child.keymap then
@@ -113,7 +113,7 @@ function M.check()
                   descs[#descs + 1] = "- <" .. child.keys .. ">: " .. child.desc
                 end
               end
-              vim.list_extend(queue, vim.tbl_values(child.children or {}))
+              vim.list_extend(queue, child:children())
             end
             if #overlaps > 0 then
               found = true

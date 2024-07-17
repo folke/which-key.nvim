@@ -13,10 +13,7 @@ Mode.__index = Mode
 
 ---@param node wk.Node
 local function needs_trigger(node)
-  if node and node.plugin then
-    return false
-  end
-  if node.keymap or not Tree.is_group(node) then
+  if node:is_plugin() or node:is_proxy() or node.keymap or node:count() == 0 then
     return false
   end
   if #node.path == 1 then
@@ -50,11 +47,12 @@ function Mode:attach()
   -- * first add plugin mappings
   -- * then add triggers
   self.tree:walk(function(node)
-    if node.plugin then
+    if node:is_plugin() or node:is_proxy() then
       table.insert(triggers, node)
       return false
     end
   end)
+
   if Config.triggers then
     self.tree:walk(function(node)
       if needs_trigger(node) then
@@ -63,6 +61,7 @@ function Mode:attach()
       end
     end)
   end
+
   self.triggers = {}
   for _, node in ipairs(triggers) do
     local ctx = {

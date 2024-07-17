@@ -46,6 +46,8 @@ M.fields = {
   cond = { inherit = true },
   preset = { inherit = true },
   icon = { inherit = true },
+  proxy = {},
+  expand = {},
   -- deprecated
   name = { transform = "group", deprecated = true },
   prefix = { inherit = true, deprecated = true },

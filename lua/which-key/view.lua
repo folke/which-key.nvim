@@ -193,7 +193,7 @@ end
 function M.item(node, opts)
   opts = opts or {}
   opts.default = opts.default or "count"
-  local child_count = (node.plugin or opts.group == false) and 0 or Tree.count(node)
+  local child_count = (node.plugin or opts.group == false) and 0 or node:count()
   local desc = node.desc
   if not desc and node.keymap and node.keymap.rhs ~= "" and type(node.keymap.rhs) == "string" then
     desc = node.keymap.rhs --[[@as string]]
@@ -208,7 +208,7 @@ function M.item(node, opts)
   local icon, icon_hl = M.icon(node)
 
   local parent_key = opts.parent_key and M.replace("key", opts.parent_key) or ""
-  local group = child_count > 0 or (node.mapping and node.mapping.group)
+  local group = node:is_group()
   ---@type wk.Item
   return setmetatable({
     node = node,
@@ -262,19 +262,19 @@ end
 
 function M.show()
   local state = State.state
-  if not state or not Tree.is_group(state.node) then
+  if not (state and state.node:is_group()) then
     M.hide()
     return
   end
   local text = Text.new()
 
   ---@type wk.Node[]
-  local children = vim.tbl_values(state.node.children or {})
+  local children = state.node:children()
 
   ---@param node wk.Node
   local function filter(node)
-    return not (state.filter.global == false and node.global)
-      and not (state.filter["local"] == false and not node.global)
+    return not (state.filter.global == false and not node:is_local())
+      and not (state.filter["local"] == false and node:is_local())
   end
 
   ---@type wk.Item[]
@@ -283,11 +283,11 @@ function M.show()
     if filter(node) then
       local expand = type(Config.expand) == "function" and Config.expand
         or function()
-          local child_count = Tree.count(node)
+          local child_count = node:count()
           return child_count > 0 and child_count <= Config.expand
         end
       if not node.plugin and expand(node) then
-        for _, child in ipairs(vim.tbl_values(node.children or {})) do
+        for _, child in ipairs(node:children()) do
           if filter(child) then
             table.insert(items, M.item(child, { parent_key = node.key }))
           end
