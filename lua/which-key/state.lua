@@ -119,7 +119,9 @@ function M.setup()
         -- make sure the buffer mode exists
       elseif mode and Util.xo() then
         if not M.state then
-          M.start({ defer = defer() })
+          vim.schedule(function()
+            M.start({ defer = defer() })
+          end)
         end
       elseif not ev.match:find("c") then
         M.stop()
