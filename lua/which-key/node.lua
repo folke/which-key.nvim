@@ -73,7 +73,7 @@ function M:count()
 end
 
 function M:is_group()
-  return self:can_expand() or self:count() > 0
+  return self:is_plugin() or self:is_proxy() or self:count() > 0
 end
 
 function M:is_proxy()
@@ -95,7 +95,7 @@ end
 
 ---@return table<string, wk.Node>
 function M:expand()
-  if not (self.plugin or self:is_proxy()) then
+  if not self:can_expand() then
     return self._children
   end
 
@@ -118,17 +118,32 @@ function M:expand()
     end
   end
 
-  if self:is_proxy() then
-    local proxy = self.mapping.proxy
-    if proxy then
-      local keys = Util.keys(proxy)
-      local root = self:root()
-      local node = root:find(keys, { expand = true })
-      if node then
-        for k, v in pairs(node:expand()) do
-          ret[k] = v
-        end
+  local proxy = self.mapping.proxy
+  if proxy then
+    local keys = Util.keys(proxy)
+    local root = self:root()
+    local node = root:find(keys, { expand = true })
+    if node then
+      for k, v in pairs(node:expand()) do
+        ret[k] = v
       end
+    end
+  end
+
+  local expand = self.mapping and self.mapping.expand
+  if expand then
+    local Tree = require("which-key.tree")
+    local tmp = Tree.new()
+    local mappings = require("which-key.mappings").parse(expand())
+    for _, mapping in ipairs(mappings) do
+      tmp:add(mapping, true)
+    end
+    for _, child in ipairs(tmp.root:children()) do
+      local action = child.mapping and child.mapping.rhs
+      if type(action) == "function" then
+        child.action = action
+      end
+      ret[child.key] = child
     end
   end
 

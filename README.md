@@ -290,10 +290,17 @@ A mapping has the following attributes:
 - **hidden**: (`boolean`) hide the mapping **_(optional)_**
 - **icon**: (`string|wk.Icon|fun():(wk.Icon|string)`) icon spec **_(optional)_**
 - **proxy**: (`string`) proxy to another mapping **_(optional)_**
+- **expand**: (`fun():wk.Spec`) nested mappings **_(optional)_**
 - any other option valid for `vim.keymap.set`. These are only used for creating mappings.
 
 When `desc`, `group`, or `icon` are functions, they are evaluated every time
 the popup is shown.
+
+The `expand` property allows to create dynamic mappings.
+Two examples are included in `which-key.exras`:
+
+- `require("which-key.extras").exapand.buf`: creates numerical key to buffer mappings
+- `require("which-key.extras").exapand.win`: creates numerical key to window mappings
 
 ```lua
 local wk = require("which-key")
@@ -304,6 +311,10 @@ wk.add({
   { "<leader>fn", desc = "New File" },
   { "<leader>f1", hidden = true }, -- hide this keymap
   { "<leader>w", proxy = "<c-w>", group = "windows" }, -- proxy to window mappings
+  { "<leader>b", group = "buffers", expand = function()
+      return require("which-key.extras").expand.buf()
+    end
+  },
   {
     -- Nested mappings are allowed and can be added in any order
     -- Most attributes can be inherited or overridden on any level
