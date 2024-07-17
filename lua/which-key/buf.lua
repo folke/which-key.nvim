@@ -47,7 +47,7 @@ function Mode:attach()
   -- * first add plugin mappings
   -- * then add triggers
   self.tree:walk(function(node)
-    if node:is_plugin() or node:is_proxy() then
+    if (node:is_plugin() or node:is_proxy()) and not node.keymap then
       table.insert(triggers, node)
       return false
     end
