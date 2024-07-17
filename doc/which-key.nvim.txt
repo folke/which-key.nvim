@@ -1,4 +1,4 @@
-*which-key.nvim.txt*            For Neovim           Last change: 2024 July 16
+*which-key.nvim.txt*            For Neovim           Last change: 2024 July 17
 
 ==============================================================================
 Table of Contents                           *which-key.nvim-table-of-contents*
@@ -124,6 +124,10 @@ Default Options ~
         defer = {
           ["<C-V>"] = true,
           V = true,
+          -- Defer certain operators. Only used for operator pending mode.
+          operators = {
+            -- d = true, -- defer delete
+          },
         },
       },
       plugins = {
