@@ -212,7 +212,7 @@ function M.item(node, opts)
   ---@type wk.Item
   return setmetatable({
     node = node,
-    icon = icon,
+    icon = icon or "",
     icon_hl = icon_hl,
     key = parent_key .. M.replace("key", node.key),
     raw_key = (opts.parent_key or "") .. node.key,
