@@ -16,7 +16,19 @@ M.timer = (vim.uv or vim.loop).new_timer()
 ---@param trigger wk.Trigger
 function M.is_mapped(trigger)
   local km = vim.fn.maparg(trigger.keys, trigger.mode, false, true) --[[@as wk.Keymap]]
-  return not vim.tbl_isempty(km) and not (km.desc and km.desc:find("which-key-trigger", 1, true))
+  -- not mapped
+  if vim.tbl_isempty(km) then
+    return false
+  end
+  -- ignore <Nop> mappings
+  if km.rhs == "" or km.rhs == "<Nop>" then
+    return false
+  end
+  -- ignore which-key triggers
+  if km.desc and km.desc:find("which-key-trigger", 1, true) then
+    return false
+  end
+  return true
 end
 
 ---@param trigger wk.Trigger
