@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.7.0](https://github.com/folke/which-key.nvim/compare/v3.6.0...v3.7.0) (2024-07-17)
+
+
+### Features
+
+* added `expand` property to create dynamic mappings. An example for `buf` and `win` is included ([02f6e6f](https://github.com/folke/which-key.nvim/commit/02f6e6f4951ff993ad1d5c699784e6847a6c7b4c))
+* proxy mappings ([c3cfc2b](https://github.com/folke/which-key.nvim/commit/c3cfc2bdb03c1b87943a6d02485ad50b86567341))
+* **state:** allow defering on certain operators. Closes [#733](https://github.com/folke/which-key.nvim/issues/733) ([984d930](https://github.com/folke/which-key.nvim/commit/984d930711341ac118e6712804e8e22e575ba9d3))
+
+
+### Bug Fixes
+
+* **buf:** create triggers for xo anyway. Fixes [#728](https://github.com/folke/which-key.nvim/issues/728) ([96b2e93](https://github.com/folke/which-key.nvim/commit/96b2e93979373744056c921f82b0c356e6f900de))
+* **icons:** added frontier pattern for `git`. Fixes [#727](https://github.com/folke/which-key.nvim/issues/727) ([bb4e82b](https://github.com/folke/which-key.nvim/commit/bb4e82bdaff50a4a93867e4c90938d18e7615af6))
+* **state:** dont popup when switching between v and V mode. Fixes [#729](https://github.com/folke/which-key.nvim/issues/729) ([8ddb527](https://github.com/folke/which-key.nvim/commit/8ddb527bcffc6957a59518f11c34a84d91e075f9))
+* **view:** always show a group as a group ([96a9eb3](https://github.com/folke/which-key.nvim/commit/96a9eb3f0b3299dffc241cf0f9ee5cf0509e6cd2))
+* **view:** empty icons ([e2cacc6](https://github.com/folke/which-key.nvim/commit/e2cacc6f1e4ba77e82e7a34e0dc6b2ad69cf075b))
+
 ## [3.6.0](https://github.com/folke/which-key.nvim/compare/v3.5.0...v3.6.0) (2024-07-16)
 
 
