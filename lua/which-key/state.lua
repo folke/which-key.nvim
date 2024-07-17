@@ -236,7 +236,7 @@ end
 ---@param state wk.State
 ---@return wk.Node? node, boolean? exit
 function M.step(state)
-  vim.cmd.redraw()
+  vim.schedule(vim.cmd.redraw)
   Util.debug("getchar")
   local ok, char = pcall(vim.fn.getcharstr)
   if not ok then
