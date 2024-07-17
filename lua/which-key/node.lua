@@ -25,7 +25,10 @@ function M.new(parent, key)
 end
 
 function M:is_local()
-  return self.buffer and (self.buffer > 0)
+  if self.path[1] == Util.norm("<localleader>") then
+    return true
+  end
+  return (self.buffer and (self.buffer > 0))
 end
 
 function M:__index(k)
