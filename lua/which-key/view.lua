@@ -208,6 +208,7 @@ function M.item(node, opts)
   local icon, icon_hl = M.icon(node)
 
   local parent_key = opts.parent_key and M.replace("key", opts.parent_key) or ""
+  local group = child_count > 0 or (node.mapping and node.mapping.group)
   ---@type wk.Item
   return setmetatable({
     node = node,
@@ -215,8 +216,8 @@ function M.item(node, opts)
     icon_hl = icon_hl,
     key = parent_key .. M.replace("key", node.key),
     raw_key = (opts.parent_key or "") .. node.key,
-    desc = child_count > 0 and Config.icons.group .. desc or desc,
-    group = child_count > 0,
+    desc = group and Config.icons.group .. desc or desc,
+    group = group,
   }, { __index = node })
 end
 
