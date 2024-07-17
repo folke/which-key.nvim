@@ -297,7 +297,7 @@ When `desc`, `group`, or `icon` are functions, they are evaluated every time
 the popup is shown.
 
 The `expand` property allows to create dynamic mappings.
-Two examples are included in `which-key.exras`:
+Two examples are included in `which-key.extras`:
 
 - `require("which-key.extras").exapand.buf`: creates numerical key to buffer mappings
 - `require("which-key.extras").exapand.win`: creates numerical key to window mappings
