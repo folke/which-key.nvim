@@ -7,7 +7,7 @@ M.name = "registers"
 M.mappings = {
   icon = { icon = "󰅍 ", color = "blue" },
   plugin = "registers",
-  { '"', mode = { "n", "v" }, desc = "registers" },
+  { '"', mode = { "n", "x" }, desc = "registers" },
   { "<c-r>", mode = { "i", "c" }, desc = "registers" },
 }
 
