@@ -79,14 +79,18 @@ function M.setup()
 
   local defer_modes = {} ---@type table<string, boolean>
   for k, v in pairs(Config.modes.defer) do
-    if v then
+    if v == true then
       defer_modes[Util.norm(k)] = true
     end
   end
 
   local function defer()
-    local mode_keys = Util.keys(vim.api.nvim_get_mode().mode)
-    return mode_keys[1] and defer_modes[mode_keys[1]]
+    local mode = vim.api.nvim_get_mode().mode
+    if mode:find("o") and Config.modes.defer.operators[vim.v.operator] then
+      return true
+    end
+    local mode_keys = Util.keys(mode)
+    return (mode_keys[1] and defer_modes[mode_keys[1]])
   end
 
   local cooldown = Util.cooldown()

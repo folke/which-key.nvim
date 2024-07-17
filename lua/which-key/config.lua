@@ -38,6 +38,10 @@ local defaults = {
     defer = {
       ["<C-V>"] = true,
       V = true,
+      -- Defer certain operators. Only used for operator pending mode.
+      operators = {
+        -- d = true, -- defer delete
+      },
     },
   },
   plugins = {
