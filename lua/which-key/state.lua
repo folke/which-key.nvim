@@ -119,7 +119,14 @@ function M.setup()
         -- make sure the buffer mode exists
       elseif mode and Util.xo() then
         if not M.state then
-          M.start({ defer = defer() })
+          -- If the 'v' key is deferred then don't start on visual mode enter.
+          -- This is needed because vim.opt.keymodel='startsel' will enter visual
+          -- mode also on shift+motion besides the 'v' key.
+          if ev.match:find(":v") and defer_modes["v"] then
+            Util.debug("skip visual mode enter")
+          else
+            M.start({ defer = defer() })
+          end
         end
       elseif not ev.match:find("c") then
         M.stop()
