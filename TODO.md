@@ -35,7 +35,16 @@
 - [x] `<leader>gh_`
 - [x] devicons support
 - [x] nowait, timeoutlen and delay
-- [ ] more tests
-- [ ] News
-- [ ] hint characters in desc
 - [x] new mappings DSL
+- [x] News
+- [x] normal mode mappings in terminal mode?
+- [x] dynamic size
+- [x] situation with visual mode
+- [x] fix timeoutlen
+- [x] document hydra mode
+- [x] floating help text?
+- [x] move old option check to checkhealth
+- [x] show scrolling hint when can't fit all mappings
+- [ ] more tests
+- [ ] hint characters in desc
+- [ ] intgerate with lazy.nvim. Get description there if set

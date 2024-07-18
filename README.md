@@ -99,7 +99,7 @@ local defaults = {
   -- Only used by enabled xo mapping modes.
   ---@param ctx { mode: string, operator: string }
   defer = function(ctx)
-    return vim.list_contains({ "<C-V>", "V" }, ctx.mode)
+    return ctx.mode == "V" or ctx.mode == "<C-V>"
   end,
   plugins = {
     marks = true, -- shows a list of your marks on ' and `
