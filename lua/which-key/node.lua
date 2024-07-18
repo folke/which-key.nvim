@@ -104,10 +104,8 @@ function M:expand()
 
   ---@type table<string, wk.Node>
   local ret = {}
-  for k, v in pairs(self._children) do
-    ret[k] = v
-  end
 
+  -- plugin mappings
   if self.plugin then
     local plugin = require("which-key.plugins").plugins[self.plugin or ""]
     assert(plugin, "plugin not found")
@@ -121,6 +119,7 @@ function M:expand()
     end
   end
 
+  -- proxy mappings
   local proxy = self.mapping.proxy
   if proxy then
     local keys = Util.keys(proxy)
@@ -133,6 +132,7 @@ function M:expand()
     end
   end
 
+  -- expand mappings
   local expand = self.mapping and self.mapping.expand
   if expand then
     local Tree = require("which-key.tree")
@@ -148,6 +148,11 @@ function M:expand()
       end
       ret[child.key] = child
     end
+  end
+
+  -- custom mappings
+  for k, v in pairs(self._children) do
+    ret[k] = v
   end
 
   return ret
