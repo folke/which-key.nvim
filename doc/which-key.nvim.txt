@@ -364,6 +364,17 @@ returns `true`, the popup will be shown only after an additional key is
 pressed. So `yaf`, would show which-key after pressing `ya`, but not after `y`.
 
 
+  [!TIP] Defer some operators:
+  >lua
+      ---@param ctx { mode: string, operator: string }
+      defer = function(ctx)
+        if vim.list_contains({ "d", "y" }, ctx.operator) then
+          return true
+        end
+        return vim.list_contains({ "<C-V>", "V" }, ctx.mode)
+      end,
+  <
+
 ICONS                                         *which-key.nvim-which-key-icons*
 
 
