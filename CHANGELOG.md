@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.9.0](https://github.com/folke/which-key.nvim/compare/v3.8.0...v3.9.0) (2024-07-18)
+
+
+### Features
+
+* **config:** simplified config. Some options are now deprecated ([8ddf2da](https://github.com/folke/which-key.nvim/commit/8ddf2da5a6aa76f5b3cec976f1d61e7c7fea42b5))
+* **view:** show and expand localleader mappings with filter.global = false ([ed5f762](https://github.com/folke/which-key.nvim/commit/ed5f7622771d0b5c0ac3a5e286ec6cd17b6be131))
+
+
+### Bug Fixes
+
+* **ui:** remove deprecated opts.layout.align option. (wasn't used). Closes [#752](https://github.com/folke/which-key.nvim/issues/752) ([db32ac6](https://github.com/folke/which-key.nvim/commit/db32ac67abb36789a43fe497ff7d0b8ab7e8109e))
+
 ## [3.8.0](https://github.com/folke/which-key.nvim/compare/v3.7.0...v3.8.0) (2024-07-17)
 
 
