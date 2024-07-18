@@ -12,6 +12,7 @@ local M = {}
 ---@field node wk.Node
 ---@field filter wk.Filter
 ---@field started number
+---@field show boolean
 
 ---@type wk.State?
 M.state = nil
@@ -280,6 +281,7 @@ function M.start(opts)
     node = node,
     filter = opts,
     started = uv.hrtime() / 1e6 - (opts.waited or 0),
+    show = opts.defer ~= true,
   }
 
   if not M.check(M.state) then
@@ -290,20 +292,18 @@ function M.start(opts)
 
   local exit = false
 
-  local show = opts.defer ~= true
-
   while M.state do
     mode = Buf.get(opts)
     if not mode or mode.mode ~= mapmode then
       break
     end
-    if show then
+    if M.state.show then
       View.update(opts)
     end
-    show = true
     local child, _exit = M.step(M.state)
     if child and M.state then
       M.state.node = child
+      M.state.show = true
     else
       exit = _exit or false
       break

@@ -262,7 +262,7 @@ end
 
 function M.show()
   local state = State.state
-  if not (state and state.node:is_group()) then
+  if not (state and state.show and state.node:is_group()) then
     M.hide()
     return
   end
