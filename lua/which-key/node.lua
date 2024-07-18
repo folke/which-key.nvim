@@ -28,7 +28,15 @@ function M:is_local()
   if self.path[1] == Util.norm("<localleader>") then
     return true
   end
-  return (self.buffer and (self.buffer > 0))
+  if self.buffer and self.buffer > 0 then
+    return true
+  end
+  for _, child in pairs(self._children) do
+    if child:is_local() then
+      return true
+    end
+  end
+  return false
 end
 
 function M:__index(k)
