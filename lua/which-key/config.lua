@@ -204,7 +204,7 @@ function M.validate()
   }
   for k, v in pairs(deprecated) do
     local opt = type(k) == "number" and v or k
-    local msg = type(k) == "number" and "option is deprecated" or v
+    local msg = "option is deprecated." .. (type(k) == "number" and "" or " " .. v)
     local parts = vim.split(opt, ".", { plain = true })
     if vim.tbl_get(M.options, unpack(parts)) ~= nil then
       table.insert(M.issues, { opt = opt, msg = msg })
