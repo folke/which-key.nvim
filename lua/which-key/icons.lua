@@ -47,7 +47,7 @@ M.rules = {
   { pattern = "exit", icon = "󰈆 ", color = "red" },
   { pattern = "quit", icon = "󰈆 ", color = "red" },
   { pattern = "tab", icon = "󰓩 ", color = "purple" },
-  { pattern = "ai", icon = " ", color = "green" },
+  { pattern = "%f[%a]ai", icon = " ", color = "green" },
   { pattern = "ui", icon = "󰙵 ", color = "cyan" },
 }
 
