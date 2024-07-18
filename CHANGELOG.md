@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.10.0](https://github.com/folke/which-key.nvim/compare/v3.9.0...v3.10.0) (2024-07-18)
+
+
+### Features
+
+* **view:** expand all nodes by default when filter.global = false ([c168905](https://github.com/folke/which-key.nvim/commit/c168905d62d9b8859b261de69910dfb7e3438996))
+
+
+### Bug Fixes
+
+* **buf:** always use nowait. Fixes [#755](https://github.com/folke/which-key.nvim/issues/755) ([ae1a235](https://github.com/folke/which-key.nvim/commit/ae1a235c53233c58a2f7cc14e5cdd09346cf27ed))
+* **buf:** early exit to determine if a trigger is safe to create. Fixes [#754](https://github.com/folke/which-key.nvim/issues/754) ([27e4716](https://github.com/folke/which-key.nvim/commit/27e47163165fee8e45b43d340db9335001403d2f))
+* **icons:** added frontier pattern for `ai` ([#760](https://github.com/folke/which-key.nvim/issues/760)) ([6fe0657](https://github.com/folke/which-key.nvim/commit/6fe065716e08550328c471689e6f8c1e42a0effc))
+* list_contains doesn't exists in Neovim &lt; 0.10. Fixes [#758](https://github.com/folke/which-key.nvim/issues/758) ([7e4eae8](https://github.com/folke/which-key.nvim/commit/7e4eae8836e4ad28d478fedc421700b1138d1e0c))
+* **node:** allow custom mappings to override proxy/plugin/expand mappings ([9820900](https://github.com/folke/which-key.nvim/commit/982090080fa11da06038cf8e71af90d3a4fbd05a))
+* **node:** is_local check now also includes children ([fdd27f9](https://github.com/folke/which-key.nvim/commit/fdd27f9b6a991586943eb865275b279fb411ff0b))
+* **registers:** don't try to get `+*` registers when no clipboard is available. Fixes [#754](https://github.com/folke/which-key.nvim/issues/754) ([ae4ec03](https://github.com/folke/which-key.nvim/commit/ae4ec030489d7ecda908e473aea096a7594f84e8))
+* **state:** always honor defer. Fixes [#690](https://github.com/folke/which-key.nvim/issues/690) ([c512d13](https://github.com/folke/which-key.nvim/commit/c512d135531be81e17c85e254994cc755d3016c5))
+* **state:** redraw cursor before getchar ([cf6cbf2](https://github.com/folke/which-key.nvim/commit/cf6cbf2fd8f0c6497f130d07f6c88a2833c15d80))
+* **triggers:** prevent creating triggers for single upper-case alpha keys expect for Z. Fixes [#756](https://github.com/folke/which-key.nvim/issues/756) ([d19fa07](https://github.com/folke/which-key.nvim/commit/d19fa07b6e818ab55c34815784470a6d5f023524))
+
 ## [3.9.0](https://github.com/folke/which-key.nvim/compare/v3.8.0...v3.9.0) (2024-07-18)
 
 
