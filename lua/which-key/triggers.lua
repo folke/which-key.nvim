@@ -36,21 +36,13 @@ function M.add(trigger)
   if M.is_mapped(trigger) then
     return
   end
-  local ctx = {
-    mode = trigger.mode,
-    keys = trigger.keys,
-    plugin = trigger.plugin,
-  }
-  local delay = require("which-key.state").delay(ctx)
-  local waited = vim.o.timeout and delay >= vim.o.timeoutlen and vim.o.timeoutlen or 0
   vim.keymap.set(trigger.mode, trigger.keys, function()
     require("which-key.state").start({
       keys = trigger.keys,
-      waited = waited,
     })
   end, {
     buffer = trigger.buf,
-    nowait = waited == 0,
+    nowait = true,
     desc = "which-key-trigger" .. (trigger.plugin and " " .. trigger.plugin or ""),
   })
   M._triggers[M.id(trigger)] = trigger
