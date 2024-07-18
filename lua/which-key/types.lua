@@ -14,6 +14,7 @@
 ---@field defer? boolean don't show the popup immediately. Wait for the first key to be pressed
 ---@field waited? number
 ---@field check? boolean
+---@field expand? boolean
 
 ---@class wk.Icon
 ---@field icon? string

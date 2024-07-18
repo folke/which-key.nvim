@@ -271,15 +271,22 @@ function M.show()
   ---@type wk.Node[]
   local children = state.node:children()
 
-  ---@param node wk.Node
-  local function filter(node)
-    return not (state.filter.global == false and not node:is_local())
-      and not (state.filter["local"] == false and node:is_local())
+  if state.filter.global == false and state.filter.expand == nil then
+    state.filter.expand = true
   end
 
   ---@param node wk.Node
-  local function expand_override(node)
-    return state.filter.global == false and node.path[1] == Util.norm("<localleader>")
+  local function filter(node)
+    local l = state.filter["local"] ~= false
+    local g = state.filter.global ~= false
+    if not g and not l then
+      return false
+    end
+    if g and l then
+      return true
+    end
+    local is_local = node:is_local()
+    return l and is_local or g and not is_local
   end
 
   ---@type wk.Item[]
@@ -291,7 +298,7 @@ function M.show()
           local child_count = node:count()
           return child_count > 0 and child_count <= Config.expand
         end
-      if not node.plugin and (expand(node) or expand_override(node)) then
+      if not node.plugin and (state.filter.expand or expand(node)) then
         for _, child in ipairs(node:children()) do
           if filter(child) then
             table.insert(items, M.item(child, { parent_key = node.key }))
