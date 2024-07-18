@@ -20,7 +20,7 @@ end
 ---@param node wk.Node
 ---@param no_single? boolean
 local function is_safe(node, no_single)
-  if node.keymap or node:count() == 0 or is_special(node) then
+  if node.keymap or is_special(node) or node:count() == 0 then
     return false
   end
   if no_single and #node.path == 1 then
