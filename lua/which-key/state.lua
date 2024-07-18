@@ -230,7 +230,12 @@ end
 ---@param state wk.State
 ---@return wk.Node? node, boolean? exit
 function M.step(state)
-  vim.schedule(vim.cmd.redraw)
+  vim.schedule(function()
+    vim.cmd.redraw()
+    if vim.api.nvim__redraw then
+      vim.api.nvim__redraw({ cursor = true })
+    end
+  end)
   Util.debug("getchar")
   local ok, char = pcall(vim.fn.getcharstr)
   if not ok then
