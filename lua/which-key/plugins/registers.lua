@@ -1,3 +1,5 @@
+local Util = require("which-key.util")
+
 ---@diagnostic disable: missing-fields, inject-field
 ---@type wk.Plugin
 local M = {}
@@ -39,13 +41,14 @@ function M.expand()
   local items = {} ---@type wk.Plugin.item[]
 
   local is_osc52 = vim.g.clipboard and vim.g.clipboard.name == "OSC 52"
+  local has_clipboard = vim.g.loaded_clipboard_provider == 2
 
   for i = 1, #M.registers, 1 do
     local key = M.registers:sub(i, i)
     local value = ""
-    if is_osc52 and vim.tbl_contains({ "+", "*" }, key) then
+    if is_osc52 and key:match("[%+%*]") then
       value = "OSC 52 detected, register not checked to maintain compatibility"
-    else
+    elseif has_clipboard or not key:match("[%+%*]") then
       local ok, reg_value = pcall(vim.fn.getreg, key, 1)
       value = (ok and reg_value or "") --[[@as string]]
     end
