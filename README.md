@@ -88,27 +88,19 @@ local defaults = {
   spec = {},
   -- show a warning when issues were detected with your mappings
   notify = true,
-  -- Enable/disable WhichKey for certain mapping modes
-  modes = {
-    n = true, -- Normal mode
-    i = true, -- Insert mode
-    x = true, -- Visual mode
-    s = true, -- Select mode
-    o = true, -- Operator pending mode
-    t = true, -- Terminal mode
-    c = true, -- Command mode
-    -- Start hidden and wait for a key to be pressed before showing the popup
-    -- Only used by enabled xo mapping modes.
-    -- Set to false to show the popup immediately (after the delay)
-    defer = {
-      ["<C-V>"] = true,
-      V = true,
-      -- Defer certain operators. Only used for operator pending mode.
-      operators = {
-        -- d = true, -- defer delete
-      },
-    },
+  -- Which-key automatically sets up triggers for your mappings.
+  -- But you can disable this and setup the triggers manually.
+  -- Check the docs for more info.
+  ---@type wk.Spec
+  triggers = {
+    { "<auto>", mode = "nixsotc" },
   },
+  -- Start hidden and wait for a key to be pressed before showing the popup
+  -- Only used by enabled xo mapping modes.
+  ---@param ctx { mode: string, operator: string }
+  defer = function(ctx)
+    return vim.list_contains({ "<C-V>", "V" }, ctx.mode)
+  end,
   plugins = {
     marks = true, -- shows a list of your marks on ' and `
     registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
@@ -242,19 +234,10 @@ local defaults = {
   },
   show_help = true, -- show a help message in the command line for using WhichKey
   show_keys = true, -- show the currently pressed key and its label as a message in the command line
-  -- Which-key automatically sets up triggers for your mappings.
-  -- But you can disable this and setup the triggers yourself.
-  -- Be aware, that triggers are not needed for visual and operator pending mode.
-  triggers = true, -- automatically setup triggers
+  -- disable WhichKey for certain buf types and file types.
   disable = {
-    -- disable WhichKey for certain buf types and file types.
     ft = {},
     bt = {},
-    -- disable a trigger for a certain context by returning true
-    ---@type fun(ctx: { keys: string, mode: string, plugin?: string }):boolean?
-    trigger = function(ctx)
-      return false
-    end,
   },
   debug = false, -- enable wk.log in the current directory
 }
@@ -264,7 +247,7 @@ local defaults = {
 
 </details>
 
-## ⌨️ Setup
+## ⌨️ Mappings
 
 **WhichKey** automatically gets the descriptions of your keymaps from the `desc`
 attribute of the keymap. So for most use-cases, you don't need to do anything else.
@@ -325,6 +308,37 @@ wk.add({
   }
 })
 ```
+
+## 🎯 Triggers
+
+There's two ways that **which-key** can be triggered:
+
+- by a trigger keymap
+- by a `ModeChanged` event for visual and operator pending mode
+
+Both can be configured using `opts.triggers` and `opts.defer`.
+
+By default `opts.triggers` includes `{ "<auto>", mode = "nixsotc" }`, which
+will setup keymap triggers for every mode automatically and will trigger during
+`ModeChanged`.
+
+> [!NOTE]
+> Auto triggers will never be created for existing keymaps.
+> That includes every valid single key Neovim builtin mapping.
+> If you want to trigger on a builtin keymap, you have to add it manually.
+
+> [!TIP]
+> To manually setup triggers, you can set `opts.triggers` to:
+>
+> ```lua
+>  triggers = {
+>    { "<leader>", mode = { "n", "v" } },
+>  }
+> ```
+
+For `ModeChanged` triggers, you can configure the `opts.defer` option.
+When it returns `true`, the popup will be shown only after an additional key is pressed.
+So `yaf`, would show which-key after pressing `ya`, but not after `y`.
 
 ## 🎨 Icons
 

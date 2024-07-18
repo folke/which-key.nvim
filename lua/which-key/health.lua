@@ -27,16 +27,15 @@ function M.check()
 
   start("Checking your config")
 
-  local deprecated = Config.deprecated()
-  if #deprecated > 0 then
+  if #Config.issues > 0 then
     local msg = {
-      "Your config uses deprecated options:",
+      "There are issues with your config:",
     }
     vim.list_extend(
       msg,
-      vim.tbl_map(function(o)
-        return "- `" .. o .. "`"
-      end, deprecated)
+      vim.tbl_map(function(issue)
+        return "- `opts." .. issue.opt .. "`: " .. issue.msg
+      end, Config.issues)
     )
     msg[#msg + 1] = "Please refer to the docs for more info."
     warn(table.concat(msg, "\n"))

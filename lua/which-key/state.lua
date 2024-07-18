@@ -1,6 +1,5 @@
 local Buf = require("which-key.buf")
 local Config = require("which-key.config")
-local Tree = require("which-key.tree")
 local Triggers = require("which-key.triggers")
 local Util = require("which-key.util")
 
@@ -77,20 +76,14 @@ function M.setup()
     end,
   })
 
-  local defer_modes = {} ---@type table<string, boolean>
-  for k, v in pairs(Config.modes.defer) do
-    if v == true then
-      defer_modes[Util.norm(k)] = true
-    end
-  end
-
   local function defer()
     local mode = vim.api.nvim_get_mode().mode
-    if mode:find("o") and Config.modes.defer.operators[vim.v.operator] then
-      return true
-    end
     local mode_keys = Util.keys(mode)
-    return (mode_keys[1] and defer_modes[mode_keys[1]])
+    local ctx = {
+      operator = mode:find("o") and vim.v.operator or nil,
+      mode = mode_keys[1],
+    }
+    return Config.defer(ctx)
   end
 
   local cooldown = Util.cooldown()
@@ -118,7 +111,7 @@ function M.setup()
         M.stop()
         -- make sure the buffer mode exists
       elseif mode and Util.xo() then
-        if not M.state then
+        if Config.triggers.modes[mode.mode] and not M.state then
           M.start({ defer = defer() })
         end
       elseif not ev.match:find("c") then

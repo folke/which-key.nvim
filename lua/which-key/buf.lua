@@ -12,11 +12,18 @@ local Mode = {}
 Mode.__index = Mode
 
 ---@param node wk.Node
-local function needs_trigger(node)
-  if node:is_plugin() or node:is_proxy() or node.keymap or node:count() == 0 then
+local function is_special(node)
+  return (node:is_plugin() or node:is_proxy()) and not node.keymap
+end
+
+--- Checks if it's safe to add a trigger for the given node
+---@param node wk.Node
+---@param no_single? boolean
+local function is_safe(node, no_single)
+  if node.keymap or node:count() == 0 or is_special(node) then
     return false
   end
-  if #node.path == 1 then
+  if no_single and #node.path == 1 then
     local key = node.path[1]
     if key:match("^[a-z]$") and not key:match("^[gz]$") then
       return false
@@ -42,37 +49,38 @@ function Mode.new(buf, mode)
 end
 
 function Mode:attach()
-  local triggers = {} ---@type wk.Node[]
+  self.triggers = {}
+
   -- NOTE: order is important for nowait to work!
   -- * first add plugin mappings
   -- * then add triggers
   self.tree:walk(function(node)
-    if (node:is_plugin() or node:is_proxy()) and not node.keymap then
-      table.insert(triggers, node)
+    if is_special(node) then
+      table.insert(self.triggers, node)
       return false
     end
   end)
 
-  if Config.triggers then
+  if Config.triggers.modes[self.mode] then
+    -- Auto triggers
     self.tree:walk(function(node)
-      if needs_trigger(node) then
-        table.insert(triggers, node)
+      if is_safe(node, true) then
+        table.insert(self.triggers, node)
         return false
       end
     end)
   end
 
-  self.triggers = {}
-  for _, node in ipairs(triggers) do
-    local ctx = {
-      mode = self.mode,
-      keys = node.keys,
-      plugin = node.plugin,
-    }
-    if not Config.disable.trigger(ctx) then
-      table.insert(self.triggers, node)
+  -- Manual triggers
+  for _, t in ipairs(Config.triggers.mappings) do
+    if self:has(t) then
+      local node = self.tree:find(t.lhs)
+      if node and is_safe(node) then
+        table.insert(self.triggers, node)
+      end
     end
   end
+
   Triggers.schedule(self)
 end
 
@@ -83,6 +91,19 @@ end
 function Mode:clear()
   Triggers.detach(self)
   self.tree:clear()
+end
+
+---@param mode string
+function Mode:is(mode)
+  if mode == "v" then
+    return self.mode == "x" or self.mode == "s"
+  end
+  return self.mode == mode
+end
+
+---@param mapping wk.Keymap
+function Mode:has(mapping)
+  return self:is(mapping.mode) and (not mapping.buffer or mapping.buffer == self.buf.buf)
 end
 
 function Mode:update()
@@ -102,14 +123,8 @@ function Mode:update()
     end
   end
 
-  local modes = { [self.mode] = true }
-  if self.mode == "s" then
-    modes.v = true
-  elseif self.mode == "x" then
-    modes.v = true
-  end
   for _, m in ipairs(Config.mappings) do
-    if modes[m.mode] and (not m.buffer or m.buffer == self.buf.buf) then
+    if self:has(m) then
       self.tree:add(m, true)
     end
   end
@@ -163,9 +178,6 @@ function Buf:get(opts)
   end
   opts = opts or {}
   local mode = opts.mode or Util.mapmode()
-  if not Config.modes[mode] then
-    return
-  end
   local ret = self.modes[mode]
   if not ret then
     self.modes[mode] = Mode.new(self, mode)

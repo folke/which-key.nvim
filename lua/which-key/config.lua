@@ -1,4 +1,5 @@
 ---@class wk.Config: wk.Opts
+---@field triggers {mappings: wk.Mapping[], modes: table<string,boolean>}
 local M = {}
 
 M.version = "3.8.0" -- x-release-please-version
@@ -23,27 +24,19 @@ local defaults = {
   spec = {},
   -- show a warning when issues were detected with your mappings
   notify = true,
-  -- Enable/disable WhichKey for certain mapping modes
-  modes = {
-    n = true, -- Normal mode
-    i = true, -- Insert mode
-    x = true, -- Visual mode
-    s = true, -- Select mode
-    o = true, -- Operator pending mode
-    t = true, -- Terminal mode
-    c = true, -- Command mode
-    -- Start hidden and wait for a key to be pressed before showing the popup
-    -- Only used by enabled xo mapping modes.
-    -- Set to false to show the popup immediately (after the delay)
-    defer = {
-      ["<C-V>"] = true,
-      V = true,
-      -- Defer certain operators. Only used for operator pending mode.
-      operators = {
-        -- d = true, -- defer delete
-      },
-    },
+  -- Which-key automatically sets up triggers for your mappings.
+  -- But you can disable this and setup the triggers manually.
+  -- Check the docs for more info.
+  ---@type wk.Spec
+  triggers = {
+    { "<auto>", mode = "nixsotc" },
   },
+  -- Start hidden and wait for a key to be pressed before showing the popup
+  -- Only used by enabled xo mapping modes.
+  ---@param ctx { mode: string, operator: string }
+  defer = function(ctx)
+    return vim.list_contains({ "<C-V>", "V" }, ctx.mode)
+  end,
   plugins = {
     marks = true, -- shows a list of your marks on ' and `
     registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
@@ -177,19 +170,10 @@ local defaults = {
   },
   show_help = true, -- show a help message in the command line for using WhichKey
   show_keys = true, -- show the currently pressed key and its label as a message in the command line
-  -- Which-key automatically sets up triggers for your mappings.
-  -- But you can disable this and setup the triggers yourself.
-  -- Be aware, that triggers are not needed for visual and operator pending mode.
-  triggers = true, -- automatically setup triggers
+  -- disable WhichKey for certain buf types and file types.
   disable = {
-    -- disable WhichKey for certain buf types and file types.
     ft = {},
     bt = {},
-    -- disable a trigger for a certain context by returning true
-    ---@type fun(ctx: { keys: string, mode: string, plugin?: string }):boolean?
-    trigger = function(ctx)
-      return false
-    end,
   },
   debug = false, -- enable wk.log in the current directory
 }
@@ -202,20 +186,34 @@ M.mappings = {}
 ---@type wk.Opts
 M.options = nil
 
-function M.deprecated()
-  return vim.tbl_filter(function(k)
-    return M.options[k] ~= nil
-  end, {
-    "operators",
-    "key_labels",
+---@type {opt:string, msg:string}[]
+M.issues = {}
+
+function M.validate()
+  local deprecated = {
+    ["operators"] = "see `opts.defer`",
+    ["key_labels"] = "see `opts.replace`",
     "motions",
-    "popup_mappings",
-    "window",
-    "ignore_missing",
+    ["popup_mappings"] = "see `opts.keys`",
+    ["window"] = "see `opts.win`",
+    ["ignore_missing"] = "see `opts.filter`",
     "hidden",
-    "triggers_nowait",
-    "triggers_blacklist",
-  })
+    ["triggers_nowait"] = "see `opts.delay`",
+    ["triggers_blacklist"] = "see `opts.triggers`",
+    ["disable.trigger"] = "see `opts.triggers`",
+    ["modes"] = "see `opts.triggers`",
+  }
+  for k, v in pairs(deprecated) do
+    local opt = type(k) == "number" and v or k
+    local msg = type(k) == "number" and "option is deprecated" or v
+    local parts = vim.split(opt, ".", { plain = true })
+    if vim.tbl_get(M.options, unpack(parts)) ~= nil then
+      table.insert(M.issues, { opt = opt, msg = msg })
+    end
+  end
+  if type(M.options.triggers) == "boolean" then
+    table.insert(M.issues, { opt = "triggers", msg = "triggers must be a table" })
+  end
 end
 
 ---@param opts? wk.Opts
@@ -236,9 +234,10 @@ function M.setup(opts)
       M.options = vim.tbl_deep_extend("force", {}, defaults, Presets[M.options.preset] or {}, opts or {})
     end
 
-    if #M.deprecated() > 0 then
+    M.validate()
+    if #M.issues > 0 then
       Util.warn({
-        "Your config uses deprecated options.",
+        "There are issues with your config.",
         "Use `:checkhealth which-key` to find out more.",
       }, { once = true })
     end
@@ -251,6 +250,24 @@ function M.setup(opts)
 
     -- replace by the real add function
     wk.add = M.add
+
+    if type(M.options.triggers) == "boolean" then
+      ---@diagnostic disable-next-line: inject-field
+      M.options.triggers = M.options.triggers and { { "<auto>", mode = "nixsotc" } } or {}
+    end
+
+    M.triggers = {
+      mappings = require("which-key.mappings").parse(M.options.triggers),
+      modes = {},
+    }
+    ---@param m wk.Mapping
+    M.triggers.mappings = vim.tbl_filter(function(m)
+      if m.lhs == "<auto>" then
+        M.triggers.modes[m.mode] = true
+        return false
+      end
+      return true
+    end, M.triggers.mappings)
 
     -- load presets first so that they can be overriden by the user
     require("which-key.plugins").setup()

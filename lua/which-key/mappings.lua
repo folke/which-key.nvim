@@ -215,7 +215,7 @@ function M._parse(spec, ret, opts)
   end
 
   -- add mapping
-  M.add(mapping, ret)
+  M.add(mapping, ret, opts)
 
   -- process children
   for _, child in ipairs(children) do
@@ -231,8 +231,10 @@ function M._parse(spec, ret, opts)
 end
 
 ---@param mapping wk.Spec
+---@param opts? wk.Parse
 ---@param ret wk.Mapping[]
-function M.add(mapping, ret)
+function M.add(mapping, ret, opts)
+  opts = opts or {}
   if mapping.cond == false or ((type(mapping.cond) == "function") and not mapping.cond()) then
     return
   end
@@ -270,7 +272,7 @@ function M.add(mapping, ret)
   local has_desc = mapping.desc ~= nil
   Util.getters(mapping, { "desc", "icon" })
 
-  if has_desc or mapping.group or mapping.hidden or mapping.rhs then
+  if has_desc or mapping.group or mapping.hidden or mapping.rhs or (opts.version == M.VERSION and mapping.lhs) then
     local modes = mapping.mode or { "n" } --[[@as string|string[] ]]
     modes = type(modes) == "string" and vim.split(modes, "") or modes --[[@as string[] ]]
     for _, mode in ipairs(modes) do
