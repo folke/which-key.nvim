@@ -25,7 +25,12 @@ local function is_safe(node, no_single)
   end
   if no_single and #node.path == 1 then
     local key = node.path[1]
+    -- only z or g are safe
     if key:match("^[a-z]$") and not key:match("^[gz]$") then
+      return false
+    end
+    -- only Z is safe
+    if key:match("^[A-Z]$") and not key:match("^[Z]$") then
       return false
     end
   end
