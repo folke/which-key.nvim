@@ -346,6 +346,12 @@ will setup keymap triggers for every mode automatically and will trigger during
   [!NOTE] Auto triggers will never be created for existing keymaps. That includes
   every valid single key Neovim builtin mapping. If you want to trigger on a
   builtin keymap, you have to add it manually.
+  >lua
+       triggers = {
+         { "<auto>", mode = "nixsotc" },
+         { "a", mode = { "n", "v" } },
+       }
+  <
 
   [!TIP] To manually setup triggers, you can set `opts.triggers` to:
   >lua
