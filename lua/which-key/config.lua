@@ -78,7 +78,6 @@ local defaults = {
   layout = {
     width = { min = 20 }, -- min and max width of the columns
     spacing = 3, -- spacing between columns
-    align = "left", -- align columns left, center or right
   },
   keys = {
     scroll_down = "<c-d>", -- binding to scroll down inside the popup
