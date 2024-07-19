@@ -137,29 +137,6 @@ function M.hide()
   end
 end
 
----@return wk.Win.opts
-function M.opts()
-  return vim.tbl_deep_extend("force", { col = 0, row = math.huge }, Config.win, {
-    relative = "editor",
-    style = "minimal",
-    focusable = false,
-    noautocmd = true,
-    wo = {
-      scrolloff = 0,
-      foldenable = false,
-      winhighlight = "Normal:WhichKeyNormal,FloatBorder:WhichKeyBorder,FloatTitle:WhichKeyTitle",
-      winbar = "",
-      statusline = "",
-      wrap = false,
-    },
-    bo = {
-      buftype = "nofile",
-      bufhidden = "wipe",
-      filetype = "wk",
-    },
-  })
-end
-
 ---@param field string
 ---@param value string
 ---@return string
@@ -380,25 +357,28 @@ function M.show()
   local show_keys = Config.show_keys
 
   local has_border = opts.border and opts.border ~= "none"
-  if not has_border then
+  if has_border then
+    if opts.title == true then
+      opts.title = M.trail(state.node, { title = true })
+      show_keys = false
+    end
+    if opts.footer == true then
+      opts.footer = M.trail(state.node, { title = true })
+      show_keys = false
+    end
+    if not opts.title then
+      opts.title = ""
+      opts.title_pos = nil
+    end
+    if not opts.footer then
+      opts.footer = ""
+      opts.footer_pos = nil
+    end
+  else
     opts.footer = nil
-    opts.title = nil
-  end
-  if opts.title == true then
-    opts.title = M.trail(state.node, { title = true })
-    show_keys = false
-  end
-  if opts.footer == true then
-    opts.footer = M.trail(state.node, { title = true })
-    show_keys = false
-  end
-  if not opts.title then
-    opts.title = ""
-    opts.title_pos = nil
-  end
-  if not opts.footer then
-    opts.footer = ""
     opts.footer_pos = nil
+    opts.title = nil
+    opts.title_pos = nil
   end
 
   local bw = has_border and 2 or 0
