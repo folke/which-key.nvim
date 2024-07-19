@@ -16,6 +16,8 @@ local M = {}
 
 ---@type wk.State?
 M.state = nil
+M.recursion = 0
+M.recursion_timer = uv.new_timer()
 
 ---@return boolean safe, string? reason
 function M.safe(mode_change)
@@ -278,6 +280,22 @@ function M.start(opts)
   end
 
   local mapmode = mode.mode
+  M.recursion = M.recursion + 1
+  M.recursion_timer:start(500, 0, function()
+    M.recursion = 0
+  end)
+
+  if M.recursion > 50 then
+    Util.error({
+      "Recursion deteced.",
+      "Are you manually loading which-key in a keymap?",
+      "Use `opts.triggers` instad.",
+      "Please check the docs.",
+    })
+    Util.debug("recursion detected. Aborting")
+    Util.trace()
+    return false
+  end
 
   local View = require("which-key.view")
 
