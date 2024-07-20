@@ -166,7 +166,7 @@ function M.icon(node)
 end
 
 ---@param node wk.Node
----@param opts? {default?: "count"|"path", parent_key?: string, group?: boolean}
+---@param opts? {default?: "count"|"path", parent?: wk.Node, group?: boolean}
 function M.item(node, opts)
   opts = opts or {}
   opts.default = opts.default or "count"
@@ -184,15 +184,19 @@ function M.item(node, opts)
   desc = M.replace("desc", desc or "")
   local icon, icon_hl = M.icon(node)
 
-  local parent_key = opts.parent_key and M.replace("key", opts.parent_key) or ""
+  local raw_key = node.key
+  if opts.parent then
+    raw_key = node.keys:sub(opts.parent.keys:len() + 1)
+  end
+
   local group = node:is_group()
   ---@type wk.Item
   return setmetatable({
     node = node,
     icon = icon or "",
     icon_hl = icon_hl,
-    key = parent_key .. M.replace("key", node.key),
-    raw_key = (opts.parent_key or "") .. node.key,
+    key = M.replace("key", raw_key),
+    raw_key = raw_key,
     desc = group and Config.icons.group .. desc or desc,
     group = group,
   }, { __index = node })
@@ -237,6 +241,29 @@ function M.trail(node, opts)
   end
 end
 
+---@param root wk.Node
+---@param node wk.Node
+---@param expand fun(node:wk.Node): boolean
+---@param filter fun(node:wk.Node): boolean
+---@param ret? wk.Item[]
+function M.expand(root, node, expand, filter, ret)
+  ret = ret or {}
+  if not filter(node) then
+    return ret
+  end
+  if not node:is_plugin() and expand(node) then
+    if node.keymap then
+      ret[#ret + 1] = M.item(node, { group = false, parent = root })
+    end
+    for _, child in ipairs(node:children()) do
+      M.expand(root, child, expand, filter, ret)
+    end
+  else
+    ret[#ret + 1] = M.item(node, { parent = root })
+  end
+  return ret
+end
+
 function M.show()
   local state = State.state
   if not (state and state.show and state.node:is_group()) then
@@ -266,29 +293,25 @@ function M.show()
     return l and is_local or g and not is_local
   end
 
+  ---@param node wk.Node
+  local function expand(node)
+    if node:is_plugin() then
+      return false
+    end
+    if state.filter.expand then
+      return true
+    end
+    if type(Config.expand) == "function" then
+      return Config.expand(node)
+    end
+    local child_count = node:count()
+    return child_count > 0 and child_count <= Config.expand
+  end
+
   ---@type wk.Item[]
   local items = {}
   for _, node in ipairs(children) do
-    if filter(node) then
-      local expand = type(Config.expand) == "function" and Config.expand
-        or function()
-          local child_count = node:count()
-          return child_count > 0 and child_count <= Config.expand
-        end
-      if not node.plugin and (state.filter.expand or expand(node)) then
-        for _, child in ipairs(node:children()) do
-          if filter(child) then
-            table.insert(items, M.item(child, { parent_key = node.key }))
-          end
-        end
-        -- also add the node if it is a keymap
-        if node.keymap then
-          table.insert(items, M.item(node, { group = false }))
-        end
-      else
-        table.insert(items, M.item(node))
-      end
-    end
+    vim.list_extend(items, M.expand(state.node, node, expand, filter))
   end
 
   M.sort(items)
