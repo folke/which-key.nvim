@@ -210,7 +210,7 @@ function M.validate()
       table.insert(M.issues, { opt = opt, msg = msg })
     end
   end
-  if type(M.options.triggers) == "boolean" then
+  if type(M.options.triggers) ~= "table" then
     table.insert(M.issues, { opt = "triggers", msg = "triggers must be a table" })
   end
 end
@@ -250,9 +250,9 @@ function M.setup(opts)
     -- replace by the real add function
     wk.add = M.add
 
-    if type(M.options.triggers) == "boolean" then
+    if type(M.options.triggers) ~= "table" then
       ---@diagnostic disable-next-line: inject-field
-      M.options.triggers = M.options.triggers and { { "<auto>", mode = "nixsotc" } } or {}
+      M.options.triggers = defaults.triggers
     end
 
     M.triggers = {
