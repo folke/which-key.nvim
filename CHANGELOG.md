@@ -1,5 +1,29 @@
 # Changelog
 
+## [3.11.0](https://github.com/folke/which-key.nvim/compare/v3.10.0...v3.11.0) (2024-07-20)
+
+
+### Features
+
+* **icons:** icon for grug-far ([b2a2a0c](https://github.com/folke/which-key.nvim/commit/b2a2a0c9486211da23acdf18087f8203bfbca0e4))
+* **state:** detect recursion by users mapping wk manually. Closes [#761](https://github.com/folke/which-key.nvim/issues/761) ([55fa07f](https://github.com/folke/which-key.nvim/commit/55fa07fbbd8a4c6d75399b1d1f9005d146cda22c))
+* **view:** expand recursively. Closes [#767](https://github.com/folke/which-key.nvim/issues/767) ([5ae87af](https://github.com/folke/which-key.nvim/commit/5ae87af42914afe8b478ad6cdb3cb179fb73a62b))
+
+
+### Bug Fixes
+
+* **config:** disable wk by default for insert/command mode ([9d2b2e7](https://github.com/folke/which-key.nvim/commit/9d2b2e7059547c0481db2e93fd98547b26c7c05a))
+* **config:** more checks in validate ([bdcc429](https://github.com/folke/which-key.nvim/commit/bdcc429afaecc5896b462b0b07c2b3a9e9c1c60f))
+* **mappings:** preset descriptions should not override existing keymap descriptions. Fixes [#769](https://github.com/folke/which-key.nvim/issues/769) ([82d628f](https://github.com/folke/which-key.nvim/commit/82d628f4cfa397cf4bb233bd500e9cd9a018ded1))
+* **state:** don't feed count in insert mode. Fixes [#770](https://github.com/folke/which-key.nvim/issues/770) ([63690ff](https://github.com/folke/which-key.nvim/commit/63690ff34a8921c2de44fad289e2e04ee324b031))
+* **util:** better `&lt;nop&gt;` check. Fixes [#766](https://github.com/folke/which-key.nvim/issues/766) ([b7b3bd1](https://github.com/folke/which-key.nvim/commit/b7b3bd1b609524472f67e4a69d2bc14b80ea997f))
+* **view:** dont set title when no border. Fixes [#764](https://github.com/folke/which-key.nvim/issues/764) ([6e61b09](https://github.com/folke/which-key.nvim/commit/6e61b0904e9c038b6c511c43591ae2d811b4975e))
+
+
+### Performance Improvements
+
+* prevent expanding nodes when not needed ([78cc92c](https://github.com/folke/which-key.nvim/commit/78cc92c6cb7da88df60227bc334a598a7e772e51))
+
 ## [3.10.0](https://github.com/folke/which-key.nvim/compare/v3.9.0...v3.10.0) (2024-07-18)
 
 
