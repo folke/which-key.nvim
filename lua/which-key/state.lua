@@ -217,7 +217,7 @@ function M.execute(state, key, node)
 
   local keystr = node and node.keys or (state.node.keys .. (key or ""))
   if not state.mode:xo() then
-    if vim.v.count > 0 then
+    if vim.v.count > 0 and state.mode.mode ~= "i" and state.mode.mode ~= "c" then
       keystr = vim.v.count .. keystr
     end
     if vim.v.register ~= Util.reg() and state.mode.mode ~= "i" and state.mode.mode ~= "c" then
