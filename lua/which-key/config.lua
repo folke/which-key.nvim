@@ -29,7 +29,7 @@ local defaults = {
   -- Check the docs for more info.
   ---@type wk.Spec
   triggers = {
-    { "<auto>", mode = "nixsotc" },
+    { "<auto>", mode = "nxsot" },
   },
   -- Start hidden and wait for a key to be pressed before showing the popup
   -- Only used by enabled xo mapping modes.
