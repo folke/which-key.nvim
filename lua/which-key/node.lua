@@ -84,7 +84,7 @@ function M:count()
 end
 
 function M:is_group()
-  return self:is_plugin() or self:is_proxy() or self:count() > 0
+  return self:can_expand() or self:count() > 0
 end
 
 function M:is_proxy()

@@ -170,7 +170,7 @@ end
 function M.item(node, opts)
   opts = opts or {}
   opts.default = opts.default or "count"
-  local child_count = (node.plugin or opts.group == false) and 0 or node:count()
+  local child_count = (node:can_expand() or opts.group == false) and 0 or node:count()
   local desc = node.desc
   if not desc and node.keymap and node.keymap.rhs ~= "" and type(node.keymap.rhs) == "string" then
     desc = node.keymap.rhs --[[@as string]]
@@ -185,7 +185,7 @@ function M.item(node, opts)
   local icon, icon_hl = M.icon(node)
 
   local raw_key = node.key
-  if opts.parent then
+  if opts.parent and opts.parent ~= node and opts.parent.keys:find(node.keys, 1, true) == 1 then
     raw_key = node.keys:sub(opts.parent.keys:len() + 1)
   end
 
@@ -300,6 +300,9 @@ function M.show()
     end
     if state.filter.expand then
       return true
+    end
+    if node:can_expand() then
+      return false
     end
     if type(Config.expand) == "function" then
       return Config.expand(node)

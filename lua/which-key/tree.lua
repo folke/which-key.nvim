@@ -60,16 +60,17 @@ end
 
 ---@param node wk.Node
 function M:keep(node)
-  if node.desc == "which_key_ignore" or node.hidden then
+  if node.hidden or (node.keymap and node.keymap.desc == "which_key_ignore") then
     return false
   end
-  return node.plugin or node.keymap or node:is_group() or (node.mapping and not node.group)
+  return node:can_expand() or node.keymap or node:is_group() or (node.mapping and not node.group)
 end
 
 function M:fix()
   self:walk(function(node)
     if not self:keep(node) then
       self:del(node)
+      return false
     end
   end)
 end
