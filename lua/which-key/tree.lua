@@ -37,7 +37,9 @@ function M:add(keymap, virtual)
       M.dups[id][keymap] = true
       M.dups[id][node.mapping] = true
     end
-    node.mapping = keymap --[[@as wk.Mapping]]
+    if not (keymap.preset and node.keymap and node.keymap.desc) then
+      node.mapping = keymap --[[@as wk.Mapping]]
+    end
   else
     node.keymap = keymap
   end
