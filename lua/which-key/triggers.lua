@@ -21,7 +21,7 @@ function M.is_mapped(trigger)
     return false
   end
   -- ignore <Nop> mappings
-  if km.rhs == "" or km.rhs == "<Nop>" then
+  if Util.is_nop(km.rhs) then
     return false
   end
   -- ignore which-key triggers

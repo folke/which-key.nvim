@@ -4,6 +4,7 @@ local Icons = require("which-key.icons")
 local Mappings = require("which-key.mappings")
 local Migrate = require("which-key.migrate")
 local Tree = require("which-key.tree")
+local Util = require("which-key.util")
 
 local M = {}
 
@@ -89,7 +90,7 @@ function M.check()
       if mode then
         mode.tree:walk(function(node)
           local km = node.keymap
-          if not km or km.rhs == "" or km.rhs == "<Nop>" or node.keys:sub(1, 6) == "<Plug>" then
+          if not km or Util.is_nop(km.rhs) or node.keys:sub(1, 6) == "<Plug>" then
             return
           end
           if node.keymap and node:count() > 0 then

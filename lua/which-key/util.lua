@@ -23,6 +23,11 @@ function M.exit()
   vim.api.nvim_feedkeys(M.ESC, "n", false)
 end
 
+---@param rhs string|fun()
+function M.is_nop(rhs)
+  return type(rhs) == "string" and (rhs == "" or rhs:lower() == "<nop>")
+end
+
 --- Normalizes (and fixes) the lhs of a keymap
 ---@param lhs string
 function M.norm(lhs)

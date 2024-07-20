@@ -121,7 +121,7 @@ function Mode:update()
   for _, mapping in ipairs(mappings) do
     if mapping.desc and mapping.desc:find("which-key-trigger", 1, true) then
       -- ignore which-key triggers
-    elseif mapping.rhs == "" or mapping.rhs == "<Nop>" then
+    elseif Util.is_nop(mapping.rhs) then
       self.tree:add(mapping, true)
     elseif mapping.lhs:sub(1, 6) ~= "<Plug>" and mapping.lhs:sub(1, 5) ~= "<SNR>" then
       self.tree:add(mapping)
