@@ -23,6 +23,7 @@ M.rules = {
   { plugin = "trouble.nvim", cat = "filetype", name = "trouble" },
   { plugin = "todo-comments.nvim", cat = "file", name = "TODO" },
   { plugin = "nvim-spectre", icon = "󰛔 ", color = "blue" },
+  { plugin = "grug-far.nvim", pattern = "grug", icon = "󰛔 ", color = "blue" },
   { plugin = "noice.nvim", pattern = "noice", icon = "󰈸", color = "orange" },
   { plugin = "persistence.nvim", icon = " ", color = "azure" },
   { plugin = "neotest", cat = "filetype", name = "neotest-summary" },
