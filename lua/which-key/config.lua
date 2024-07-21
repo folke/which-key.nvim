@@ -241,6 +241,10 @@ function M.setup(opts)
       }, { once = true })
     end
 
+    for k, v in pairs(M.options.keys) do
+      M.options.keys[k] = Util.norm(v)
+    end
+
     if M.options.debug then
       Util.debug("\n\nDebug Started for v" .. M.version)
     end
