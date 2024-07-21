@@ -194,10 +194,10 @@ function M.check(state, key)
     return
   elseif key == "<BS>" then
     return state.node.parent or state.mode.tree.root
-  elseif View.valid() and key and key:lower() == Config.keys.scroll_down then
+  elseif View.valid() and key and key:lower() == Config.keys.scroll_down:lower() then
     View.scroll(false)
     return state.node
-  elseif View.valid() and key and key:lower() == Config.keys.scroll_up then
+  elseif View.valid() and key and key:lower() == Config.keys.scroll_up:lower() then
     View.scroll(true)
     return state.node
   end
