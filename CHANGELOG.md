@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.11.1](https://github.com/folke/which-key.nvim/compare/v3.11.0...v3.11.1) (2024-07-21)
+
+
+### Bug Fixes
+
+* **config:** keys can be any case. Fixes [#771](https://github.com/folke/which-key.nvim/issues/771) ([0a44d55](https://github.com/folke/which-key.nvim/commit/0a44d55d3bcdf75a134ec57c90aaec1055731014))
+* **config:** normalize keys ([c96be9b](https://github.com/folke/which-key.nvim/commit/c96be9bd54ffbc2ec7fc818001cad712119d778c))
+
 ## [3.11.0](https://github.com/folke/which-key.nvim/compare/v3.10.0...v3.11.0) (2024-07-20)
 
 
