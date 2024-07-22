@@ -10,7 +10,9 @@ M.did_setup = false
 function M.show(opts)
   opts = opts or {}
   opts = type(opts) == "string" and { keys = opts } or opts
-  opts.delay = 0
+  if opts.delay == nil then
+    opts.delay = 0
+  end
   opts.waited = vim.o.timeoutlen
   ---@diagnostic disable-next-line: param-type-mismatch
   if not require("which-key.state").start(opts) then
