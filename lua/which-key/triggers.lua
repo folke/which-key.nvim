@@ -15,7 +15,11 @@ M.timer = (vim.uv or vim.loop).new_timer()
 --- Checks if a mapping already exists that is not a which-key trigger.
 ---@param trigger wk.Trigger
 function M.is_mapped(trigger)
-  local km = vim.fn.maparg(trigger.keys, trigger.mode, false, true) --[[@as wk.Keymap]]
+  ---@type wk.Keymap|{}
+  local km
+  vim.api.nvim_buf_call(trigger.buf, function()
+    km = vim.fn.maparg(trigger.keys, trigger.mode, false, true) --[[@as wk.Keymap]]
+  end)
   -- not mapped
   if vim.tbl_isempty(km) then
     return false
@@ -54,11 +58,14 @@ end
 
 ---@param trigger wk.Trigger
 function M.del(trigger)
+  M._triggers[M.id(trigger)] = nil
+  if not vim.api.nvim_buf_is_valid(trigger.buf) then
+    return
+  end
   if M.is_mapped(trigger) then
     return
   end
   pcall(vim.keymap.del, trigger.mode, trigger.keys, { buffer = trigger.buf })
-  M._triggers[M.id(trigger)] = nil
 end
 
 ---@param trigger wk.Trigger
