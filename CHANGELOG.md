@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.12.0](https://github.com/folke/which-key.nvim/compare/v3.11.1...v3.12.0) (2024-07-22)
+
+
+### Features
+
+* **api:** allow overriding delay. Closes [#778](https://github.com/folke/which-key.nvim/issues/778) ([e6fea48](https://github.com/folke/which-key.nvim/commit/e6fea4889c20f22a7c6267cf1f1d091bc96f8ca0))
+
+
+### Bug Fixes
+
+* dont expand nodes without children. Fixes [#782](https://github.com/folke/which-key.nvim/issues/782) ([53a1d2a](https://github.com/folke/which-key.nvim/commit/53a1d2a674df5fb667497fe3bbda625c39a2c0e1))
+
 ## [3.11.1](https://github.com/folke/which-key.nvim/compare/v3.11.0...v3.11.1) (2024-07-21)
 
 
