@@ -183,7 +183,7 @@ function M.check(state, key)
     local has_children = node:count() > 0
     local is_nowait = node.keymap and (node.keymap.nowait == 1 or not timedout)
     local is_action = node.action ~= nil
-    if node:is_proxy() or node:is_plugin() or (has_children and not is_nowait and not is_action) then
+    if has_children and not is_nowait and not is_action then
       Util.debug("continue", node.keys, tostring(state.mode), node.plugin)
       return node
     end
