@@ -276,7 +276,7 @@ function M.add(mapping, ret, opts)
     local modes = mapping.mode or { "n" } --[[@as string|string[] ]]
     modes = type(modes) == "string" and vim.split(modes, "") or modes --[[@as string[] ]]
     for _, mode in ipairs(modes) do
-      if mode ~= "v" and mode ~= Util.mapmode(mode) then
+      if mode ~= "v" and mode ~= Util.mapmode({ mode = mode }) then
         M.warn("Invalid mode `" .. mode .. "`", mapping)
       end
       local m = vim.deepcopy(mapping)

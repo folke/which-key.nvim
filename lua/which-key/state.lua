@@ -89,11 +89,16 @@ function M.setup()
     return Config.defer(ctx)
   end
 
-  local cooldown = Util.cooldown()
   -- this prevents restarting which-key in the same tick
+  local cooldown = Util.cooldown()
+
+  -- cache the mode, since it can change outside of ModeChanged events
+  Util.mode = vim.api.nvim_get_mode().mode
+
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
     callback = function(ev)
+      Util.mode = vim.api.nvim_get_mode().mode
       Util.trace("ModeChanged(" .. ev.match .. ")")
       local mode = Buf.get()
 
