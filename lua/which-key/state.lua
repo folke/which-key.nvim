@@ -287,7 +287,7 @@ function M.start(opts)
 
   if M.recursion > 50 then
     Util.error({
-      "Recursion deteced.",
+      "Recursion detected.",
       "Are you manually loading which-key in a keymap?",
       "Use `opts.triggers` instad.",
       "Please check the docs.",
