@@ -15,13 +15,13 @@ M.timer = (vim.uv or vim.loop).new_timer()
 --- Checks if a mapping already exists that is not a which-key trigger.
 ---@param trigger wk.Trigger
 function M.is_mapped(trigger)
-  ---@type wk.Keymap|{}
+  ---@type wk.Keymap?
   local km
-  vim.api.nvim_buf_call(trigger.buf, function()
+  pcall(vim.api.nvim_buf_call, trigger.buf, function()
     km = vim.fn.maparg(trigger.keys, trigger.mode, false, true) --[[@as wk.Keymap]]
   end)
   -- not mapped
-  if vim.tbl_isempty(km) then
+  if not km or vim.tbl_isempty(km) then
     return false
   end
   -- ignore <Nop> mappings
