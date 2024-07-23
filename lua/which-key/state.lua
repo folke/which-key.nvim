@@ -93,9 +93,9 @@ function M.setup()
   -- this prevents restarting which-key in the same tick
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
-    callback = function(ev)
+    callback = vim.schedule_wrap(function(ev)
       Util.trace("ModeChanged(" .. ev.match .. ")")
-      local mode = Buf.get()
+      local mode = Buf.get({ mode = ev.match:match(":(.+)") })
 
       if cooldown() then
         Util.debug("cooldown")
@@ -121,7 +121,7 @@ function M.setup()
         M.stop()
       end
       Util.trace()
-    end,
+    end),
   })
 
   vim.api.nvim_create_autocmd({ "LspAttach", "LspDetach" }, {
