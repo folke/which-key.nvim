@@ -154,16 +154,13 @@ function M.setup()
   -- HACK: ModeChanged does not always trigger, so we need to manually
   -- check for mode changes. This seems to be due to the usage of `:norm` in autocmds.
   -- See https://github.com/folke/which-key.nvim/issues/787
-  local last_mode = nil ---@type string?
-  local last_buf = nil ---@type number?
   local timer = uv.new_timer()
   timer:start(0, 50, function()
-    local mode = vim.api.nvim_get_mode().mode
-    if mode == last_mode and last_buf == current_buf then
+    local mode = Util.mapmode()
+    -- check if the mode exists for the current buffer
+    if Buf.bufs[current_buf] and Buf.bufs[current_buf].modes[mode] then
       return
     end
-    last_mode = mode
-    last_buf = current_buf
     vim.schedule(Buf.get)
   end)
 end
