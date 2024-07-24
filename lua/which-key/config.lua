@@ -248,9 +248,8 @@ function M.setup(opts)
     if M.options.debug then
       Util.debug("\n\nDebug Started for v" .. M.version)
       if package.loaded.lazy then
-        local LazyConfig = require("lazy.core.config")
         local Git = require("lazy.manage.git")
-        local plugin = LazyConfig.plugins["which-key.nvim"]
+        local plugin = require("lazy.core.config").plugins["which-key.nvim"]
         Util.debug(vim.inspect(Git.info(plugin.dir)))
       end
     end
