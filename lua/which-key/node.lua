@@ -153,6 +153,8 @@ function M:expand()
       local action = child.mapping and child.mapping.rhs
       if type(action) == "function" then
         child.action = action
+      elseif type(action) == "string" then
+        Util.error("expand mappings only support functions as rhs:\n" .. vim.inspect(child.mapping))
       end
       ret[child.key] = child
     end
