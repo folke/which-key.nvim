@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.12.1](https://github.com/folke/which-key.nvim/compare/v3.12.0...v3.12.1) (2024-07-24)
+
+
+### Bug Fixes
+
+* **node:** dynamic mappings only support functions as rhs. Fixes [#790](https://github.com/folke/which-key.nvim/issues/790) ([ba91db7](https://github.com/folke/which-key.nvim/commit/ba91db72ffc745983f06ca4e7d969101287a9afe))
+* **state:** use cached mode. Fixes [#787](https://github.com/folke/which-key.nvim/issues/787). Closes [#789](https://github.com/folke/which-key.nvim/issues/789) ([c1b062a](https://github.com/folke/which-key.nvim/commit/c1b062ae95c3ca3e6eb87c075da991523605d79b))
+* **triggers:** check for existing keymaps in the correct buffer. Fixes [#783](https://github.com/folke/which-key.nvim/issues/783) ([977fa23](https://github.com/folke/which-key.nvim/commit/977fa23622425e3c8ae837b9f7c710d9c78bdeab))
+* **triggers:** nil error ([dae3bd2](https://github.com/folke/which-key.nvim/commit/dae3bd271826887771a7fb6deec231d2eb344f02))
+
 ## [3.12.0](https://github.com/folke/which-key.nvim/compare/v3.11.1...v3.12.0) (2024-07-22)
 
 
