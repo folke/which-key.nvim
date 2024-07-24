@@ -242,13 +242,6 @@ function M.clear(opts)
       M.bufs[b]:clear(opts)
     end
   end
-  if opts.check ~= false then
-    M.check()
-  end
 end
-
-M.check = Util.debounce(50, function()
-  M.get()
-end)
 
 return M

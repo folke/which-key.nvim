@@ -17,7 +17,6 @@ M.BS = M.t("<bs>")
 M.EXIT = M.t("<C-\\><C-n>")
 M.LUA_CALLBACK = "\x80\253g"
 M.CMD = "\x80\253h"
-M.mode = "n"
 
 function M.exit()
   vim.api.nvim_feedkeys(M.EXIT, "n", false)
@@ -77,10 +76,9 @@ function M.keys(lhs, opts)
   return ret
 end
 
----@param opts? {mode?: string, cached?: boolean}
-function M.mapmode(opts)
-  opts = opts or {}
-  local mode = opts.mode or (opts.cached ~= false and M.mode) or vim.api.nvim_get_mode().mode
+---@param mode? string
+function M.mapmode(mode)
+  mode = mode or vim.api.nvim_get_mode().mode
   mode = mode:gsub(M.t("<C-V>"), "v"):gsub(M.t("<C-S>"), "s"):lower()
   if mode:sub(1, 2) == "no" then
     return "o"

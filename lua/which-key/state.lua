@@ -57,10 +57,8 @@ function M.setup()
     callback = function(ev)
       Util.debug(ev.event)
       if ev.event == "RecordingEnter" then
-        Buf.clear({ buf = ev.buf, check = false })
+        Buf.clear({ buf = ev.buf })
         M.stop()
-      else
-        Buf.check()
       end
     end,
   })
@@ -89,16 +87,11 @@ function M.setup()
     return Config.defer(ctx)
   end
 
-  -- this prevents restarting which-key in the same tick
   local cooldown = Util.cooldown()
-
-  -- cache the mode, since it can change outside of ModeChanged events
-  Util.mode = vim.api.nvim_get_mode().mode
-
+  -- this prevents restarting which-key in the same tick
   vim.api.nvim_create_autocmd("ModeChanged", {
     group = group,
     callback = function(ev)
-      Util.mode = vim.api.nvim_get_mode().mode
       Util.trace("ModeChanged(" .. ev.match .. ")")
       local mode = Buf.get()
 
@@ -147,16 +140,32 @@ function M.setup()
     end,
   })
 
+  local current_buf = vim.api.nvim_get_current_buf()
   vim.api.nvim_create_autocmd({ "BufEnter" }, {
     group = group,
     callback = function(ev)
+      current_buf = ev.buf ---@type number
       Util.trace(ev.event .. "(" .. ev.buf .. ")")
       Buf.get()
       Util.trace()
     end,
   })
 
-  Buf.check()
+  -- HACK: ModeChanged does not always trigger, so we need to manually
+  -- check for mode changes. This seems to be due to the usage of `:norm` in autocmds.
+  -- See https://github.com/folke/which-key.nvim/issues/787
+  local last_mode = nil ---@type string?
+  local last_buf = nil ---@type number?
+  local timer = uv.new_timer()
+  timer:start(0, 50, function()
+    local mode = vim.api.nvim_get_mode().mode
+    if mode == last_mode and last_buf == current_buf then
+      return
+    end
+    last_mode = mode
+    last_buf = current_buf
+    vim.schedule(Buf.get)
+  end)
 end
 
 function M.stop()
