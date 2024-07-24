@@ -185,7 +185,7 @@ function M.item(node, opts)
   local icon, icon_hl = M.icon(node)
 
   local raw_key = node.key
-  if opts.parent and opts.parent ~= node and opts.parent.keys:find(node.keys, 1, true) == 1 then
+  if opts.parent and opts.parent ~= node and node.keys:find(opts.parent.keys, 1, true) == 1 then
     raw_key = node.keys:sub(opts.parent.keys:len() + 1)
   end
 
