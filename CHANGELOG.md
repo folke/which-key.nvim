@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.13.0](https://github.com/folke/which-key.nvim/compare/v3.12.1...v3.13.0) (2024-07-24)
+
+
+### Features
+
+* **debug:** add git info to log when using lazy ([550338d](https://github.com/folke/which-key.nvim/commit/550338dc292c014d83687afccb0afb06e3e769f2))
+
 ## [3.12.1](https://github.com/folke/which-key.nvim/compare/v3.12.0...v3.12.1) (2024-07-24)
 
 
