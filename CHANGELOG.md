@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.13.2](https://github.com/folke/which-key.nvim/compare/v3.13.1...v3.13.2) (2024-07-24)
+
+
+### Bug Fixes
+
+* **view:** fix epanded keys. Fixes [#795](https://github.com/folke/which-key.nvim/issues/795) ([f5e0cd5](https://github.com/folke/which-key.nvim/commit/f5e0cd5c7712ac63d8e6184785fb7bdac3b7b50d))
+
 ## [3.13.1](https://github.com/folke/which-key.nvim/compare/v3.13.0...v3.13.1) (2024-07-24)
 
 
