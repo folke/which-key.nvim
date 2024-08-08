@@ -445,7 +445,7 @@ function M.show()
         keys[#keys + 1] = { key = "<bs>", desc = "back" }
       end
       if opts.height < text:height() then
-        keys[#keys + 1] = { key = "<c-d>/<c-u>", desc = "scroll" }
+        keys[#keys + 1] = { key = Config.keys.scroll_down .. "/" .. Config.keys.scroll_up, desc = "scroll" }
       end
       local help = Text.new()
       for k, key in ipairs(keys) do
