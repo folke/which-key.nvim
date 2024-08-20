@@ -115,7 +115,7 @@ Default Options ~
       -- Check the docs for more info.
       ---@type wk.Spec
       triggers = {
-        { "<auto>", mode = "nxsot" },
+        { "<auto>", mode = "nxso" },
       },
       -- Start hidden and wait for a key to be pressed before showing the popup
       -- Only used by enabled xo mapping modes.
@@ -339,7 +339,7 @@ There’s two ways that **which-key** can be triggered:
 
 Both can be configured using `opts.triggers` and `opts.defer`.
 
-By default `opts.triggers` includes `{ "<auto>", mode = "nixsotc" }`, which
+By default `opts.triggers` includes `{ "<auto>", mode = "nxso" }`, which
 will setup keymap triggers for every mode automatically and will trigger during
 `ModeChanged`.
 
@@ -349,7 +349,7 @@ will setup keymap triggers for every mode automatically and will trigger during
   builtin keymap, you have to add it manually.
   >lua
        triggers = {
-         { "<auto>", mode = "nixsotc" },
+         { "<auto>", mode = "nxso" },
          { "a", mode = { "n", "v" } },
        }
   <
