@@ -339,7 +339,7 @@ There’s two ways that **which-key** can be triggered:
 
 Both can be configured using `opts.triggers` and `opts.defer`.
 
-By default `opts.triggers` includes `{ "<auto>", mode = "nxso" }`, which
+By default `opts.triggers` includes `{ "<auto>", mode = "nixsotc" }`, which
 will setup keymap triggers for every mode automatically and will trigger during
 `ModeChanged`.
 
@@ -349,7 +349,7 @@ will setup keymap triggers for every mode automatically and will trigger during
   builtin keymap, you have to add it manually.
   >lua
        triggers = {
-         { "<auto>", mode = "nxso" },
+         { "<auto>", mode = "nixsotc" },
          { "a", mode = { "n", "v" } },
        }
   <
