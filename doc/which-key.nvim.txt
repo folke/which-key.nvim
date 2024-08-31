@@ -211,7 +211,7 @@ Default Options ~
         group = "+", -- symbol prepended to a group
         ellipsis = "…",
         -- set to false to disable all mapping icons,
-        -- both those explicitely added in a mapping
+        -- both those explicitly added in a mapping
         -- and those from rules
         mappings = true,
         --- See `lua/which-key/icons.lua` for more details
