@@ -23,6 +23,10 @@ function M.exit()
   vim.api.nvim_feedkeys(M.ESC, "n", false)
 end
 
+function M.in_macro()
+  return vim.fn.reg_recording() ~= "" or vim.fn.reg_executing() ~= ""
+end
+
 ---@param rhs string|fun()
 function M.is_nop(rhs)
   return type(rhs) == "string" and (rhs == "" or rhs:lower() == "<nop>")
