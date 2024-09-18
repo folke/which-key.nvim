@@ -66,7 +66,7 @@ function Mode:attach()
     end
   end)
 
-  if Config.triggers.modes[self.mode] then
+  if Config.triggers.modes[self.mode] and vim.fn.reg_recording() == "" then
     -- Auto triggers
     self.tree:walk(function(node)
       if is_safe(node, true) then
