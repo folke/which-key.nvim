@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.13.3](https://github.com/folke/which-key.nvim/compare/v3.13.2...v3.13.3) (2024-09-18)
+
+
+### Bug Fixes
+
+* **config:** disable wk by default  for terminal mode ([#825](https://github.com/folke/which-key.nvim/issues/825)) ([e7b415c](https://github.com/folke/which-key.nvim/commit/e7b415cc1d9ac9aee180ee5c8e46ca1484ebda78))
+* **triggers:** never attach when macro is recording / executing. Fixes [#851](https://github.com/folke/which-key.nvim/issues/851). Fixes [#822](https://github.com/folke/which-key.nvim/issues/822). Fixes [#807](https://github.com/folke/which-key.nvim/issues/807) ([6b023b4](https://github.com/folke/which-key.nvim/commit/6b023b4c29ecc0aad06a51dd14bd2754b43bb0c8))
+* **view:** display actual scroll up/down keys in help ([#821](https://github.com/folke/which-key.nvim/issues/821)) ([dafe27a](https://github.com/folke/which-key.nvim/commit/dafe27a06919bc5077db2ee97feec54d0932450e))
+
 ## [3.13.2](https://github.com/folke/which-key.nvim/compare/v3.13.1...v3.13.2) (2024-07-24)
 
 
