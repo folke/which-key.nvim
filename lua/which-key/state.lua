@@ -298,7 +298,7 @@ function M.start(opts)
     Util.error({
       "Recursion detected.",
       "Are you manually loading which-key in a keymap?",
-      "Use `opts.triggers` instad.",
+      "Use `opts.triggers` instead.",
       "Please check the docs.",
     })
     Util.debug("recursion detected. Aborting")
