@@ -23,7 +23,7 @@ function M.check()
   ok(
     "Most of these checks are for informational purposes only.\n"
       .. "WARNINGS should be treated as a warning, and don't necessarily indicate a problem with your config.\n"
-      .. "Please |DON't| report these warnings as an issue."
+      .. "Please |DON'T| report these warnings as an issue."
   )
 
   start("Checking your config")
