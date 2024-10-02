@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.14.0](https://github.com/folke/which-key.nvim/compare/v3.13.3...v3.14.0) (2024-10-02)
+
+
+### Features
+
+* **icons:** add grapple icon ([#838](https://github.com/folke/which-key.nvim/issues/838)) ([c21b71f](https://github.com/folke/which-key.nvim/commit/c21b71ff0bc4e516705811ec6916131e880cb882))
+
 ## [3.13.3](https://github.com/folke/which-key.nvim/compare/v3.13.2...v3.13.3) (2024-09-18)
 
 
