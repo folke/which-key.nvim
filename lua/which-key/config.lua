@@ -234,7 +234,7 @@ function M.setup(opts)
     end
 
     M.validate()
-    if #M.issues > 0 then
+    if #M.issues > 0 and M.notify then
       Util.warn({
         "There are issues with your config.",
         "Use `:checkhealth which-key` to find out more.",
