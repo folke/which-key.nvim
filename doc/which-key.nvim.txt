@@ -1,4 +1,4 @@
-*which-key.nvim.txt*          For Neovim          Last change: 2024 October 02
+*which-key.nvim.txt*          For Neovim         Last change: 2024 November 06
 
 ==============================================================================
 Table of Contents                           *which-key.nvim-table-of-contents*
