@@ -145,7 +145,7 @@ function M.schedule(mode)
     0,
     vim.schedule_wrap(function()
       if Util.in_macro() then
-        return M.schedule()
+        return vim.defer_fn(M.schedule, 100)
       end
       for m, _ in pairs(M.suspended) do
         M.suspended[m] = nil
