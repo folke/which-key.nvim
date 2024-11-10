@@ -39,6 +39,21 @@ function M.norm(lhs)
   return M.cache.norm[lhs]
 end
 
+--- checks if lhs has a mapping
+---@param mode string
+---@param lhs string
+function M.has_mapping(mode, lhs)
+  local maps = vim.api.nvim_get_keymap(mode)
+  for _, value in ipairs(maps) do
+    if
+      vim.api.nvim_replace_termcodes(value.lhs, true, true, true)
+      == vim.api.nvim_replace_termcodes(lhs, true, true, true)
+    then
+      return value
+    end
+  end
+end
+
 -- Default register
 function M.reg()
   -- this will be set to 2 if there is a non-empty clipboard
