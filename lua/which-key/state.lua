@@ -18,6 +18,7 @@ local M = {}
 M.state = nil
 M.recursion = 0
 M.recursion_timer = uv.new_timer()
+M.hydra_mode = nil
 
 ---@return boolean safe, string? reason
 function M.safe(mode_change)
@@ -235,6 +236,15 @@ function M.execute(state, key, node)
   end
   Util.debug("feedkeys", tostring(state.mode), keystr)
   local feed = vim.api.nvim_replace_termcodes(keystr, true, true, true)
+
+  if M.hydra_mode then
+    -- prevent recursion in hydra mode when keying non-existing keymap
+    if not Util.has_mapping(state.mode.mode, feed) then
+      Util.debug("  mapping not found!")
+      return
+    end
+  end
+
   vim.api.nvim_feedkeys(feed, "mit", false)
 end
 
@@ -273,6 +283,7 @@ function M.start(opts)
   end)
 
   opts = opts or {}
+  M.hydra_mode = opts.loop
   opts.update = true
   local mode = Buf.get(opts)
   opts.update = nil
@@ -294,7 +305,8 @@ function M.start(opts)
     M.recursion = 0
   end)
 
-  if M.recursion > 50 then
+  recursion_threshold = M.hydra_mode and 200 or 50
+  if M.recursion > recursion_threshold then
     Util.error({
       "Recursion detected.",
       "Are you manually loading which-key in a keymap?",
