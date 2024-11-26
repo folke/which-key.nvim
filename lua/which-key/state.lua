@@ -18,6 +18,7 @@ local M = {}
 M.state = nil
 M.recursion = 0
 M.recursion_timer = uv.new_timer()
+M.redraw_timer = uv.new_timer()
 
 ---@return boolean safe, string? reason
 function M.safe(mode_change)
@@ -238,17 +239,27 @@ function M.execute(state, key, node)
   vim.api.nvim_feedkeys(feed, "mit", false)
 end
 
+function M.getchar()
+  return pcall(vim.fn.getcharstr)
+end
+
 ---@param state wk.State
 ---@return wk.Node? node, boolean? exit
 function M.step(state)
-  vim.schedule(function()
-    vim.cmd.redraw()
-    if vim.api.nvim__redraw then
-      vim.api.nvim__redraw({ cursor = true })
-    end
-  end)
+  M.redraw_timer:start(
+    200,
+    0,
+    vim.schedule_wrap(function()
+      if vim.api.nvim__redraw then
+        vim.api.nvim__redraw({ cursor = true, flush = true })
+      else
+        vim.cmd.redraw()
+      end
+    end)
+  )
+  vim.schedule(function() end)
   Util.debug("getchar")
-  local ok, char = pcall(vim.fn.getcharstr)
+  local ok, char = M.getchar()
   if not ok then
     Util.debug("nok", char)
     return nil, true
@@ -341,6 +352,7 @@ function M.start(opts)
       break
     end
   end
+  M.redraw_timer:stop()
 
   if opts.loop and not exit then
     -- NOTE: flush pending keys to prevent a trigger loop
