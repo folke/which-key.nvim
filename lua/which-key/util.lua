@@ -35,7 +35,10 @@ end
 --- Normalizes (and fixes) the lhs of a keymap
 ---@param lhs string
 function M.norm(lhs)
-  M.cache.norm[lhs] = M.cache.norm[lhs] or vim.fn.keytrans(M.t(lhs))
+  if M.cache.norm[lhs] then
+    return M.cache.norm[lhs]
+  end
+  M.cache.norm[lhs] = vim.fn.keytrans(M.t(lhs))
   return M.cache.norm[lhs]
 end
 

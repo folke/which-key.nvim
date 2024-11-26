@@ -80,7 +80,7 @@ function M:inspect(depth)
 end
 
 function M:count()
-  return #self:children()
+  return not self:can_expand() and vim.tbl_count(self._children) or #self:children()
 end
 
 function M:is_group()
@@ -96,7 +96,7 @@ function M:is_plugin()
 end
 
 function M:can_expand()
-  return self.plugin or self:is_proxy() or (self.mapping and self.mapping.expand)
+  return self.plugin or (self.mapping and (self.mapping.proxy or self.mapping.expand))
 end
 
 ---@return wk.Node[]
