@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.14.1](https://github.com/folke/which-key.nvim/compare/v3.14.0...v3.14.1) (2024-11-28)
+
+
+### Bug Fixes
+
+* **state:** do proper redraw that works on nightly and on stable ([3a9b162](https://github.com/folke/which-key.nvim/commit/3a9b162026a4ad4b9ee7b09009b8bbe69ba19520))
+
 ## [3.14.0](https://github.com/folke/which-key.nvim/compare/v3.13.3...v3.14.0) (2024-11-28)
 
 
