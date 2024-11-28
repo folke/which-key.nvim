@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.14.0](https://github.com/folke/which-key.nvim/compare/v3.13.3...v3.14.0) (2024-11-28)
+
+
+### Features
+
+* **icons:** add grapple icon ([#838](https://github.com/folke/which-key.nvim/issues/838)) ([c21b71f](https://github.com/folke/which-key.nvim/commit/c21b71ff0bc4e516705811ec6916131e880cb882))
+
+
+### Bug Fixes
+
+* **state:** use redraw flush to prevent issues with selecting visual line etc. Fixes [#898](https://github.com/folke/which-key.nvim/issues/898) ([3974c2d](https://github.com/folke/which-key.nvim/commit/3974c2d21b117236ec4f5be4e61a9e4f02aa4c46))
+* **triggers:** when in macro defer re-checking suspended for 100ms. Fixes [#864](https://github.com/folke/which-key.nvim/issues/864) ([f46556b](https://github.com/folke/which-key.nvim/commit/f46556b2b1bb7dbbd3b1086eaa24ca5db52b1986))
+
+
+### Performance Improvements
+
+* **state:** only redraw when waiting for a key longer than 200ms ([1c5aeba](https://github.com/folke/which-key.nvim/commit/1c5aeba42861a2cd446156ec8cbb7e7a5b5a9dfd))
+* **tree:** small perf optims ([5610eb6](https://github.com/folke/which-key.nvim/commit/5610eb6bd7193e78d31eb399effacd2dfc25dedf))
+
 ## [3.13.3](https://github.com/folke/which-key.nvim/compare/v3.13.2...v3.13.3) (2024-09-18)
 
 
