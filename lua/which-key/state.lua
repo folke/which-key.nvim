@@ -251,7 +251,7 @@ function M.step(state)
     0,
     vim.schedule_wrap(function()
       if vim.api.nvim__redraw then
-        vim.api.nvim__redraw({ cursor = true, valid = true })
+        vim.api.nvim__redraw({ cursor = true, valid = true, flush = true })
       else
         vim.cmd.redraw()
       end
