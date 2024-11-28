@@ -247,11 +247,11 @@ end
 ---@return wk.Node? node, boolean? exit
 function M.step(state)
   M.redraw_timer:start(
-    200,
+    50,
     0,
     vim.schedule_wrap(function()
       if vim.api.nvim__redraw then
-        vim.api.nvim__redraw({ cursor = true, flush = true })
+        vim.api.nvim__redraw({ cursor = true, valid = true })
       else
         vim.cmd.redraw()
       end
