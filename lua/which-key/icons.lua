@@ -29,6 +29,8 @@ M.rules = {
   { plugin = "persistence.nvim", icon = " ", color = "azure" },
   { plugin = "neotest", cat = "filetype", name = "neotest-summary" },
   { plugin = "lazy.nvim", cat = "filetype", name = "lazy" },
+  { plugin = "snacks.nvim", icon = "󱥰 ", color = "purple" },
+  { pattern = "profiler", icon = "⚡", color = "orange" },
   { plugin = "CopilotChat.nvim", icon = " ", color = "orange" },
   { pattern = "%f[%a]git", cat = "filetype", name = "git" },
   { pattern = "terminal", icon = " ", color = "red" },
