@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.15.0](https://github.com/folke/which-key.nvim/compare/v3.14.1...v3.15.0) (2024-12-15)
+
+
+### Features
+
+* **icons:** icons for snacks and profiler ([d533d8a](https://github.com/folke/which-key.nvim/commit/d533d8a2e0da3444986500ecc2fb0528062d6003))
+
+
+### Bug Fixes
+
+* **config:** load early when executing WhichKey command. Fixes [#912](https://github.com/folke/which-key.nvim/issues/912) ([c890020](https://github.com/folke/which-key.nvim/commit/c8900201501ab6f0dcfabd55c70f6ba03ada3bd8))
+
 ## [3.14.1](https://github.com/folke/which-key.nvim/compare/v3.14.0...v3.14.1) (2024-11-28)
 
 
