@@ -317,8 +317,8 @@ There's two ways that **which-key** can be triggered:
 
 Both can be configured using `opts.triggers` and `opts.defer`.
 
-By default `opts.triggers` includes `{ "<auto>", mode = "nixsotc" }`, which
-will setup keymap triggers for every mode automatically and will trigger during
+By default `opts.triggers` includes `{ "<auto>", mode = "nxso" }`, which
+will setup keymap triggers for normal (`n`), visual (`x`), select (`s`), and operator-pending (`o`) modes automatically and will trigger during
 `ModeChanged`.
 
 > [!NOTE]
@@ -328,7 +328,7 @@ will setup keymap triggers for every mode automatically and will trigger during
 >
 > ```lua
 >  triggers = {
->    { "<auto>", mode = "nixsotc" },
+>    { "<auto>", mode = "nxso" },
 >    { "a", mode = { "n", "v" } },
 >  }
 > ```
