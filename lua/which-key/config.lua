@@ -2,7 +2,7 @@
 ---@field triggers {mappings: wk.Mapping[], modes: table<string,boolean>}
 local M = {}
 
-M.version = "3.15.0" -- x-release-please-version
+M.version = "3.16.0" -- x-release-please-version
 
 ---@class wk.Opts
 local defaults = {

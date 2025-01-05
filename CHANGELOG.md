@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.16.0](https://github.com/folke/which-key.nvim/compare/v3.15.0...v3.16.0) (2025-01-05)
+
+
+### Features
+
+* **icons:** add refactoring ([#923](https://github.com/folke/which-key.nvim/issues/923)) ([7b7e3d0](https://github.com/folke/which-key.nvim/commit/7b7e3d0788957592e12970bbb9e0e14c4cd143d4))
+
+
+### Bug Fixes
+
+* **mappings:** add missing keybinds for g; & g, ([#924](https://github.com/folke/which-key.nvim/issues/924)) ([57f4438](https://github.com/folke/which-key.nvim/commit/57f4438158e93be6856317e999758ed77f286dd9))
+
 ## [3.15.0](https://github.com/folke/which-key.nvim/compare/v3.14.1...v3.15.0) (2024-12-15)
 
 
