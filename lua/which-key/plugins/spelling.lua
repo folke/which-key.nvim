@@ -4,20 +4,20 @@ local M = {}
 
 M.name = "spelling"
 
-M.mappings = {
-  {
-    "z=",
-    icon = { icon = " ", color = "red" },
-    plugin = "spelling",
-    desc = "Spelling Suggestions",
-  },
-}
-
 ---@type table<string, any>
 M.opts = {}
 
 function M.setup(opts)
   M.opts = opts
+
+  require("which-key.config").add({
+    {
+      M.opts.trigger,
+      icon = { icon = " ", color = "red" },
+      plugin = "spelling",
+      desc = "Spelling Suggestions",
+    },
+  })
 end
 
 function M.expand()
