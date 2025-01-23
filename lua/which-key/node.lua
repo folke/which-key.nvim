@@ -24,6 +24,17 @@ function M.new(parent, key)
   return self
 end
 
+function M:has_nowait_ancestor()
+  local node = self
+  while node do
+    if node.keymap and node.keymap.nowait then
+      return true
+    end
+    node = node.parent
+  end
+  return false
+end
+
 function M:is_local()
   if self.path[1] == Util.norm("<localleader>") then
     return true

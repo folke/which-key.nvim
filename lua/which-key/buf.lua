@@ -60,7 +60,7 @@ function Mode:attach()
   -- * first add plugin mappings
   -- * then add triggers
   self.tree:walk(function(node)
-    if is_special(node) then
+    if is_special(node) and not node:has_nowait_ancestor() then
       table.insert(self.triggers, node)
       return false
     end
@@ -69,6 +69,9 @@ function Mode:attach()
   if Config.triggers.modes[self.mode] then
     -- Auto triggers
     self.tree:walk(function(node)
+      if node.keymap and node.keymap.nowait then
+        return false
+      end
       if is_safe(node, true) then
         table.insert(self.triggers, node)
         return false
