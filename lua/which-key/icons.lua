@@ -54,6 +54,7 @@ M.rules = {
   { pattern = "tab", icon = "󰓩 ", color = "purple" },
   { pattern = "%f[%a]ai", icon = " ", color = "green" },
   { pattern = "ui", icon = "󰙵 ", color = "cyan" },
+  { pattern = "undotree", icon = "󰙅 ", color = "orange" },
 }
 
 ---@type wk.IconProvider[]
