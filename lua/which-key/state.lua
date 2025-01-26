@@ -144,9 +144,12 @@ function M.setup()
     group = group,
     callback = function(ev)
       current_buf = ev.buf ---@type number
-      Util.trace(ev.event .. "(" .. ev.buf .. ")")
-      Buf.get()
-      Util.trace()
+      -- move to end of event loop to give time to set localleader mappings
+      vim.defer_fn(function()
+        Util.trace(ev.event .. "(" .. ev.buf .. ")")
+        Buf.get()
+        Util.trace()
+      end, 0)
     end,
   })
 
