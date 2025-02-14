@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.17.0](https://github.com/folke/which-key.nvim/compare/v3.16.0...v3.17.0) (2025-02-14)
+
+
+### Features
+
+* **mappings:** allow flagging a mapping as `real`. It will be hidden if there's no real keymap. ([bcfe1e4](https://github.com/folke/which-key.nvim/commit/bcfe1e4596dc0c6cc25a5b14b32f60a81d18c08d))
+* **preset:** some extra win keymaps ([ff61f4f](https://github.com/folke/which-key.nvim/commit/ff61f4fe0d21de199c44a9d893395b5005e96270))
+
 ## [3.16.0](https://github.com/folke/which-key.nvim/compare/v3.15.0...v3.16.0) (2025-01-05)
 
 
