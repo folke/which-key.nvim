@@ -146,10 +146,10 @@ function M._get(rules, opts, check_ft)
     end
   end
 
-  -- plugin icons
-  if plugin then
+  -- pattern icons
+  if opts.desc then
     for _, icon in ipairs(rules) do
-      if icon.plugin == plugin then
+      if icon.pattern and opts.desc:lower():find(icon.pattern) then
         local ico, hl = M.get_icon(icon)
         if ico then
           return ico, hl
@@ -173,10 +173,10 @@ function M._get(rules, opts, check_ft)
     end
   end
 
-  -- pattern icons
-  if opts.desc then
+  -- plugin icons
+  if plugin then
     for _, icon in ipairs(rules) do
-      if icon.pattern and opts.desc:lower():find(icon.pattern) then
+      if icon.plugin == plugin then
         local ico, hl = M.get_icon(icon)
         if ico then
           return ico, hl
