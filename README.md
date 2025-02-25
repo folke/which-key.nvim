@@ -282,6 +282,7 @@ The `expand` property allows to create dynamic mappings. Only functions as `rhs`
 Two examples are included in `which-key.extras`:
 
 - `require("which-key.extras").expand.buf`: creates numerical key to buffer mappings
+- `require("which-key.extras").expand.tab`: creates numerical key to tab mappings
 - `require("which-key.extras").expand.win`: creates numerical key to window mappings
 
 ```lua
