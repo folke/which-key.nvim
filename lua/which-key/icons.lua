@@ -14,46 +14,80 @@ local M = {}
 
 ---@type wk.IconRule[]
 M.rules = {
+  { pattern = "%f[%a]git", cat = "filetype", name = "git" },
+  { pattern = "test", cat = "filetype", name = "neotest-summary" },
+  { pattern = "lazy", cat = "filetype", name = "lazy" },
+
+  { icon = "⚡", pattern = "profiler", color = "orange" },
+  { icon = " ", pattern = "window", color = "blue" },
+  { icon = "󱖫 ", pattern = "diagnostic", color = "green" },
+  { icon = "󱖫 ", pattern = "quickfix", color = "green" },
+  { icon = "󱖫 ", pattern = "location list", color = "green" },
+  { icon = " ", pattern = "format", color = "cyan" },
+  { icon = "󰨰 ", pattern = "debug", color = "red" },
+  { icon = " ", pattern = "code", color = "orange" },
+  { icon = "󰵅 ", pattern = "notif", color = "blue" },
+  { icon = " ", pattern = "toggle", color = "yellow" },
+  { icon = " ", pattern = "session", color = "azure" },
+  { icon = "󰓩 ", pattern = "tab", color = "purple" },
+  { icon = " ", pattern = "icon", color = "yellow" },
+  { icon = "󰙵 ", pattern = "%f[%a]ui", color = "cyan" },
+
+  { icon = "󱙺 ", pattern = "%f[%a]ai", color = "azure" },
+  { icon = " ", pattern = "copilot", color = "azure" },
+
+  { icon = "󰈆 ", pattern = "exit", color = "red" },
+  { icon = "󰈆 ", pattern = "quit", color = "red" },
+
+  { icon = " ", pattern = "color", color = "azure" },
+  { icon = " ", pattern = "highlight", color = "azure" },
+
+  -- Commands, Memory, History
+  { icon = " ", pattern = "terminal", color = "orange" },
+  { icon = " ", pattern = "command", color = "orange" },
+  { icon = " ", pattern = "cmd", color = "orange" },
+  { icon = " ", pattern = "keymap", color = "orange" },
+  { icon = "󰜎 ", pattern = "jump", color = "orange" },
+  { icon = "󰙅 ", pattern = "undotree", color = "orange" },
+  { icon = " ", pattern = "register", color = "orange" },
+  { icon = "󰃃 ", pattern = "mark", color = "orange" },
+  { icon = "󰅌 ", pattern = "yank", color = "orange" },
+  { icon = "󰅌 ", pattern = "clipboard", color = "orange" },
+
+  -- Search
+  { icon = "󰘥 ", pattern = "%f[%a]help", color = "green" },
+  { icon = "󰘥 ", pattern = "%f[%a]man", color = "green" },
+  { icon = "󰘥 ", pattern = "%f[%a]keywordprg", color = "green" },
+  { icon = "󱩾 ", pattern = "resume", color = "green" },
+  { icon = "󱩾 ", pattern = "grep", color = "green" },
+  { icon = " ", pattern = "find", color = "green" },
+  { icon = " ", pattern = "search", color = "green" },
+  { icon = "󱈅 ", pattern = "visual selection", color = "green" },
+
+  -- Files
+  { icon = "󰻭 ", pattern = "%f[%a]new", color = "cyan" },
+  { icon = "󱋢 ", pattern = "recent", color = "cyan" },
+  { icon = "󰪻 ", pattern = "project", color = "cyan" },
+  { icon = "󰧮 ", pattern = "buffer", color = "cyan" },
+  { icon = "󰈤 ", pattern = "file", color = "cyan" },
+
+  -- Plugins
+  { icon = "󱅻 ", plugin = "zen-mode.nvim", color = "cyan" },
+  { icon = " ", plugin = "telescope.nvim", pattern = "telescope", color = "blue" },
+  { icon = "󰛢 ", plugin = "grapple.nvim", pattern = "grapple", color = "azure" },
+  { icon = "󰛔 ", plugin = "nvim-spectre", color = "blue" },
+  { icon = "󰛔 ", plugin = "grug-far.nvim", pattern = "grug", color = "blue" },
+  { icon = "󰈸 ", plugin = "noice.nvim", pattern = "noice", color = "orange" },
+  { icon = " ", plugin = "persistence.nvim", color = "azure" },
+  { icon = "󱥰 ", plugin = "snacks.nvim", color = "purple" },
+  { icon = " ", plugin = "refactoring.nvim", pattern = "refactor", color = "cyan" },
   { plugin = "fzf-lua", cat = "filetype", name = "fzf" },
   { plugin = "neo-tree.nvim", cat = "filetype", name = "neo-tree" },
   { plugin = "octo.nvim", cat = "filetype", name = "git" },
-  { plugin = "yanky.nvim", icon = "󰅇", color = "yellow" },
-  { plugin = "zen-mode.nvim", icon = "󱅻 ", color = "cyan" },
-  { plugin = "telescope.nvim", pattern = "telescope", icon = "", color = "blue" },
   { plugin = "trouble.nvim", cat = "filetype", name = "trouble" },
   { plugin = "todo-comments.nvim", cat = "file", name = "TODO" },
-  { plugin = "grapple.nvim", pattern = "grapple", icon = "󰛢", color = "azure" },
-  { plugin = "nvim-spectre", icon = "󰛔 ", color = "blue" },
-  { plugin = "grug-far.nvim", pattern = "grug", icon = "󰛔 ", color = "blue" },
-  { plugin = "noice.nvim", pattern = "noice", icon = "󰈸", color = "orange" },
-  { plugin = "persistence.nvim", icon = " ", color = "azure" },
   { plugin = "neotest", cat = "filetype", name = "neotest-summary" },
   { plugin = "lazy.nvim", cat = "filetype", name = "lazy" },
-  { plugin = "snacks.nvim", icon = "󱥰 ", color = "purple" },
-  { plugin = "refactoring.nvim", pattern = "refactor", icon = " ", color = "cyan" },
-  { pattern = "profiler", icon = "⚡", color = "orange" },
-  { plugin = "CopilotChat.nvim", icon = " ", color = "orange" },
-  { pattern = "%f[%a]git", cat = "filetype", name = "git" },
-  { pattern = "terminal", icon = " ", color = "red" },
-  { pattern = "find", icon = " ", color = "green" },
-  { pattern = "search", icon = " ", color = "green" },
-  { pattern = "test", cat = "filetype", name = "neotest-summary" },
-  { pattern = "lazy", cat = "filetype", name = "lazy" },
-  { pattern = "buffer", icon = "󰈔", color = "cyan" },
-  { pattern = "file", icon = "󰈔", color = "cyan" },
-  { pattern = "window", icon = " ", color = "blue" },
-  { pattern = "diagnostic", icon = "󱖫 ", color = "green" },
-  { pattern = "format", icon = " ", color = "cyan" },
-  { pattern = "debug", icon = "󰃤 ", color = "red" },
-  { pattern = "code", icon = " ", color = "orange" },
-  { pattern = "notif", icon = "󰵅 ", color = "blue" },
-  { pattern = "toggle", icon = " ", color = "yellow" },
-  { pattern = "session", icon = " ", color = "azure" },
-  { pattern = "exit", icon = "󰈆 ", color = "red" },
-  { pattern = "quit", icon = "󰈆 ", color = "red" },
-  { pattern = "tab", icon = "󰓩 ", color = "purple" },
-  { pattern = "%f[%a]ai", icon = " ", color = "green" },
-  { pattern = "ui", icon = "󰙵 ", color = "cyan" },
 }
 
 ---@type wk.IconProvider[]
@@ -146,10 +180,10 @@ function M._get(rules, opts, check_ft)
     end
   end
 
-  -- plugin icons
-  if plugin then
+  -- pattern icons
+  if opts.desc then
     for _, icon in ipairs(rules) do
-      if icon.plugin == plugin then
+      if icon.pattern and opts.desc:lower():find(icon.pattern) then
         local ico, hl = M.get_icon(icon)
         if ico then
           return ico, hl
@@ -173,10 +207,10 @@ function M._get(rules, opts, check_ft)
     end
   end
 
-  -- pattern icons
-  if opts.desc then
+  -- plugin icons
+  if plugin then
     for _, icon in ipairs(rules) do
-      if icon.pattern and opts.desc:lower():find(icon.pattern) then
+      if icon.plugin == plugin then
         local ico, hl = M.get_icon(icon)
         if ico then
           return ico, hl
