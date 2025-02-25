@@ -279,7 +279,7 @@ When `desc`, `group`, or `icon` are functions, they are evaluated every time
 the popup is shown.
 
 The `expand` property allows to create dynamic mappings. Only functions as `rhs` are supported for dynamic mappings.
-Two examples are included in `which-key.extras`:
+Three examples are included in `which-key.extras`:
 
 - `require("which-key.extras").expand.buf`: creates numerical key to buffer mappings
 - `require("which-key.extras").expand.tab`: creates numerical key to tab mappings
