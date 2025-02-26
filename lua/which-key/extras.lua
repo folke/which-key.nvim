@@ -70,9 +70,7 @@ end
 function M.expand.tab()
     local ret = {}
     local current = vim.api.nvim_get_current_tabpage()
-    vim.print("Current = " .. current)
     for _, tab in ipairs(vim.api.nvim_list_tabpages()) do
-        vim.print(tab)
         if tab ~= current then
             local num = vim.api.nvim_tabpage_get_number(tab)
             ret[#ret + 1] = {
