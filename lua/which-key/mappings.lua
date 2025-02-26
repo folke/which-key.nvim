@@ -46,6 +46,7 @@ M.fields = {
   cond = { inherit = true },
   preset = { inherit = true },
   icon = { inherit = true },
+  real = { inherit = true },
   proxy = {},
   expand = {},
   -- deprecated
