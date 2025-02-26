@@ -55,6 +55,7 @@
 ---@field group? boolean
 ---@field remap? boolean
 ---@field hidden? boolean
+---@field real? boolean this is a mapping for a real keymap. Hide it if the real keymap does not exist
 ---@field preset? boolean
 ---@field icon? wk.Icon|string
 ---@field proxy? string
