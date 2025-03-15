@@ -7,7 +7,10 @@ M.cache = {
 }
 
 function M.t(str)
-  M.cache.termcodes[str] = M.cache.termcodes[str] or vim.api.nvim_replace_termcodes(str, true, true, true)
+  if M.cache.termcodes[str] then
+    return M.cache.termcodes[str]
+  end
+  M.cache.termcodes[str] = vim.api.nvim_replace_termcodes(str, true, true, true)
   return M.cache.termcodes[str]
 end
 
