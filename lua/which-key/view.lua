@@ -135,6 +135,9 @@ function M.hide()
     M.footer:hide()
     M.footer = nil
   end
+  if vim.g.vscode ~= nil and type(vim.g.vscode_update) == "function" then
+    vim.g.vscode_update()
+  end
 end
 
 ---@param field string
@@ -477,6 +480,9 @@ function M.show()
   vim.api.nvim_win_call(M.view.win, function()
     vim.fn.winrestview({ topline = 1 })
   end)
+  if vim.g.vscode ~= nil and type(vim.g.vscode_update) == "function" then
+    vim.g.vscode_update(M.view.buf)
+  end
   vim.cmd.redraw()
 end
 
