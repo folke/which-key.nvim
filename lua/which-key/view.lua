@@ -463,6 +463,7 @@ function M.show()
     M.footer = M.footer or Win.new()
     M.footer:show({
       relative = "win",
+      border = "none",
       win = M.view.win,
       col = 0,
       row = opts.height - 1,
