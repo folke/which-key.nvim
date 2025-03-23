@@ -7,7 +7,7 @@ return {
       padding = { 0, 1 },
       col = -1,
       row = -1,
-      border = "rounded",
+      border = vim.o.winborder or "rounded",
       title = true,
       title_pos = "left",
     },
@@ -21,7 +21,7 @@ return {
       height = { min = 4, max = 25 },
       col = 0.5,
       row = -1,
-      border = "rounded",
+      border = vim.o.winborder or "rounded",
       title = true,
       title_pos = "center",
     },
@@ -32,7 +32,7 @@ return {
       height = { min = 4, max = 25 },
       col = 0,
       row = -1,
-      border = "none",
+      border = vim.o.winborder or "none"
     },
   },
 }
