@@ -169,12 +169,12 @@ M.nav = {
   { "[s", desc = "Previous misspelled word" },
   { "[{", desc = "Previous {" },
   { "]%", desc = "Next unmatched group" },
-  { "](", desc = "Next (" },
-  { "]<", desc = "Next <" },
+  { "])", desc = "Next )" },
+  { "]>", desc = "Next >" },
   { "]M", desc = "Next method end" },
   { "]m", desc = "Next method start" },
   { "]s", desc = "Next misspelled word" },
-  { "]{", desc = "Next {" },
+  { "]}", desc = "Next }" },
 }
 
 M.g = {
