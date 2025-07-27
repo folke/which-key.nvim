@@ -7,7 +7,7 @@ local dw = vim.fn.strdisplaywidth
 --- Otherwise, it is a percentage of `parent` (relative size).
 --- If `size` is negative, it is subtracted from `parent`.
 --- If `size` is a table, it is a range of values.
----@alias wk.Dim number|{min:number, max:number}
+---@alias wk.Dim number|{min:number, max:number}|function
 
 ---@param size number
 ---@param parent number
@@ -17,6 +17,9 @@ function M.dim(size, parent, ...)
   size = math.abs(size) < 1 and parent * size or size
   size = size < 0 and parent + size or size
   for _, dim in ipairs({ ... } --[[ @as wk.Dim[] ]]) do
+    if type(dim) == "function" then
+      dim = dim()
+    end
     if type(dim) == "number" then
       size = M.dim(dim, parent)
     else
