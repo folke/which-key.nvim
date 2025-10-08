@@ -1,4 +1,4 @@
-*which-key.nvim.txt*         For Neovim         Last change: 2025 September 23
+*which-key.nvim.txt*          For Neovim          Last change: 2025 October 08
 
 ==============================================================================
 Table of Contents                           *which-key.nvim-table-of-contents*
@@ -28,17 +28,17 @@ keybindings in a popup as you type.
 
 FEATURES                                   *which-key.nvim-which-key-features*
 
-- **Key Binding Help**show available keybindings in a popup as you type.
-- **Modes**works in normal, insert, visual, operator pending, terminal and command mode.
+- **Key Binding Help**: show available keybindings in a popup as you type.
+- **Modes**: works in normal, insert, visual, operator pending, terminal and command mode.
     Every mode can be enabled/disabled.
-- **Customizable Layouts**choose from `classic`, `modern`, and `helix` presets or customize the window.
-- **Flexible Sorting**sort by `local`, `order`, `group`, `alphanum`, `mod`, `lower`, `icase`, `desc`, or `manual`.
-- **Formatting**customizable key labels and descriptions
-- **Icons**integrates with mini.icons <https://github.com/echasnovski/mini.icons> and nvim-web-devicons <https://github.com/nvim-tree/nvim-web-devicons>
-- **Delay**delay is independent of `timeoutlen`
-- **Plugins**built-in plugins for marks, registers, presets, and spelling suggestions
-- **Operators, Motions, Text Objects**help for operators, motions and text objects
-- **Hydra Mode**keep the popup open until you hit `<esc>`
+- **Customizable Layouts**: choose from `classic`, `modern`, and `helix` presets or customize the window.
+- **Flexible Sorting**: sort by `local`, `order`, `group`, `alphanum`, `mod`, `lower`, `icase`, `desc`, or `manual`.
+- **Formatting**: customizable key labels and descriptions
+- **Icons**: integrates with mini.icons <https://github.com/echasnovski/mini.icons> and nvim-web-devicons <https://github.com/nvim-tree/nvim-web-devicons>
+- **Delay**: delay is independent of `timeoutlen`
+- **Plugins**: built-in plugins for marks, registers, presets, and spelling suggestions
+- **Operators, Motions, Text Objects**: help for operators, motions and text objects
+- **Hydra Mode**: keep the popup open until you hit `<esc>`
 
 
 REQUIREMENTS                           *which-key.nvim-which-key-requirements*
@@ -283,16 +283,16 @@ from anywhere in your config files.
 
 A mapping has the following attributes:
 
-- **[1]**(`string`) lhs **(required)**
-- **[2]**(`string|fun()`) rhs **(optional)**when present, it will create the mapping
-- **desc**(`string|fun():string`) description **(required for non-groups)**
-- **group**(`string|fun():string`) group name **(optional)**
-- **mode**(`string|string[]`) mode **(optional, defaults to "n")**
-- **cond**(`boolean|fun():boolean`) condition to enable the mapping **(optional)**
-- **hidden**(`boolean`) hide the mapping **(optional)**
-- **icon**(`string|wk.Icon|fun():(wk.Icon|string)`) icon spec **(optional)**
-- **proxy**(`string`) proxy to another mapping **(optional)**
-- **expand**(`fun():wk.Spec`) nested mappings **(optional)**
+- **[1]**: (`string`) lhs **(required)**
+- **[2]**: (`string|fun()`) rhs **(optional)**: when present, it will create the mapping
+- **desc**: (`string|fun():string`) description **(required for non-groups)**
+- **group**: (`string|fun():string`) group name **(optional)**
+- **mode**: (`string|string[]`) mode **(optional, defaults to "n")**
+- **cond**: (`boolean|fun():boolean`) condition to enable the mapping **(optional)**
+- **hidden**: (`boolean`) hide the mapping **(optional)**
+- **icon**: (`string|wk.Icon|fun():(wk.Icon|string)`) icon spec **(optional)**
+- **proxy**: (`string`) proxy to another mapping **(optional)**
+- **expand**: (`fun():wk.Spec`) nested mappings **(optional)**
 - any other option valid for `vim.keymap.set`. These are only used for creating mappings.
 
 When `desc`, `group`, or `icon` are functions, they are evaluated every time
@@ -300,10 +300,10 @@ the popup is shown.
 
 The `expand` property allows to create dynamic mappings. Only functions as
 `rhs` are supported for dynamic mappings. Two examples are included in
-`which-key.extras`
+`which-key.extras`:
 
-- `require("which-key.extras").expand.buf`creates numerical key to buffer mappings
-- `require("which-key.extras").expand.win`creates numerical key to window mappings
+- `require("which-key.extras").expand.buf`: creates numerical key to buffer mappings
+- `require("which-key.extras").expand.win`: creates numerical key to window mappings
 
 >lua
     local wk = require("which-key")
