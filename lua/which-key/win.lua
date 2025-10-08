@@ -9,7 +9,6 @@ M.__index = M
 
 ---@class wk.Win.opts
 local override = {
-  relative = "editor",
   style = "minimal",
   focusable = false,
   noautocmd = true,
@@ -29,7 +28,12 @@ local override = {
 }
 
 ---@type wk.Win.opts
-local defaults = { col = 0, row = math.huge, zindex = 1000 }
+local defaults = {
+  relative = "editor",
+  col = 0,
+  row = math.huge,
+  zindex = 1000
+}
 
 ---@param opts? wk.Win.opts
 function M.defaults(opts)
