@@ -175,6 +175,8 @@ local defaults = {
     bt = {},
   },
   debug = false, -- enable wk.log in the current directory
+  -- https://vimdoc.sourceforge.net/htmldoc/cmdline.html#filename-modifiers
+  filename_modifier = ":~:.", --":t",
 }
 
 M.loaded = false

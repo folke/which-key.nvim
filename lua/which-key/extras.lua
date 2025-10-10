@@ -1,3 +1,5 @@
+local Config = require("which-key.config")
+
 local M = {}
 
 ---@type table<string, fun():wk.Spec>
@@ -13,7 +15,13 @@ end
 
 function M.bufname(buf)
   local name = vim.api.nvim_buf_get_name(buf)
-  return name == "" and "[No Name]" or vim.fn.fnamemodify(name, ":~:.")
+  local filename_modifier = ":~:."
+
+  if Config.options.filename_modifier and Config.options.filename_modifier ~= "" then
+    filename_modifier = Config.options.filename_modifier
+  end
+
+  return name == "" and "[No Name]" or vim.fn.fnamemodify(name, filename_modifier)
 end
 
 ---@param spec wk.Spec[]
