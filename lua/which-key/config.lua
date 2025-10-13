@@ -1,5 +1,4 @@
 ---@class wk.Config: wk.Opts
----@field triggers {mappings: wk.Mapping[], modes: table<string,boolean>}
 local M = {}
 
 M.version = "3.17.0" -- x-release-please-version
@@ -188,6 +187,12 @@ M.options = nil
 ---@type {opt:string, msg:string}[]
 M.issues = {}
 
+---@type {mappings: wk.Mapping[], modes: table<string,boolean>}
+M.triggers = {
+  mappings = {},
+  modes = {},
+}
+
 function M.validate()
   local deprecated = {
     ["operators"] = "see `opts.defer`",
@@ -227,6 +232,7 @@ function M.setup(opts)
       return
     end
     local Util = require("which-key.util")
+    local wk = require("which-key")
 
     if M.options.preset then
       local Presets = require("which-key.presets")
@@ -254,37 +260,25 @@ function M.setup(opts)
       end
     end
 
-    local wk = require("which-key")
-
-    -- replace by the real add function
-    wk.add = M.add
-
+    -- set triggers
     if type(M.options.triggers) ~= "table" then
       ---@diagnostic disable-next-line: inject-field
       M.options.triggers = defaults.triggers
     end
-
-    M.triggers = {
-      mappings = require("which-key.mappings").parse(M.options.triggers),
-      modes = {},
-    }
-    ---@param m wk.Mapping
-    M.triggers.mappings = vim.tbl_filter(function(m)
-      if m.lhs == "<auto>" then
-        M.triggers.modes[m.mode] = true
-        return false
-      end
-      return true
-    end, M.triggers.mappings)
+    M.add_triggers(M.options.triggers)
 
     -- load presets first so that they can be overriden by the user
     require("which-key.plugins").setup()
 
-    -- process mappings queue
-    for _, todo in ipairs(wk._queue) do
-      M.add(todo.spec, todo.opts)
-    end
-    wk._queue = {}
+    -- replace by the real functions
+    wk.add = M.add
+    wk.add_triggers = M.add_triggers
+
+    -- add things from before which-key was loaded properly
+    for _, todo in ipairs(wk.mappings) do M.add(todo.spec, todo.opts) end
+    for _, todo in ipairs(wk.triggers) do M.add_triggers(todo) end
+    wk.mappings = {}
+    wk.triggers = {}
 
     -- finally, add the mapppings from the config
     M.add(M.options.spec)
@@ -331,6 +325,22 @@ function M.add(mappings, opts)
   if M.loaded then
     require("which-key.buf").clear()
   end
+end
+
+---@param triggers wk.Spec
+function M.add_triggers(triggers)
+  if type(triggers) ~= "table" then return end
+
+  vim.list_extend(M.options.triggers, triggers)
+
+  ---@param m wk.Mapping
+  M.triggers.mappings = vim.tbl_filter(function(m)
+    if m.lhs == "<auto>" then
+      M.triggers.modes[m.mode] = true
+      return false
+    end
+    return true
+  end, require("which-key.mappings").parse(M.options.triggers))
 end
 
 return setmetatable(M, {

@@ -1,8 +1,10 @@
 ---@class wk
----@field private _queue {spec: wk.Spec, opts?: wk.Parse}[]
+---@field mappings {spec: wk.Spec, opts?: wk.Parse}[]
+---@field triggers wk.Spec[]
 local M = {}
 
-M._queue = {}
+M.mappings = {}
+M.triggers = {}
 M.did_setup = false
 
 --- Open which-key
@@ -46,7 +48,14 @@ end
 ---@param mappings wk.Spec
 ---@param opts? wk.Parse
 function M.add(mappings, opts)
-  table.insert(M._queue, { spec = mappings, opts = opts })
+  -- Is replaced in `require("which-key.config").setup`
+  table.insert(M.mappings, { spec = mappings, opts = opts })
+end
+
+---@param triggers wk.Spec
+function M.add_triggers(triggers)
+  -- Is replaced in `require("which-key.config").setup`
+  table.insert(M.triggers, triggers)
 end
 
 return M
