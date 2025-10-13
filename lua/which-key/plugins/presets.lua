@@ -154,6 +154,8 @@ M.z = {
   { "zw", desc = "Mark word as bad/misspelling" },
   { "zx", desc = "Update folds" },
   { "zz", desc = "Center this line" },
+  { "ZZ", desc = "Save and quit" },
+  { "ZQ", desc = "Quit without saving" },
 }
 
 M.nav = {
