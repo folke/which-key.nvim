@@ -314,7 +314,12 @@ function M.parse(spec, opts)
     if m.rhs and opts.create then
       M.create(m)
     end
+    if m.proxy then
+      -- delete already existing keymaps for proxies
+      pcall(vim.keymap.del, m.mode, m.lhs)
+    end
   end
+
   return ret
 end
 
