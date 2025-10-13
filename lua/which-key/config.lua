@@ -203,7 +203,7 @@ function M.validate()
     ["modes"] = "see `opts.triggers`",
   }
   for k, v in pairs(deprecated) do
-    local opt = type(k) == "number" and v or k
+    local opt = type(k) == "number" and v or k --[[@as string]]
     local msg = "option is deprecated." .. (type(k) == "number" and "" or " " .. v)
     local parts = vim.split(opt, ".", { plain = true })
     if vim.tbl_get(M.options, unpack(parts)) ~= nil then
@@ -310,7 +310,7 @@ function M.setup(opts)
       return require("which-key.util").error("Usage: WhichKey [mode] [keys]")
     end
     if mode == "" then
-      mode = "n"
+      mode = vim.api.nvim_get_mode().mode
     end
     require("which-key").show({ mode = mode, keys = keys })
   end, {
