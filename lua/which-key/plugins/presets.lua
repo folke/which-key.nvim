@@ -195,27 +195,32 @@ M.g = {
 }
 
 function M.setup(opts)
-  local wk = require("which-key")
+  local Config = require("which-key.config")
+  local add = function(tbl)
+    -- Use vim.deepcopy so that the presets aren't modified later
+    -- and can be used for example in an `expand` function
+    Config.add(vim.deepcopy(tbl))
+  end
 
   -- Operators
   if opts.operators then
-    wk.add(M.operators)
+    add(M.operators)
   end
 
   -- Motions
   if opts.motions then
-    wk.add(M.motions)
+    add(M.motions)
   end
 
   -- Text objects
   if opts.text_objects then
-    wk.add(M.text_objects)
+    add(M.text_objects)
   end
 
   -- Misc
   for _, preset in pairs({ "windows", "nav", "z", "g" }) do
     if opts[preset] ~= false then
-      wk.add(M[preset])
+      add(M[preset])
     end
   end
 end
