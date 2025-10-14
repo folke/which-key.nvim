@@ -69,9 +69,8 @@ function Mode:attach()
   if Config.triggers.modes[self.mode] then
     -- Auto triggers
     self.tree:walk(function(node)
-      if node.keymap and node.keymap.nowait then
-        return false
-      end
+      if node:is_nowait() then return false end
+
       if is_safe(node, true) then
         table.insert(self.triggers, node)
         return false

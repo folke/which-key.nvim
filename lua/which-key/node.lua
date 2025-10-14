@@ -24,10 +24,17 @@ function M.new(parent, key)
   return self
 end
 
+function M:is_nowait()
+  local nowait = self.keymap and self.keymap.nowait
+
+  -- lua equates 0 to true, so...
+  return nowait == true or nowait == 1
+end
+
 function M:has_nowait_ancestor()
   local node = self
   while node do
-    if node.keymap and node.keymap.nowait then
+    if node:is_nowait() then
       return true
     end
     node = node.parent
