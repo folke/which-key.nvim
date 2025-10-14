@@ -18,22 +18,11 @@ end
 
 --- Checks if it's safe to add a trigger for the given node
 ---@param node wk.Node
----@param no_single? boolean
-local function is_safe(node, no_single)
+local function is_safe(node)
   if node.keymap or is_special(node) or node:count() == 0 then
     return false
   end
-  if no_single and #node.path == 1 then
-    local key = node.path[1]
-    -- only z or g are safe
-    if key:match("^[a-z]$") and not key:match("^[gz]$") then
-      return false
-    end
-    -- only Z is safe
-    if key:match("^[A-Z]$") and not key:match("^[Z]$") then
-      return false
-    end
-  end
+
   return true
 end
 
@@ -71,7 +60,7 @@ function Mode:attach()
     self.tree:walk(function(node)
       if node:is_nowait() then return false end
 
-      if is_safe(node, true) then
+      if is_safe(node) then
         table.insert(self.triggers, node)
         return false
       end
