@@ -12,7 +12,7 @@ local defaults = {
   delay = function(ctx)
     return ctx.plugin and 0 or 200
   end,
-  ---@param mapping wk.Mapping
+  ---@param mapping wk.Mapping|wk.Keymap
   filter = function(mapping)
     -- example to exclude mappings without a description
     -- return mapping.desc and mapping.desc ~= ""

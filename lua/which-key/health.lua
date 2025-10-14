@@ -74,7 +74,7 @@ function M.check()
     (notif.level >= vim.log.levels.ERROR and error or warn)(msg)
   end
 
-  start("checking for overlapping keymaps")
+  start("Checking for overlapping keymaps")
   local found = false
 
   Buf.cleanup()

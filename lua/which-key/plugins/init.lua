@@ -1,5 +1,4 @@
 local Config = require("which-key.config")
-local Util = require("which-key.util")
 
 local M = {}
 

@@ -88,7 +88,7 @@ end
 ---@param field string|number
 ---@param types string|string[]
 function M.expect(spec, field, types)
-  types = type(types) == "string" and { types } or types
+  types = type(types) == "string" and { types } or types --[[@as string[] ]]
   local ok = false
   for _, t in ipairs(types) do
     if type(spec[field]) == t then
@@ -110,6 +110,7 @@ function M._parse(spec, ret, opts)
   opts.version = opts.version or M.VERSION
   if spec.version then
     opts.version = spec.version
+    ---@diagnostic disable-next-line: inject-field
     spec.version = nil
   end
 
@@ -127,6 +128,7 @@ function M._parse(spec, ret, opts)
   spec = type(spec) == "string" and { desc = spec } or spec
 
   ---@type wk.Mapping
+  ---@diagnostic disable-next-line: missing-fields
   local mapping = {}
 
   ---@type wk.Spec[]
@@ -158,8 +160,10 @@ function M._parse(spec, ret, opts)
       if opts.version == 1 then
         if M.expect(spec, k, { "string", "table" }) then
           if type(v) == "string" then
+            ---@diagnostic disable-next-line: undefined-field
             table.insert(children, { prefix = (spec.prefix or "") .. k, desc = v })
           elseif type(v) == "table" then
+            ---@diagnostic disable-next-line: inject-field, undefined-field
             v.prefix = (spec.prefix or "") .. k
             table.insert(children, v)
           end
@@ -169,6 +173,7 @@ function M._parse(spec, ret, opts)
       end
     elseif type(k) == "number" and type(v) == "table" then
       if opts.version == 1 then
+        ---@diagnostic disable-next-line: inject-field, undefined-field
         v.prefix = spec.prefix or ""
       end
       table.insert(children, v)
@@ -269,6 +274,7 @@ function M.add(mapping, ret, opts)
   if not mapping.lhs then
     return
   end
+  ---@diagnostic disable-next-line: inject-field
   mapping.prefix = nil
 
   local has_desc = mapping.desc ~= nil

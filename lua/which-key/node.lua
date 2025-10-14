@@ -146,7 +146,7 @@ function M:expand()
   end
 
   -- proxy mappings
-  local proxy = self.mapping.proxy
+  local proxy = self.mapping and self.mapping.proxy
   if proxy then
     local keys = Util.keys(proxy)
     local root = self:root()
@@ -218,7 +218,7 @@ end
 function M:root()
   local node = self
   while node.parent do
-    node = node.parent
+    node = node.parent or {}
   end
   return node
 end

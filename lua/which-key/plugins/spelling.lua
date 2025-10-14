@@ -33,7 +33,7 @@ function M.expand()
   local word = bad[1] == "" and cursor_word or bad[1]
 
   ---@type string[]
-  local suggestions = vim.fn.spellsuggest(word, M.opts.suggestions or 20, bad[2] == "caps" and 1 or 0)
+  local suggestions = vim.fn.spellsuggest(word, M.opts.suggestions or 20, bad[2] == "caps")
 
   local items = {} ---@type wk.Plugin.item[]
   local keys = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

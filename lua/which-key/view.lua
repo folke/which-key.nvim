@@ -5,7 +5,6 @@ local Layout = require("which-key.layout")
 local Plugins = require("which-key.plugins")
 local State = require("which-key.state")
 local Text = require("which-key.text")
-local Tree = require("which-key.tree")
 local Util = require("which-key.util")
 local Win = require("which-key.win")
 
@@ -230,6 +229,7 @@ function M.trail(node, opts)
       did_op = true
       local mode = Buf.get({ buf = State.state.mode.buf.buf, mode = "n" })
       if mode then
+        ---@diagnostic disable-next-line: cast-local-type
         node = mode.tree:find(m == "x" and "v" or vim.v.operator)
       end
     end
