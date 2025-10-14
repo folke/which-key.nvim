@@ -5,6 +5,7 @@ local Util = require("which-key.util")
 ---@field mode string
 ---@field keys string
 ---@field plugin? string
+---@field op? boolean
 
 local M = {}
 M._triggers = {} ---@type table<string, wk.Trigger>
@@ -26,6 +27,10 @@ function M.is_mapped(trigger)
   end
   -- ignore <Nop> mappings
   if Util.is_nop(km.rhs) then
+    return false
+  end
+  -- ignore operator mappings
+  if trigger.op then
     return false
   end
   -- ignore which-key triggers
@@ -100,6 +105,7 @@ function M.update(mode, triggers)
       mode = mode.mode,
       keys = node.keys,
       plugin = node.plugin,
+      op = node.op,
     }
     local id = M.id(trigger)
     keep[id] = true

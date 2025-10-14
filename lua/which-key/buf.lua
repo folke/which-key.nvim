@@ -19,7 +19,7 @@ end
 --- Checks if it's safe to add a trigger for the given node
 ---@param node wk.Node
 local function is_safe(node)
-  if node.keymap or is_special(node) or node:count() == 0 then
+  if (node.keymap and not node.op) or is_special(node) or node:count() == 0 then
     return false
   end
 

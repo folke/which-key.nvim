@@ -195,11 +195,13 @@ function M.check(state, key)
 
   if node then
     -- NOTE: a node can be both a keymap and a group
-    -- when it's both, we honor timeoutlen and nowait to decide what to do
+    -- honor 'timeoutlen' only if the keymap is not an operator
     local has_children = node:count() > 0
-    local is_nowait = node:is_nowait() or (node.keymap and not timedout)
+    local is_nowait = node:is_nowait()
+    local is_timedout = node.keymap and not timedout and not node.op
     local is_action = node.action ~= nil
-    if has_children and not is_nowait and not is_action then
+
+    if has_children and not is_nowait and not is_timedout and not is_action then
       Util.debug("continue", node.keys, tostring(state.mode), node.plugin)
       return node
     end

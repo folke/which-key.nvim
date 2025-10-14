@@ -49,6 +49,7 @@ M.fields = {
   real = { inherit = true },
   proxy = {},
   expand = {},
+  op = {},
   -- deprecated
   name = { transform = "group", deprecated = true },
   prefix = { inherit = true, deprecated = true },

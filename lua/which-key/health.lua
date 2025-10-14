@@ -90,10 +90,10 @@ function M.check()
       if mode then
         mode.tree:walk(function(node)
           local km = node.keymap
-          if not km or Util.is_nop(km.rhs) or node.keys:sub(1, 6) == "<Plug>" then
+          if not km or Util.is_nop(km.rhs) or node.keys:sub(1, 6) == "<Plug>" or node.op then
             return
           end
-          if node.keymap and node:count() > 0 then
+          if km and node:count() > 0 then
             local id = mode.mode .. ":" .. node.keys
             if reported[id] then
               return
