@@ -67,4 +67,23 @@ function M.expand.win()
   return M.add_keys(ret)
 end
 
+function M.expand.tab()
+    local ret = {}
+    local current = vim.api.nvim_get_current_tabpage()
+    for _, tab in ipairs(vim.api.nvim_list_tabpages()) do
+        if tab ~= current then
+            local num = vim.api.nvim_tabpage_get_number(tab)
+            ret[#ret + 1] = {
+            "",
+            function ()
+               vim.api.nvim_set_current_tabpage(tab)
+            end,
+            desc = "Goto tab " .. tostring(num),
+            icon = { cat = "file", name = tostring(num) },
+        }
+        end
+    end
+    return M.add_keys(ret)
+end
+
 return M
