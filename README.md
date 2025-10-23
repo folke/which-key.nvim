@@ -107,7 +107,8 @@ local defaults = {
     -- the presets plugin, adds help for a bunch of default keybindings in Neovim
     -- No actual key bindings are created
     spelling = {
-      enabled = true, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
+      trigger = "z=",  -- Key combination to display spelling suggestions using WhichKey
+      enabled = true,  -- If this spelling plugin is enabled
       suggestions = 20, -- how many suggestions should be shown in the list?
     },
     presets = {
