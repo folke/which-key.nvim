@@ -237,6 +237,7 @@ function M.execute(state, key, node)
   Util.debug("feedkeys", tostring(state.mode), keystr)
   local feed = vim.api.nvim_replace_termcodes(keystr, true, true, true)
   vim.api.nvim_feedkeys(feed, "mit", false)
+  vim.api.nvim_exec_autocmds("User", { pattern = "WhichKeyFeedKeys", data = feed })
 end
 
 function M.getchar()
