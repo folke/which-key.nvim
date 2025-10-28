@@ -60,6 +60,7 @@
 ---@field icon? wk.Icon|string
 ---@field proxy? string
 ---@field expand? fun():wk.Spec
+---@field op? boolean
 
 ---@class wk.Spec: {[number]: wk.Spec} , wk.Mapping
 ---@field [1]? string

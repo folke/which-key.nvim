@@ -1,5 +1,3 @@
-local Util = require("which-key.util")
-
 ---@diagnostic disable: missing-fields, inject-field
 ---@type wk.Plugin
 local M = {}

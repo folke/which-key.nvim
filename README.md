@@ -77,7 +77,7 @@ local defaults = {
   delay = function(ctx)
     return ctx.plugin and 0 or 200
   end,
-  ---@param mapping wk.Mapping
+  ---@param mapping wk.Mapping|wk.Keymap
   filter = function(mapping)
     -- example to exclude mappings without a description
     -- return mapping.desc and mapping.desc ~= ""
@@ -273,6 +273,7 @@ A mapping has the following attributes:
 - **icon**: (`string|wk.Icon|fun():(wk.Icon|string)`) icon spec **_(optional)_**
 - **proxy**: (`string`) proxy to another mapping **_(optional)_**
 - **expand**: (`fun():wk.Spec`) nested mappings **_(optional)_**
+- **op**: (`boolean`) is the mapping an operator like d, y, gc **(optional)**
 - any other option valid for `vim.keymap.set`. These are only used for creating mappings.
 
 When `desc`, `group`, or `icon` are functions, they are evaluated every time
@@ -297,6 +298,7 @@ wk.add({
       return require("which-key.extras").expand.buf()
     end
   },
+  { "gc", group = "toggle comments", op = true } -- mark as operator
   {
     -- Nested mappings are allowed and can be added in any order
     -- Most attributes can be inherited or overridden on any level
@@ -319,7 +321,7 @@ Both can be configured using `opts.triggers` and `opts.defer`.
 
 By default `opts.triggers` includes `{ "<auto>", mode = "nixsotc" }`, which
 will setup keymap triggers for every mode automatically and will trigger during
-`ModeChanged`.
+`ModeChanged`. After setup you can add additional triggers with `wk.add_triggers()`
 
 > [!NOTE]
 > Auto triggers will never be created for existing keymaps.

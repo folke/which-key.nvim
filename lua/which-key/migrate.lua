@@ -21,7 +21,7 @@ function M.migrate(spec)
       m.silent = nil
     end
     if m.group then
-      m.group = m.desc
+      m.group = m.desc ---@type string
       m.desc = nil
     end
     local id = vim.inspect(m)

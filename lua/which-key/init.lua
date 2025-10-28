@@ -1,20 +1,21 @@
 ---@class wk
----@field private _queue {spec: wk.Spec, opts?: wk.Parse}[]
+---@field mappings {spec: wk.Spec, opts?: wk.Parse}[]
+---@field triggers wk.Spec[]
 local M = {}
 
-M._queue = {}
+M.mappings = {}
+M.triggers = {}
 M.did_setup = false
 
 --- Open which-key
 ---@param opts? wk.Filter|string
 function M.show(opts)
   opts = opts or {}
-  opts = type(opts) == "string" and { keys = opts } or opts
+  opts = type(opts) == "string" and { keys = opts } or opts --[[@as wk.Filter]]
   if opts.delay == nil then
     opts.delay = 0
   end
   opts.waited = vim.o.timeoutlen
-  ---@diagnostic disable-next-line: param-type-mismatch
   if not require("which-key.state").start(opts) then
     require("which-key.util").warn(
       "No mappings found for mode `" .. (opts.mode or "n") .. "` and keys `" .. (opts.keys or "") .. "`"
@@ -46,7 +47,14 @@ end
 ---@param mappings wk.Spec
 ---@param opts? wk.Parse
 function M.add(mappings, opts)
-  table.insert(M._queue, { spec = mappings, opts = opts })
+  -- Is replaced in `require("which-key.config").setup`
+  table.insert(M.mappings, { spec = mappings, opts = opts })
+end
+
+---@param triggers wk.Spec
+function M.add_triggers(triggers)
+  -- Is replaced in `require("which-key.config").setup`
+  table.insert(M.triggers, triggers)
 end
 
 return M

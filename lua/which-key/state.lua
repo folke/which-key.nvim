@@ -22,6 +22,7 @@ M.redraw_timer = uv.new_timer()
 
 ---@return boolean safe, string? reason
 function M.safe(mode_change)
+  ---@diagnostic disable-next-line: unused-local
   local old, _new = unpack(vim.split(mode_change, ":", { plain = true }))
   if old == "c" then
     return false, "command-mode"
@@ -41,6 +42,7 @@ function M.setup()
   local group = vim.api.nvim_create_augroup("wk", { clear = true })
 
   if Config.debug then
+    ---@diagnostic disable-next-line: unused-local
     vim.on_key(function(_raw, key)
       if key and #key > 0 then
         key = vim.fn.keytrans(key)
@@ -62,7 +64,7 @@ function M.setup()
     end,
   })
 
-  local hide = uv.new_timer()
+  local hide = assert(uv.new_timer())
   vim.api.nvim_create_autocmd({ "FocusLost", "FocusGained" }, {
     group = group,
     callback = function(ev)
@@ -144,16 +146,20 @@ function M.setup()
     group = group,
     callback = function(ev)
       current_buf = ev.buf ---@type number
-      Util.trace(ev.event .. "(" .. ev.buf .. ")")
-      Buf.get()
-      Util.trace()
+
+      -- move to end of event loop to give time to set localleader mappings
+      vim.defer_fn(function()
+        Util.trace(ev.event .. "(" .. ev.buf .. ")")
+        Buf.get()
+        Util.trace()
+      end, 0)
     end,
   })
 
   -- HACK: ModeChanged does not always trigger, so we need to manually
   -- check for mode changes. This seems to be due to the usage of `:norm` in autocmds.
   -- See https://github.com/folke/which-key.nvim/issues/787
-  local timer = uv.new_timer()
+  local timer = assert(uv.new_timer())
   timer:start(0, 50, function()
     local mode = Util.mapmode()
     -- check if the mode exists for the current buffer
@@ -189,11 +195,13 @@ function M.check(state, key)
 
   if node then
     -- NOTE: a node can be both a keymap and a group
-    -- when it's both, we honor timeoutlen and nowait to decide what to do
+    -- honor 'timeoutlen' only if the keymap is not an operator
     local has_children = node:count() > 0
-    local is_nowait = node.keymap and (node.keymap.nowait == 1 or not timedout)
+    local is_nowait = node:is_nowait()
+    local is_timedout = node.keymap and not timedout and not node.op
     local is_action = node.action ~= nil
-    if has_children and not is_nowait and not is_action then
+
+    if has_children and not is_nowait and not is_timedout and not is_action then
       Util.debug("continue", node.keys, tostring(state.mode), node.plugin)
       return node
     end
@@ -233,10 +241,15 @@ function M.execute(state, key, node)
     if vim.v.register ~= Util.reg() and state.mode.mode ~= "i" and state.mode.mode ~= "c" then
       keystr = '"' .. vim.v.register .. keystr
     end
+
+    local curr_mode = vim.api.nvim_get_mode().mode
+
+    if curr_mode:find("ni[IRV]") ~= nil then
+      keystr = "<C-O>" .. keystr
+    end
   end
   Util.debug("feedkeys", tostring(state.mode), keystr)
-  local feed = vim.api.nvim_replace_termcodes(keystr, true, true, true)
-  vim.api.nvim_feedkeys(feed, "mit", false)
+  vim.api.nvim_feedkeys(Util.t(keystr), "mit", false)
 end
 
 function M.getchar()
@@ -386,6 +399,7 @@ end
 
 ---@param opts {delay?:number, mode:string, keys:string, plugin?:string, waited?: number}
 function M.delay(opts)
+  ---@diagnostic disable-next-line: param-type-mismatch
   local delay = opts.delay or type(Config.delay) == "function" and Config.delay(opts) or Config.delay --[[@as number]]
   if opts.waited then
     delay = delay - opts.waited

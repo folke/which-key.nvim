@@ -23,7 +23,7 @@ end
 ---@param keymap wk.Mapping|wk.Keymap
 ---@param virtual? boolean
 function M:add(keymap, virtual)
-  if not Config.filter(keymap) then
+  if not Config.filter(keymap) or Util.is_nop(keymap.rhs) then
     return
   end
   local keys = Util.keys(keymap.lhs, { norm = true })

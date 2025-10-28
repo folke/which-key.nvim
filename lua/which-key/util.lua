@@ -7,7 +7,10 @@ M.cache = {
 }
 
 function M.t(str)
-  M.cache.termcodes[str] = M.cache.termcodes[str] or vim.api.nvim_replace_termcodes(str, true, true, true)
+  if not M.cache.termcodes[str] then
+    M.cache.termcodes[str] = vim.api.nvim_replace_termcodes(str, true, true, true)
+  end
+
   return M.cache.termcodes[str]
 end
 
@@ -35,10 +38,10 @@ end
 --- Normalizes (and fixes) the lhs of a keymap
 ---@param lhs string
 function M.norm(lhs)
-  if M.cache.norm[lhs] then
-    return M.cache.norm[lhs]
+  if not M.cache.norm[lhs] then
+    M.cache.norm[lhs] = vim.fn.keytrans(M.t(lhs))
   end
-  M.cache.norm[lhs] = vim.fn.keytrans(M.t(lhs))
+
   return M.cache.norm[lhs]
 end
 
@@ -141,7 +144,7 @@ end
 ---@param fn F
 ---@return F
 function M.debounce(ms, fn)
-  local timer = (vim.uv or vim.loop).new_timer()
+  local timer = assert((vim.uv or vim.loop).new_timer())
   return function(...)
     local args = { ... }
     timer:start(
@@ -227,6 +230,7 @@ function M.debug(msg, ...)
   end
   local data = { ... }
   if #data == 0 then
+    ---@diagnostic disable-next-line: cast-local-type
     data = nil
   elseif #data == 1 then
     data = data[1]
@@ -235,6 +239,7 @@ function M.debug(msg, ...)
     data = data()
   end
   if type(data) == "table" then
+    ---@diagnostic disable-next-line: cast-local-type
     data = table.concat(
       vim.tbl_map(function(value)
         return type(value) == "string" and value or vim.inspect(value):gsub("%s+", " ")
@@ -243,6 +248,7 @@ function M.debug(msg, ...)
     )
   end
   if data and type(data) ~= "string" then
+    ---@diagnostic disable-next-line: cast-local-type
     data = vim.inspect(data):gsub("%s+", " ")
   end
   msg = data and ("%s: %s"):format(msg, data) or msg
@@ -284,7 +290,6 @@ end
 ---@generic T: table
 ---@param t T
 ---@param fields string[]
----@return T
 function M.getters(t, fields)
   local getters = {} ---@type table<string, fun():any>
   for _, prop in ipairs(fields) do
@@ -298,6 +303,7 @@ function M.getters(t, fields)
     setmetatable(t, {
       __index = function(_, key)
         if getters[key] then
+          ---@diagnostic disable-next-line: redundant-parameter
           return getters[key](t)
         end
       end,

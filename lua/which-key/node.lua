@@ -24,10 +24,17 @@ function M.new(parent, key)
   return self
 end
 
+function M:is_nowait()
+  local nowait = self.keymap and self.keymap.nowait
+
+  -- lua equates 0 to true, so...
+  return nowait == true or nowait == 1
+end
+
 function M:has_nowait_ancestor()
   local node = self
   while node do
-    if node.keymap and node.keymap.nowait then
+    if node:is_nowait() then
       return true
     end
     node = node.parent
@@ -107,7 +114,7 @@ function M:is_plugin()
 end
 
 function M:can_expand()
-  return self.plugin or (self.mapping and (self.mapping.proxy or self.mapping.expand))
+  return self.plugin or (self.mapping and (self.mapping.proxy or self.mapping.expand or self.mapping.op))
 end
 
 ---@return wk.Node[]
@@ -139,13 +146,42 @@ function M:expand()
   end
 
   -- proxy mappings
-  local proxy = self.mapping.proxy
+  local proxy = self.mapping and self.mapping.proxy
   if proxy then
     local keys = Util.keys(proxy)
     local root = self:root()
     local node = root:find(keys, { expand = true })
     if node then
       for k, v in pairs(node:expand()) do
+        ret[k] = v
+      end
+    end
+  end
+
+  -- operator mappings
+  if self.mapping and self.mapping.op then
+    local Buf = require("which-key.buf")
+    local mode = Buf.get({ mode = "o" }) ---@type wk.Mode?
+    local root = mode and mode.tree.root
+
+    if root then
+      for k, v in pairs(root:expand()) do
+        v = vim.deepcopy(v)
+        v.parent = self
+
+        local queue = { v }
+
+        while #queue > 0 do
+          local node = table.remove(queue, 1) ---@type wk.Node
+
+          node.keys = node.parent.keys .. node.key
+          node.path = vim.list_extend(vim.deepcopy(node.parent.path), { node.path[#node.path] })
+
+          for _, child in pairs(node._children) do
+            queue[#queue + 1] = child
+          end
+        end
+
         ret[k] = v
       end
     end
@@ -182,7 +218,7 @@ end
 function M:root()
   local node = self
   while node.parent do
-    node = node.parent
+    node = node.parent or {}
   end
   return node
 end
