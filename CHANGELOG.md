@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.17.1](https://github.com/folke/which-key.nvim/compare/v3.17.0...v3.17.1) (2025-10-28)
+
+
+### Bug Fixes
+
+* **view:** double footer border. Fixes [#964](https://github.com/folke/which-key.nvim/issues/964) ([#974](https://github.com/folke/which-key.nvim/issues/974)) ([7ea0fe4](https://github.com/folke/which-key.nvim/commit/7ea0fe4fea8770ef1b3896a49e72c79f889ab230))
+
 ## [3.17.0](https://github.com/folke/which-key.nvim/compare/v3.16.0...v3.17.0) (2025-02-14)
 
 
