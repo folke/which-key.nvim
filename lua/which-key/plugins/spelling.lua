@@ -18,6 +18,13 @@ M.opts = {}
 
 function M.setup(opts)
   M.opts = opts
+  -- NOTE This logic could be within opts validation
+  if M.opts.suggestions > string.len(M.opts.keys) then
+    require("which-key.util").warn(
+      { "Error in spelling config", "Number of suggestions exceeds provided keys" },
+      { once = true }
+    )
+  end
 end
 
 function M.expand()
@@ -36,7 +43,7 @@ function M.expand()
   local suggestions = vim.fn.spellsuggest(word, M.opts.suggestions or 20, bad[2] == "caps" and 1 or 0)
 
   local items = {} ---@type wk.Plugin.item[]
-  local keys = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  local keys = M.opts.keys
 
   for i, label in ipairs(suggestions) do
     local key = keys:sub(i, i)
