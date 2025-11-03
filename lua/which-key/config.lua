@@ -310,7 +310,7 @@ function M.setup(opts)
       return require("which-key.util").error("Usage: WhichKey [mode] [keys]")
     end
     if mode == "" then
-      mode = "n"
+      mode = vim.api.nvim_get_mode().mode
     end
     require("which-key").show({ mode = mode, keys = keys })
   end, {
