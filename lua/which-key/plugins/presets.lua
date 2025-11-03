@@ -113,6 +113,7 @@ M.windows = {
   { "<c-w>k", desc = "Go to the up window" },
   { "<c-w>l", desc = "Go to the right window" },
   { "<c-w>o", desc = "Close all other windows" },
+  { "<c-w>c", desc = "Close current window" },
   { "<c-w>q", desc = "Quit a window" },
   { "<c-w>s", desc = "Split window" },
   { "<c-w>v", desc = "Split window vertically" },
