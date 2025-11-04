@@ -104,7 +104,9 @@ function M.check()
             if node.desc and node.desc ~= "" then
               descs[#descs + 1] = "- <" .. node.keys .. ">: " .. node.desc
             end
-            local queue = node:children()
+            -- Only check real children (_children), not plugin expansions
+            -- Plugin expansions are virtual and don't cause actual keymap conflicts
+            local queue = vim.tbl_values(node._children)
             while #queue > 0 do
               local child = table.remove(queue)
               if child.keymap then
@@ -113,7 +115,7 @@ function M.check()
                   descs[#descs + 1] = "- <" .. child.keys .. ">: " .. child.desc
                 end
               end
-              vim.list_extend(queue, child:children())
+              vim.list_extend(queue, vim.tbl_values(child._children))
             end
             if #overlaps > 0 then
               found = true
