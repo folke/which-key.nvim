@@ -401,10 +401,18 @@ Hydra mode is a special mode that keeps the popup open until you hit `<esc>`.
 
 ```lua
 -- Show hydra mode for changing windows
-require("which-key").show({
-  keys = "<c-w>",
-  loop = true, -- this will keep the popup open until you hit <esc>
-})
+require("which-key").add({
+  {
+    "<leader>w",
+    function()
+      return require("which-key").show({
+        keys = "<c-w>",
+        loop = true, -- this will keep the popup open until you hit <esc>
+       })
+     end,
+     group = "[w]indows",
+   },
+}
 ```
 
 ## 🔥 Plugins
