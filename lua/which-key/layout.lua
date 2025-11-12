@@ -3,8 +3,8 @@ local M = {}
 
 local dw = vim.fn.strdisplaywidth
 
---- When `size` is a number, it is returned as is (fixed dize).
---- Otherwise, it is a percentage of `parent` (relative size).
+--- When `size` is >1, it is returned as is (fixed size).
+--- Otherwise, it is a percentage of `parent`, e.g `0.8` is 80% (relative size).
 --- If `size` is negative, it is subtracted from `parent`.
 --- If `size` is a table, it is a range of values.
 ---@alias wk.Dim number|{min:number, max:number}
