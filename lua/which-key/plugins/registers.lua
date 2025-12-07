@@ -44,10 +44,14 @@ local function is_osc52(key)
   if vim.g.clipboard == "osc52" then
     return true
   end
-  if type(vim.g.table) ~= "table" or not vim.g.clipboard.paste then
+  if type(vim.g.table) ~= "table" then
     return false
   end
-  return vim.g.clipboard.paste[key] == require("vim.ui.clipboard.osc52").paste(key)
+  if vim.g.clipboard.name == "OSC 52" then
+    return true
+  end
+  return vim.g.clipboard.paste and
+      vim.g.clipboard.paste[key] == require("vim.ui.clipboard.osc52").paste(key)
 end
 
 function M.expand()
