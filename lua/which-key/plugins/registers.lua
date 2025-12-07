@@ -37,17 +37,32 @@ M.replace = {
   ["\r"] = "",
 }
 
+local function is_osc52(key)
+  if not key:match("[%+%*]") or not vim.g.clipboard then
+    return false
+  end
+  if vim.g.clipboard == "osc52" then
+    return true
+  end
+  if type(vim.g.table) ~= "table" then
+    return false
+  end
+  if vim.g.clipboard.name == "OSC 52" then
+    return true
+  end
+  return vim.g.clipboard.paste and
+      vim.g.clipboard.paste[key] == require("vim.ui.clipboard.osc52").paste(key)
+end
+
 function M.expand()
   local items = {} ---@type wk.Plugin.item[]
-
-  local is_osc52 = vim.g.clipboard and vim.g.clipboard.name == "OSC 52"
   local has_clipboard = vim.g.loaded_clipboard_provider == 2
 
   for i = 1, #M.registers, 1 do
     local key = M.registers:sub(i, i)
     local value = ""
-    if is_osc52 and key:match("[%+%*]") then
-      value = "OSC 52 detected, register not checked to maintain compatibility"
+    if is_osc52(key) then
+      value = "[OSC 52 detected]"
     elseif has_clipboard or not key:match("[%+%*]") then
       local ok, reg_value = pcall(vim.fn.getreg, key, 1)
       value = (ok and reg_value or "") --[[@as string]]
