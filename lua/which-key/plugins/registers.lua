@@ -62,7 +62,7 @@ function M.expand()
     local key = M.registers:sub(i, i)
     local value = ""
     if is_osc52(key) then
-      value = "OSC 52 detected, register not checked to maintain compatibility"
+      value = "[OSC 52 detected]"
     elseif has_clipboard or not key:match("[%+%*]") then
       local ok, reg_value = pcall(vim.fn.getreg, key, 1)
       value = (ok and reg_value or "") --[[@as string]]
