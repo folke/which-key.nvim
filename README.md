@@ -38,7 +38,6 @@ Install the plugin with your package manager:
 ```lua
 {
   "folke/which-key.nvim",
-  event = "VeryLazy",
   opts = {
     -- your configuration comes here
     -- or leave it empty to use the default settings
