@@ -39,7 +39,20 @@ local defaults = {
   end,
   plugins = {
     marks = true, -- shows a list of your marks on ' and `
-    registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
+    registers = {
+      enabled = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
+      -- Format function for register values. Accepts a string and returns a formatted string.
+      -- Useful for truncating long register contents to prevent UI freezing.
+      -- The default truncates at 100 characters to balance readability and performance.
+      ---@type fun(value: string): string
+      format = function(value)
+        local max_len = 100 -- Truncate after 100 characters to prevent UI freezing
+        if #value > max_len then
+          return value:sub(1, max_len) .. "…"
+        end
+        return value
+      end,
+    },
     -- the presets plugin, adds help for a bunch of default keybindings in Neovim
     -- No actual key bindings are created
     spelling = {
