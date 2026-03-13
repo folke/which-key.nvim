@@ -280,6 +280,25 @@ function M.setup(opts)
     -- load presets first so that they can be overriden by the user
     require("which-key.plugins").setup()
 
+    local success, lazyspec = pcall(function()
+      return require("lazy.core.config").options.spec[1]
+    end)
+    if success then
+      for _, pluginSpec in ipairs(lazyspec) do
+        if pluginSpec.keys then
+          for _, keymap in ipairs(pluginSpec.keys) do
+            if keymap.desc then
+              M.add({ keymap[1], desc = keymap.desc })
+            elseif type(keymap[2]) == "string" then
+              M.add({ keymap[1], desc = keymap[2] })
+            else
+              M.add({ keymap[1] })
+            end
+          end
+        end
+      end
+    end
+
     -- process mappings queue
     for _, todo in ipairs(wk._queue) do
       M.add(todo.spec, todo.opts)
