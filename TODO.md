@@ -47,4 +47,4 @@
 - [x] show scrolling hint when can't fit all mappings
 - [ ] more tests
 - [ ] hint characters in desc
-- [ ] intgerate with lazy.nvim. Get description there if set
+- [x] intgerate with lazy.nvim. Get description there if set
