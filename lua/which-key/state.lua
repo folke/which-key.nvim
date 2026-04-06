@@ -187,7 +187,13 @@ function M.check(state, key)
   local delta = uv.hrtime() / 1e6 - state.started
   local timedout = vim.o.timeout and delta > vim.o.timeoutlen
 
-  if node then
+  if View.valid() and key == Config.keys.scroll_down then
+    View.scroll(false)
+    return state.node
+  elseif View.valid() and key == Config.keys.scroll_up then
+    View.scroll(true)
+    return state.node
+  elseif node then
     -- NOTE: a node can be both a keymap and a group
     -- when it's both, we honor timeoutlen and nowait to decide what to do
     local has_children = node:count() > 0
@@ -204,12 +210,6 @@ function M.check(state, key)
     return
   elseif key == "<BS>" then
     return state.node.parent or state.mode.tree.root
-  elseif View.valid() and key == Config.keys.scroll_down then
-    View.scroll(false)
-    return state.node
-  elseif View.valid() and key == Config.keys.scroll_up then
-    View.scroll(true)
-    return state.node
   end
   M.execute(state, key, node)
 end
