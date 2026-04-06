@@ -469,6 +469,7 @@ function M.show()
       width = opts.width,
       height = 1,
       zindex = M.view.opts.zindex + 1,
+      border = "none",
     })
     footer:render(M.footer.buf)
   end
