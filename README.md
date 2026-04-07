@@ -33,6 +33,19 @@ in a popup as you type.
 
 Install the plugin with your package manager:
 
+### `vim.pack`
+
+```lua
+vim.pack.add({
+    "https://github.com/folke/which-key.nvim",
+    })
+require("which-key").setup({
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+    })
+```
+
 ### [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
