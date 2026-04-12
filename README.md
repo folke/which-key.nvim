@@ -33,6 +33,27 @@ in a popup as you type.
 
 Install the plugin with your package manager:
 
+### [Neovim Pack](https://neovim.io/doc/user/pack/)
+
+```lua
+vim.pack.add({ "https://github.com/folke/which-key.nvim" })
+
+require("which-key").setup({
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+})
+
+vim.keymap.set(
+  "n",
+  "<leader>?",
+  function()
+    require("which-key").show({ global = false })
+  end,
+  { desc = "Buffer Local Keymaps (which-key)" }
+)
+```
+
 ### [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
