@@ -37,6 +37,12 @@ describe("parse keys", function()
     ["foo>"] = { "f", "o", "o", ">" },
     -- test with japanese chars
     ["fooあ"] = { "f", "o", "o", "あ" },
+    -- Cyrillic 'р' (U+0440, UTF-8 D1 80) — regression for #169: the 0x80
+    -- continuation byte was misread by nvim_replace_termcodes as a stray
+    -- K_SPECIAL marker and padded with <fe>X, splitting "пр" into 4 keys.
+    ["пр"] = { "п", "р" },
+    ["пд"] = { "п", "д" },
+    ["шгр"] = { "ш", "г", "р" },
     ["fooあ<lt>"] = { "f", "o", "o", "あ", "<" },
     ["fooあ<lt>bar"] = { "f", "o", "o", "あ", "<", "b", "a", "r" },
     ["fooあ<lt>bar<lt>"] = { "f", "o", "o", "あ", "<", "b", "a", "r", "<" },
