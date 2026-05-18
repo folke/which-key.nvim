@@ -38,7 +38,18 @@ function M.norm(lhs)
   if M.cache.norm[lhs] then
     return M.cache.norm[lhs]
   end
-  M.cache.norm[lhs] = vim.fn.keytrans(M.t(lhs))
+  -- Skip nvim_replace_termcodes for strings without `<...>` notation. With
+  -- the `special=true` flag, replace_termcodes treats raw 0x80 bytes as
+  -- stray K_SPECIAL markers and pads them with <fe>X disambiguation
+  -- (FE 58). That corrupts multi-byte UTF-8 chars whose continuation byte
+  -- equals 0x80 — most visibly Cyrillic 'р' (U+0440 = D1 80), which then
+  -- splits into 4 keys instead of 2 and breaks both the popup display
+  -- and the auto-trigger (vim waits for the phantom X). Fixes #169.
+  if not lhs:find("<", 1, true) then
+    M.cache.norm[lhs] = lhs
+  else
+    M.cache.norm[lhs] = vim.fn.keytrans(M.t(lhs))
+  end
   return M.cache.norm[lhs]
 end
 
