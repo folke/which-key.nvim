@@ -10,6 +10,7 @@
 ---@field local? boolean
 ---@field update? boolean
 ---@field delay? number
+---@field schedule? boolean
 ---@field loop? boolean
 ---@field defer? boolean don't show the popup immediately. Wait for the first key to be pressed
 ---@field waited? number

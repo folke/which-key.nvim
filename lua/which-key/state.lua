@@ -274,6 +274,35 @@ function M.step(state)
   return node, key == "<Esc>"
 end
 
+---@param opts wk.Filter
+function M.wait_for_view(opts)
+  local View = require("which-key.view")
+
+  if not M.state or not M.state.show or View.valid() or opts.schedule == false then
+    return
+  end
+
+  local delay = opts.delay
+    or M.delay({
+      mode = M.state.mode.mode,
+      keys = M.state.node.keys,
+      plugin = M.state.node.plugin,
+      waited = opts.waited,
+    })
+
+  local has_input = false
+  if delay > 0 then
+    -- Keep the event loop moving until the popup delay expires, without consuming a pending key.
+    has_input = vim.wait(delay, function()
+      return vim.fn.getcharstr(1) ~= ""
+    end, 10, false)
+  end
+
+  if not has_input and M.state and M.state.show and not View.valid() then
+    View.update({ schedule = false })
+  end
+end
+
 ---@param opts? wk.Filter
 function M.start(opts)
   Util.trace("State(start)", function()
@@ -342,6 +371,7 @@ function M.start(opts)
     end
     if M.state.show then
       View.update(opts)
+      M.wait_for_view(opts)
     end
     local child, _exit = M.step(M.state)
     if child and M.state then
