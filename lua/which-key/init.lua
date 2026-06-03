@@ -22,6 +22,13 @@ function M.show(opts)
   end
 end
 
+--- Fuzzy search keymaps by description (using `vim.ui.select`).
+--- Picking an entry executes its keybind.
+---@param opts? wk.Filter
+function M.search(opts)
+  require("which-key.search").open(opts)
+end
+
 ---@param opts? wk.Opts
 function M.setup(opts)
   M.did_setup = true
