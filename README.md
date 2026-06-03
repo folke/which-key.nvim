@@ -20,6 +20,7 @@ in a popup as you type.
 - 🌐 **Plugins**: built-in plugins for marks, registers, presets, and spelling suggestions
 - 🚀 **Operators, Motions, Text Objects**: help for operators, motions and text objects
 - 🐙 **Hydra Mode**: keep the popup open until you hit `<esc>`
+- 🔭 **Search**: fuzzy-find a keybinding by its description and execute it
 
 ## ⚡️ Requirements
 
@@ -394,6 +395,34 @@ When the **WhichKey** popup is open, you can use the following key bindings (the
 - `<bs>` go up one level
 - `<c-d>` scroll down
 - `<c-u>` scroll up
+
+## 🔭 Search
+
+Forgot a keybinding? Search for it by description instead of hunting through the
+popup. The search collects every keybinding available for the current mode and
+buffer and lets you fuzzy-find one by its description (including the parent group
+names). Picking an entry executes its keybinding.
+
+```vim
+" search keymaps for the current mode (defaults to normal mode)
+:WhichKeySearch
+" or for a specific mode
+:WhichKeySearch v
+```
+
+```lua
+-- or from Lua, e.g. to bind it
+vim.keymap.set("n", "<leader>sk", function()
+  require("which-key").search()
+end, { desc = "Search Keymaps" })
+```
+
+The picker uses [`vim.ui.select`](https://neovim.io/doc/user/lua.html#vim.ui.select()),
+so it integrates with whatever selection UI you already use (the builtin,
+[telescope](https://github.com/nvim-telescope/telescope.nvim),
+[snacks](https://github.com/folke/snacks.nvim),
+[fzf-lua](https://github.com/ibhagwan/fzf-lua),
+[dressing](https://github.com/stevearc/dressing.nvim), …).
 
 ## 🐙 Hydra Mode
 

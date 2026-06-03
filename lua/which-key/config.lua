@@ -316,6 +316,14 @@ function M.setup(opts)
   end, {
     nargs = "*",
   })
+
+  vim.api.nvim_create_user_command("WhichKeySearch", function(cmd)
+    load()
+    local mode = cmd.args ~= "" and cmd.args or nil
+    require("which-key").search({ mode = mode })
+  end, {
+    nargs = "?",
+  })
 end
 
 ---@param opts? wk.Parse
