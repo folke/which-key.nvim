@@ -12,6 +12,7 @@ M.operators = {
   { "c", desc = "Change" },
   { "d", desc = "Delete" },
   { "gU", desc = "Uppercase" },
+  { "gq", desc = "Format" },
   { "gu", desc = "Lowercase" },
   { "g~", desc = "Toggle case" },
   { "gw", desc = "Format" },
