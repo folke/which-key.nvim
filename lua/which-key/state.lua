@@ -153,15 +153,19 @@ function M.setup()
   -- HACK: ModeChanged does not always trigger, so we need to manually
   -- check for mode changes. This seems to be due to the usage of `:norm` in autocmds.
   -- See https://github.com/folke/which-key.nvim/issues/787
-  local timer = uv.new_timer()
-  timer:start(0, 50, function()
-    local mode = Util.mapmode()
-    -- check if the mode exists for the current buffer
-    if Buf.bufs[current_buf] and Buf.bufs[current_buf].modes[mode] then
-      return
-    end
-    vim.schedule(Buf.get)
-  end)
+  -- SafeState fires whenever Neovim is about to wait for input, so a missed mode
+  -- change is still picked up before the next key, without polling while idle.
+  vim.api.nvim_create_autocmd("SafeState", {
+    group = group,
+    callback = function()
+      local mode = Util.mapmode()
+      -- check if the mode exists for the current buffer
+      if Buf.bufs[current_buf] and Buf.bufs[current_buf].modes[mode] then
+        return
+      end
+      vim.schedule(Buf.get)
+    end,
+  })
 end
 
 function M.stop()
