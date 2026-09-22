@@ -11,6 +11,9 @@ M._triggers = {} ---@type table<string, wk.Trigger>
 M.suspended = {} ---@type table<wk.Mode, boolean>
 
 M.timer = (vim.uv or vim.loop).new_timer()
+--- single reusable handle for the macro-polling defer, so a burst of schedule
+--- calls while a macro is stuck cannot pile up an unbounded set of timers
+M.park_timer = (vim.uv or vim.loop).new_timer()
 
 --- Checks if a mapping already exists that is not a which-key trigger.
 ---@param trigger wk.Trigger
@@ -145,7 +148,13 @@ function M.schedule(mode)
     0,
     vim.schedule_wrap(function()
       if Util.in_macro() then
-        return vim.defer_fn(M.schedule, 100)
+        -- reuse the same handle: while a macro keeps recording / executing,
+        -- this parks one re-check at a time instead of allocating a new one-shot
+        -- timer on every call (avoids an unbounded live-timer pool, cf. #864)
+        M.park_timer:start(100, 0, function()
+          M.schedule()
+        end)
+        return
       end
       for m, _ in pairs(M.suspended) do
         M.suspended[m] = nil
