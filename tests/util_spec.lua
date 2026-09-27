@@ -123,3 +123,37 @@ describe("modes", function()
     end)
   end
 end)
+
+describe("langmap", function()
+  it("parses pairs, lists and escapes", function()
+    local map = Util.parse_langmap('фa,ыs,б\\,,ж\\;,ЖЭ;:\\"')
+    assert.same("a", map["ф"])
+    assert.same("s", map["ы"])
+    assert.same(",", map["б"])
+    assert.same(";", map["ж"])
+    assert.same(":", map["Ж"])
+    assert.same('"', map["Э"])
+    assert.is_nil(map[","])
+  end)
+
+  it("reads a second semicolon in a list as a character", function()
+    local map = Util.parse_langmap("ab;A;")
+    assert.same("A", map["a"])
+    assert.same(";", map["b"])
+  end)
+
+  it("applies in normal, visual, select and operator-pending mode only", function()
+    local old = vim.o.langmap
+    vim.o.langmap = "фa,б<"
+    assert.same("a", Util.langmap("n", "ф"))
+    assert.same("a", Util.langmap("x", "ф"))
+    assert.same("a", Util.langmap("o", "ф"))
+    assert.same("<lt>", Util.langmap("n", "б"))
+    assert.is_nil(Util.langmap("i", "ф"))
+    assert.is_nil(Util.langmap("c", "ф"))
+    assert.is_nil(Util.langmap("n", "a"))
+    vim.o.langmap = ""
+    assert.is_nil(Util.langmap("n", "ф"))
+    vim.o.langmap = old
+  end)
+end)

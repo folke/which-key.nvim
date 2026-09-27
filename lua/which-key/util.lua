@@ -4,7 +4,66 @@ M.cache = {
   keys = {}, ---@type table<string, string[]>
   norm = {}, ---@type table<string, string>
   termcodes = {}, ---@type table<string, string>
+  langmap = {}, ---@type table<string, table<string, string>>
 }
+
+--- Parses a 'langmap' value into a table from a typed character to the one it
+--- stands for. Both forms are read: "aAbB" pairs and "ab;AB" lists, with a
+--- backslash escaping the next character
+---@param opt string
+---@return table<string, string>
+function M.parse_langmap(opt)
+  if M.cache.langmap[opt] then
+    return M.cache.langmap[opt]
+  end
+  local ret = {} ---@type table<string, string>
+  local part, semi = {}, nil ---@type string[], number?
+  local function flush()
+    if semi then
+      -- Neovim refuses a list whose two sides differ in length
+      for i = 1, semi do
+        ret[part[i]] = part[semi + i]
+      end
+    else
+      for i = 1, #part - 1, 2 do
+        ret[part[i]] = part[i + 1]
+      end
+    end
+    part, semi = {}, nil
+  end
+  local escaped = false
+  for _, nr in ipairs(vim.fn.str2list(opt)) do
+    local char = vim.fn.nr2char(nr)
+    if escaped then
+      part[#part + 1], escaped = char, false
+    elseif char == "\\" then
+      escaped = true
+    elseif char == "," then
+      flush()
+    elseif char == ";" and not semi then
+      semi = #part
+    else
+      part[#part + 1] = char
+    end
+  end
+  flush()
+  M.cache.langmap[opt] = ret
+  return ret
+end
+
+--- The key 'langmap' turns a typed key into, in the modes where Neovim applies
+--- the option, or nil. Neovim does not apply it to keys a plugin reads with
+--- getchar(), so which-key does it itself
+---@param mode string
+---@param key string
+---@return string?
+function M.langmap(mode, key)
+  if not mode:find("^[nxso]") or vim.o.langmap == "" then
+    return
+  end
+  local mapped = M.parse_langmap(vim.o.langmap)[key]
+  return mapped and vim.fn.keytrans(mapped)
+end
 
 function M.t(str)
   M.cache.termcodes[str] = M.cache.termcodes[str] or vim.api.nvim_replace_termcodes(str, true, true, true)

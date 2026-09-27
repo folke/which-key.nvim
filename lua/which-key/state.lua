@@ -182,7 +182,7 @@ end
 ---@return wk.Node? node
 function M.check(state, key)
   local View = require("which-key.view")
-  local node = key == nil and state.node or (key and state.node:find(key, { expand = true }))
+  local node = key == nil and state.node or (key and M.find(state, key))
 
   local delta = uv.hrtime() / 1e6 - state.started
   local timedout = vim.o.timeout and delta > vim.o.timeoutlen
@@ -212,6 +212,17 @@ function M.check(state, key)
     return state.node
   end
   M.execute(state, key, node)
+end
+
+--- The child for a typed key. A key 'langmap' translates goes to its
+--- translation where the tree has one, so a mapping bound to the typed
+--- character itself still answers when there is none
+---@param state wk.State
+---@param key string
+---@return wk.Node?
+function M.find(state, key)
+  local mapped = Util.langmap(state.mode.mode, key)
+  return mapped and state.node:find(mapped, { expand = true }) or state.node:find(key, { expand = true })
 end
 
 ---@param state wk.State
