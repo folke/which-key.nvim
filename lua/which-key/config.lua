@@ -13,7 +13,7 @@ M.version = "3.17.0" -- x-release-please-version
 ---@field triggers? wk.Spec
 ---@field defer? fun(ctx: { mode: string, operator: string }): boolean
 ---@field plugins? wk.OptsPlugins
----@field win? wk.Win.opts
+---@field win? wk.OptsWin
 ---@field layout? wk.OptsLayout
 ---@field keys? wk.OptsKeys
 ---@field sort? (string | wk.Sorter)[]
@@ -24,6 +24,17 @@ M.version = "3.17.0" -- x-release-please-version
 ---@field show_keys? boolean
 ---@field disable? wk.OptsDisable
 ---@field debug? boolean
+
+-- LuaLS reads this alias as T; EmmyLua also evaluates the conditional mapped type.
+---@alias wk.DeepPartial<T> T extends any[] and T or (T extends table and { [K in keyof T]?: wk.DeepPartial<T[K]>? } or T)
+
+---@class wk.OptsWin: vim.api.keyset.win_config
+---@field width? wk.Dim
+---@field height? wk.Dim
+---@field wo? wk.DeepPartial<vim.wo>
+---@field bo? wk.DeepPartial<vim.bo>
+---@field padding? {[1]: number, [2]: number}
+---@field no_overlap? boolean
 
 ---@class wk.OptsPlugins
 ---@field marks? boolean

@@ -62,8 +62,8 @@
 ---@field expand? fun():wk.Spec
 
 ---@class wk.Spec: {[number]: wk.Spec} , wk.Mapping
----@field [1]? string
----@field [2]? string|fun()
+---@field [1]? string|wk.Spec
+---@field [2]? string|fun()|wk.Spec
 ---@field lhs? string
 ---@field group? string|fun():string
 ---@field desc? string|fun():string
