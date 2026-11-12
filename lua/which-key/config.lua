@@ -1,10 +1,117 @@
----@class wk.Config: wk.Opts
+---@class wk.Config: wk.OptsStrict
 ---@field triggers {mappings: wk.Mapping[], modes: table<string,boolean>}
 local M = {}
 
 M.version = "3.17.0" -- x-release-please-version
 
----@class wk.Opts
+---@class wk.Opts: wk.OptsStrict
+---@field preset? false | "classic" | "modern" | "helix"
+---@field delay? number | fun(ctx: { keys: string, mode: string, plugin?: string }): number
+---@field filter? fun(mapping: wk.Mapping): boolean
+---@field spec? wk.Spec
+---@field notify? boolean
+---@field triggers? wk.Spec
+---@field defer? fun(ctx: { mode: string, operator: string }): boolean
+---@field plugins? wk.OptsPlugins
+---@field win? wk.OptsWin
+---@field layout? wk.OptsLayout
+---@field keys? wk.OptsKeys
+---@field sort? (string | wk.Sorter)[]
+---@field expand? number | fun(node: wk.Node): boolean?
+---@field replace? table<string, ({[1]: string, [2]: string} | fun(str: string): string)[]>
+---@field icons? wk.OptsIcons
+---@field show_help? boolean
+---@field show_keys? boolean
+---@field disable? wk.OptsDisable
+---@field debug? boolean
+
+-- LuaLS reads this alias as T; EmmyLua also evaluates the conditional mapped type.
+---@alias wk.DeepPartial<T> T extends any[] and T or (T extends table and { [K in keyof T]?: wk.DeepPartial<T[K]>? } or T)
+
+---@class wk.OptsWin: vim.api.keyset.win_config
+---@field width? wk.Dim
+---@field height? wk.Dim
+---@field wo? wk.DeepPartial<vim.wo>
+---@field bo? wk.DeepPartial<vim.bo>
+---@field padding? {[1]: number, [2]: number}
+---@field no_overlap? boolean
+
+---@class wk.OptsPlugins
+---@field marks? boolean
+---@field registers? boolean
+---@field spelling? wk.OptsPluginSpelling
+---@field presets? wk.OptsPluginPresets
+
+---@class wk.OptsPluginSpelling
+---@field enabled? boolean
+---@field suggestions? number
+
+---@class wk.OptsPluginPresets
+---@field operators? boolean
+---@field motions? boolean
+---@field text_objects? boolean
+---@field windows? boolean
+---@field nav? boolean
+---@field z? boolean
+---@field g? boolean
+
+---@class wk.OptsLayout
+---@field width? number | wk.OptsDim
+---@field spacing? number
+
+---@class wk.OptsDim
+---@field min? number
+---@field max? number
+
+---@class wk.OptsKeys
+---@field scroll_down? string
+---@field scroll_up? string
+
+---@class wk.OptsIcons
+---@field breadcrumb? string
+---@field separator? string
+---@field group? string
+---@field ellipsis? string
+---@field mappings? boolean
+---@field rules? wk.IconRule[] | false
+---@field colors? boolean
+---@field keys? wk.OptsIconKeys
+
+---@class wk.OptsIconKeys
+---@field Up? string
+---@field Down? string
+---@field Left? string
+---@field Right? string
+---@field C? string
+---@field M? string
+---@field D? string
+---@field S? string
+---@field CR? string
+---@field Esc? string
+---@field ScrollWheelDown? string
+---@field ScrollWheelUp? string
+---@field NL? string
+---@field BS? string
+---@field Space? string
+---@field Tab? string
+---@field F1? string
+---@field F2? string
+---@field F3? string
+---@field F4? string
+---@field F5? string
+---@field F6? string
+---@field F7? string
+---@field F8? string
+---@field F9? string
+---@field F10? string
+---@field F11? string
+---@field F12? string
+
+---@class wk.OptsDisable
+---@field ft? string[]
+---@field bt? string[]
+
+---@class wk.OptsStrict
 local defaults = {
   ---@type false | "classic" | "modern" | "helix"
   preset = "classic",
@@ -182,7 +289,7 @@ M.loaded = false
 ---@type wk.Keymap[]
 M.mappings = {}
 
----@type wk.Opts
+---@type wk.OptsStrict
 M.options = nil
 
 ---@type {opt:string, msg:string}[]
